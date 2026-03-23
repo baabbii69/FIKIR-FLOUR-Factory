@@ -1,0 +1,248 @@
+GLOBAL DESIGN SYSTEM :
+Design system for "Fikir Flour Factory" — a premium industrial flour manufacturing company based in Ethiopia. 
+
+BRAND IDENTITY:
+- Company name: Fikir Flour Factory
+- Tagline: "From Grain to Greatness"
+- Tone: Premium, trustworthy, industrial yet warm — like a luxury food brand meets a serious B2B manufacturer
+
+TYPOGRAPHY:
+- Display / Headings: Cormorant Garamond or Freight Display — elegant serif with weight contrast
+- Body / UI: DM Sans — clean, modern, highly legible
+- Accent labels: DM Mono — small uppercase tracking for tags, labels, stats
+
+COLOR PALETTE:
+- Primary Background: #FFFFFF
+- Secondary Background: #F7F3EC (warm off-white, parchment feel)
+- Dark Section Background: #1C1308 (near-black warm brown)
+- Primary Accent: #C49A3C (rich harvest gold)
+- Secondary Accent: #8B5E2A (deep amber brown)
+- Green Accent: #3A5C3B (muted forest green — for sustainability/certification badges)
+- Text Dark: #1C1308
+- Text Medium: #5A4A36
+- Text Light: #9C8E7E
+- Border Color: #E2D9CC
+- White: #FFFFFF
+
+SPACING: Generous whitespace. Minimum 80px section padding vertical. Content max-width 1280px centered.
+
+IMAGERY STYLE: Real photography — golden wheat fields, industrial mill machinery, flour in motion, grain close-ups, workers in factory, aerial shots of silos. Never illustrations or icons as primary visuals.
+
+OVERALL FEEL: Think Puratos, Cargill, or Meneba flour company websites — serious industrial authority combined with warmth of grain and bread. Clean grid. No clutter.
+
+
+
+PAGE 1 — HOMEPAGE
+Design the Homepage for "Fikir Flour Factory" using the established design system.
+
+HEADER / NAVIGATION:
+- Slim top announcement bar (dark #1C1308 background): left side shows "Established 2005 · Addis Ababa, Ethiopia" and right side shows phone number and email in small DM Mono text, white 50% opacity
+- Main sticky header: white background, 1px warm border bottom. Left: logo mark (abstract wheat grain geometric icon in gold) + "Fikir" in Cormorant Garamond bold 24px + "Flour Factory" in DM Mono 10px tracking below. Center navigation: Home, About Us, Products (with dropdown indicator), Our Mill, Sustainability, Contact. Right: "Request a Quote" CTA button in solid gold #C49A3C with white text, sharp corners (no border radius)
+
+HERO SECTION:
+- Full viewport height (100vh)
+- Background: Large full-bleed photograph of golden wheat field at golden hour — sun low on the horizon, warm light flooding the frame. Photo covers entire section
+- Dark gradient overlay: left side darker (60% opacity dark brown), right side nearly transparent — so photo breathes on the right
+- Left side content floated left, vertically centered:
+  - Small label in DM Mono: "— EST. 2005 · ADDIS ABABA" in gold #C49A3C, 11px
+  - H1 headline in Cormorant Garamond 80px bold, white, line height 0.95: "Ethiopia's Finest" on line 1, then "Flour, Delivered" on line 2 in italic weight — the word "Flour" should be in gold
+  - Subheadline: DM Sans 18px, white 75% opacity, max-width 480px, line height 1.7: "Supplying premium milling products to bakeries, food manufacturers, and distributors across East Africa and beyond."
+  - Two buttons side by side: (1) Solid gold "Explore Our Products" with white arrow icon →, (2) Ghost button "Our Story" with white border, white text
+- Bottom of hero: thin horizontal bar with 4 key stats side by side (white background, full width): "20+ Years Experience" / "1,200 MT Daily Output" / "12 Countries Supplied" / "ISO 22000 Certified" — each stat has large Cormorant number, small DM Mono label
+
+TRUST STRIP (below hero stats):
+- Warm off-white background #F7F3EC, 60px padding
+- Single row with horizontal rule dividers between items
+- 3 items: (1) wheat stalk SVG icon + "Non-GMO Verified Grain" + short descriptor, (2) shield checkmark icon + "ISO 22000 Food Safety" + short descriptor, (3) globe icon + "Export Ready Documentation" + short descriptor
+- Clean, minimal, icon left / text right layout
+
+ABOUT PREVIEW SECTION:
+- Two-column split: left column is a large photograph (tall portrait ratio 3:4) of the inside of a modern flour mill — silver machinery, flour dust in air catching the light. Right column is text content on warm #F7F3EC background
+- Right text column (generous padding 80px): small gold label "Who We Are", large H2 "Built on Grain. Trusted by Industry.", thin gold divider line 60px wide, body text 2 paragraphs, then 3 inline micro-stats in a row (e.g. "20+ Yrs" / "48 Partners" / "16 Products"), then a text link button "Discover Our Story →" in gold
+
+PRODUCT SHOWCASE:
+- White background section
+- Section header: centered, small label + H2 "Our Flour Range" + short descriptor paragraph
+- Product grid: 3 cards in a row, each card has:
+  - Top: full-width food photography (flour bag, bread, wheat close-up) with subtle hover zoom
+  - A thin gold "bestseller" badge on top-left of image for the first card
+  - Below image: product category label in DM Mono gold small caps, product name in Cormorant H3, 2 line description, protein % spec in a small badge, "View Specifications →" link in gold
+  - Cards have 1px border, no drop shadow, clean grid gap
+
+WHY FIKIR SECTION (dark background):
+- Full-width section with dark background #1C1308
+- Subtle pattern overlay: very faint repeating wheat grain texture at 3% opacity
+- Left: text content — gold label, H2 white "The Standard for Industrial Flour Supply" with italic "Flour" in gold, body text white 65% opacity, gold CTA button
+- Right: 4 feature rows stacked — each has a thin gold left-border bar, icon right of border, bold title white, description white 55% opacity. Features: Quality Consistency / Reliable Supply Chain / Custom Formulations / Global Export
+
+TESTIMONIALS:
+- White background
+- Section header centered: gold label + H2 "Trusted Across the Industry"
+- 3 testimonial cards in a row: each card has warm #F7F3EC background, top gold star rating "★★★★★", italic serif quote text, bottom: circular initial avatar in gold + name + company role
+- Cards separated by 2px gap, no shadows
+
+CALL TO ACTION BANNER:
+- Full width, tall section (500px min-height)
+- Background: dark photographic image of flour being poured or wheat pouring into machinery — dramatic, dust catching light
+- Dark overlay 70%
+- Center-aligned content: gold small label, H2 white "Ready to Partner with Fikir?", body text white, two side-by-side buttons: solid gold primary + ghost white outline secondary
+
+LATEST NEWS (3 cards):
+- White background
+- Section header left-aligned: label + H2 + "View All News →" link right-aligned
+- 3 news cards: image top (16:9 ratio), gold date label, serif H3 headline, short excerpt, no button needed
+- Clean minimal card, no borders
+
+FOOTER:
+- Dark background #1C1308
+- Top row: logo + brand description left, then 3 link columns (Company, Products, Contact)
+- Contact column has address with map pin icon, phone with phone icon, email with envelope icon — all in warm muted white
+- Certification badges row: "ISO 22000" "Non-GMO" "Halal" "Kosher" — thin bordered rectangles
+- Bottom bar: copyright text left, social icons right (LinkedIn, Twitter/X, YouTube) — thin bordered square icon buttons
+
+PAGE 2 — ABOUT US
+Design the About Us page for "Fikir Flour Factory" using the established design system.
+
+PAGE HERO:
+- 380px tall interior page hero
+- Background: aerial drone photograph of golden wheat fields, Ethiopia landscape
+- Dark gradient overlay bottom-to-top
+- Bottom-left aligned content: breadcrumb "Home / About Us" in small white muted text, gold label "Our Story", H1 "About Fikir Flour Factory" in white Cormorant 54px
+
+MISSION STATEMENT SECTION:
+- Two column layout
+- Left: gold label "Our Mission", H2 "Built on Integrity. Driven by Quality.", 60px gold divider, 2 paragraphs body text
+- Right: tall photograph of factory exterior or grain silos — with a floating gold card overlapping bottom-right corner of the photo showing "20 Years of Excellence" with large serif number
+
+CORE VALUES:
+- Warm #F7F3EC background section
+- Section header: centered gold label + H2 "What We Stand For"
+- 2x2 grid of value cards — each card has white background, left-aligned icon in gold (shield, handshake, leaf, lightbulb), bold serif title, body text description. Cards separated by thin 1px borders creating a grid
+
+COMPANY HISTORY TIMELINE:
+- White background
+- Left column: label + H2 "Our Journey" + body intro text + tall photograph
+- Right column: vertical timeline — thin vertical line, circular gold dots as markers, year in large Cormorant gold on left of dot, event title + description on right. 6 milestone years: 2005 (Founded), 2009 (First industrial contract), 2014 (ISO Certification), 2017 (Export launch), 2021 (Capacity expansion), 2024 (New product lines)
+
+LEADERSHIP TEAM:
+- Warm #F7F3EC background
+- Centered header: gold label + H2 "Our Leadership"
+- 4-column team grid: each card has portrait photo (3:4 ratio, slight warm tone), name in serif below, role in DM Mono gold small caps. Clean, no card borders
+
+CERTIFICATIONS & STANDARDS:
+- White background
+- Two column: left has label + H2 + body text + 2x2 grid of certification blocks (each block has gold category label, cert name in bold, issuer/date in small muted text, 1px border)
+- Right: large tall photograph of quality laboratory or clean factory interior
+
+CTA BANNER at bottom (same style as homepage but different photo — close-up of wheat grain pouring)
+
+PAGE 3 — PRODUCTS
+Design the Products page for "Fikir Flour Factory" using the established design system.
+
+PAGE HERO:
+- 380px tall
+- Background photo: close-up of white flour in motion, dramatic lighting
+- Bottom-left: breadcrumb, gold label "Product Range", H1 "Premium Flour for Every Application"
+
+INTRO STRIP:
+- Warm #F7F3EC background, 2-column layout
+- Left: gold label + H2 "16 Varieties. One Trusted Source."
+- Right: lead paragraph text describing the portfolio
+
+FILTER BAR + PRODUCT GRID:
+- White background
+- Filter buttons row: "All Products" / "Standard Range" / "Specialty" / "Whole Grain" / "Industrial" — pill-style or sharp-corner toggle buttons, active state fills with dark #1C1308, inactive has 1px border
+- Right of filter: "Download Catalogue" button with download icon, outlined style
+- Product grid 3 columns, each product card:
+  - Top: food/product photography (flour bag, grain, bread product)
+  - Category label tag in small gold DM Mono
+  - H3 product name in Cormorant
+  - 2-line description in DM Sans
+  - Specs row: 3 small spec blocks in a row separated by thin vertical lines — "Protein: 12–14%" / "Moisture: ≤14%" / "Ash: 0.55%" in DM Mono tiny text
+  - Bottom: "Request This Product →" link in gold
+  - 1px warm border around entire card, subtle hover state lifts card slightly
+
+8–9 products total: All-Purpose Flour, High-Gluten Bread Flour, Pastry Flour, Whole Wheat Stone-Ground, Spelt Flour, Tipo 00 Artisan, Durum Semolina, Fortified Flour, Custom Blend (last card has dark #1C1308 background with gold text — visually distinct as "custom" option)
+
+PACKAGING OPTIONS SECTION:
+- Warm #F7F3EC background
+- Centered header: gold label + H2 "Flexible Supply Options"
+- 4 equal columns: Bulk Tanker / Big Bags FIBC / Palletised 25–50kg / Retail Packs — each has large outlined icon top center, bold title, short description
+
+FAQ ACCORDION:
+- White background, max-width 860px centered
+- Centered header: gold label + H2 "Product FAQs"
+- 5 accordion items: clean rows with serif question, plus icon right that rotates to X when open, answer text slides down smoothly
+- Bottom border only on each item, no card boxes
+
+CTA banner at bottom (photo of wheat field at harvest)
+
+PAGE 4 — OUR MILL (FACTORY)
+Design the "Our Mill" page for "Fikir Flour Factory" using the established design system.
+
+PAGE HERO:
+- 380px tall
+- Background photo: wide-angle interior shot of modern flour milling machinery — conveyor belts, metal rollers, industrial scale
+- Bottom-left: breadcrumb, gold label "Production Facility", H1 "Where Precision Meets Scale"
+
+FACILITY OVERVIEW:
+- Two column: left text (label + H2 "One of East Africa's Most Advanced Milling Facilities" + divider + 2 body paragraphs), right is a 2x2 grid of large stat blocks on warm #F7F3EC background — "48 Acres" / "6 Mill Lines" / "24/7 Operations" / "480 Staff" — each with large Cormorant number in gold, DM Mono label
+
+PHOTO GALLERY:
+- Warm #F7F3EC background
+- Centered header: gold label + H2 "Inside the Mill"
+- Asymmetric photo grid: 1 large photo left (spans 2 rows, tall), 4 smaller photos right in 2x2 grid. Photos: main mill floor, grain silos, lab technician, packaging line, wheat grain close-up. No captions, pure visual
+
+MILLING PROCESS — TABBED:
+- White background
+- Centered header: gold label + H2 "The Milling Process" + subtitle
+- 5 tab navigation: "Grain Intake" / "Cleaning" / "Conditioning" / "Milling" / "Quality & Pack" — underline-style tabs, active tab has gold underline
+- Each tab panel: 2-column layout — left has H3 + body text + bulleted checklist with gold checkmark icons, right has relevant process photograph
+
+SUSTAINABILITY:
+- Forest green background #3A5C3B (or very muted green-tinted off-white for lighter feel)
+- 2 column: left text — green label, H2 "Our Sustainability Commitment", gold divider, body text, then 3 stat bars showing "31% Water Reduction" / "24% CO₂ Reduction" / "98% Zero Landfill" — each as a horizontal row with large Cormorant percentage, thin text description, and thin horizontal rule below
+- Right: tall photograph of green wheat field or rooftop solar panels on factory
+
+CTA banner: photograph of factory at dusk, aerial view
+
+PAGE 5 — CONTACT
+Design the Contact page for "Fikir Flour Factory" using the established design system.
+
+PAGE HERO:
+- 320px tall, shorter than other interior pages
+- Background photo: close-up of hands holding wheat grain
+- Bottom-left: breadcrumb, gold label "Get In Touch", H1 "Contact Fikir Flour Factory"
+
+MAIN CONTACT SECTION (full width, no container padding — edge to edge):
+- Split 50/50 two-column layout, full height
+- LEFT COLUMN: dark background #1C1308
+  - Padding 70px inside
+  - Gold label "We're Here to Help"
+  - H2 white "Let's Start a Conversation"
+  - Lead paragraph white 65% opacity
+  - 4 contact detail rows: each has a small square icon container (dark gray background), gold icon inside, label in DM Mono tiny gold, value text in white. Details: Address / Phone / Email / Export Dept
+  - Department quick-links section below a thin separator: 4 small bordered link tiles in 2x2 grid — "Sales & Orders" / "Export" / "R&D / Custom Blends" / "Careers" — dark bordered, white text, hover turns gold border
+
+- RIGHT COLUMN: warm #F7F3EC background
+  - Padding 70px inside
+  - Gold label "Send a Message"
+  - H2 "Request a Quote or Enquiry"
+  - Short body text
+  - Form fields: First Name + Last Name (2-col row), Email + Phone (2-col row), Company Name (full width), Country dropdown + Enquiry Type dropdown (2-col row), Products of Interest (text field), Monthly Volume dropdown, Message textarea
+  - All fields: 1.5px border, warm white background, sharp corners, gold focus border state
+  - Checkbox consent line
+  - Full-width gold submit button "Submit Enquiry →"
+  - Small note: "We respond within 1 business day"
+
+MAP STRIP:
+- Full width, 320px tall
+- Satellite map screenshot or stylized map image of Addis Ababa area, desaturated and darkened
+- Centered overlay pin card: white background, bold address text, gold location pin icon
+
+GLOBAL PRESENCE:
+- Warm #F7F3EC background
+- Centered header: gold label + H2 "Our Offices"
+- 4-column grid of office location cards — white background, 1px border, gold region label (e.g. "HEADQUARTERS"), city name in Cormorant H3, address + phone in DM Sans small
+
+FOOTER (same as other pages)
