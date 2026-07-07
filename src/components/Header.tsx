@@ -6,12 +6,14 @@ import { NAV, CONTACT } from "../data/site";
 import Btn from "./Btn";
 
 function Wordmark({ solid }: { solid: boolean }) {
+  // solid = over a light (cream) header -> full-colour mark + ink text.
+  // !solid = over the dark hero (or dark mobile menu) -> cream line-art mark + cream text.
   return (
     <Link to="/" className="flex items-center gap-3" aria-label="FIKIR FLOUR Factory home">
       <img
-        src="/logo.jpg"
+        src={solid ? "/logo-mark.png" : "/logo-mark-cream.png"}
         alt=""
-        className="h-10 w-10 rounded-full object-cover ring-1 ring-linen"
+        className="h-11 w-auto"
       />
       <span className="flex flex-col leading-none">
         <span

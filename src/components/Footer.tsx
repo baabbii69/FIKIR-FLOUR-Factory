@@ -26,9 +26,9 @@ export default function Footer() {
           <div>
             <Link to="/" className="flex items-center gap-3">
               <img
-                src="/logo.jpg"
+                src="/logo-mark-cream.png"
                 alt="FIKIR FLOUR Factory logo"
-                className="h-11 w-11 rounded-full object-cover"
+                className="h-12 w-auto"
               />
               <span className="flex flex-col leading-none">
                 <span className="font-display text-2xl font-bold text-cream">Fikir</span>

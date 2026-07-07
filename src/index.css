@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand palette (from brand design system, ui.txt) */
+  /* Brand palette, tuned to the Fikir Food Processing logo:
+     vivid marigold gold (#FDC50E) + fresh leaf green (#64B842 -> #229141). */
   --color-cream: #fbf9f4;
   --color-parchment: #f7f3ec;
   --color-ink: #1c1308;
   --color-ink-soft: #2b1f10;
-  --color-gold: #c49a3c;
-  --color-gold-bright: #d4af5c;
-  --color-gold-deep: #8b5e2a;
-  --color-leaf: #3a5c3b;
+  --color-gold: #e3a81c; /* primary marigold accent (pops on dark, reads on light) */
+  --color-gold-bright: #fbbc10; /* logo gold, for hover + bright-on-dark */
+  --color-gold-deep: #92671a; /* deep amber for accent text on light surfaces (AA) */
+  --color-leaf: #237a3c; /* logo leaf green, deep enough for cream text on it */
+  --color-leaf-bright: #4fa939; /* bright logo green for small accents */
   --color-clay: #5a4a36;
   --color-linen: #e2d9cc;
 
