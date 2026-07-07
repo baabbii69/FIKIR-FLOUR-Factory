@@ -1,16 +1,15 @@
-import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ErrorBoundary from "./components/ErrorBoundary";
 import SmoothScroll from "./lib/SmoothScroll";
 import ScrollToTop from "./lib/ScrollToTop";
 import Home from "./pages/Home";
-
-const About = lazy(() => import("./pages/About"));
-const Products = lazy(() => import("./pages/Products"));
-const Factory = lazy(() => import("./pages/Factory"));
-const Contact = lazy(() => import("./pages/Contact"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+import About from "./pages/About";
+import Products from "./pages/Products";
+import Factory from "./pages/Factory";
+import Contact from "./pages/Contact";
+import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
@@ -25,7 +24,7 @@ export default function App() {
       </a>
       <Header />
       <main id="main">
-        <Suspense fallback={<div className="min-h-[100dvh] bg-ink" aria-hidden />}>
+        <ErrorBoundary>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -34,7 +33,7 @@ export default function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </Suspense>
+        </ErrorBoundary>
       </main>
       <Footer />
     </div>

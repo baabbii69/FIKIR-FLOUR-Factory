@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PROCESS } from "../data/site";
@@ -15,7 +15,13 @@ export default function ProcessPan() {
   const wrap = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  // useLayoutEffect (not useEffect) is required for the cleanup: pin:true wraps
+  // this section in a GSAP .pin-spacer div outside React's knowledge. mm.revert()
+  // unwraps it, and that must run synchronously during the unmount commit, before
+  // React detaches these nodes. In a passive (useEffect) cleanup it runs too late,
+  // React tries to removeChild against the stale spacer parent, throws, and the
+  // whole route blanks out until a refresh. This is the white-screen-on-nav bug.
+  useLayoutEffect(() => {
     const mm = gsap.matchMedia();
     mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
       if (!wrap.current || !track.current) return;
