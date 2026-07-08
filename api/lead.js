@@ -15,8 +15,9 @@ export default async function handler(req, res) {
     return;
   }
 
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
+  // Trim so a stray space/newline pasted into the Vercel env var can't break it.
+  const token = (process.env.TELEGRAM_BOT_TOKEN || "").trim();
+  const chatId = (process.env.TELEGRAM_CHAT_ID || "").trim();
   if (!token || !chatId) {
     res.status(502).json({ success: false, error: "not_configured" });
     return;
@@ -58,7 +59,11 @@ export default async function handler(req, res) {
     });
     const json = await tg.json();
     if (!json.ok) {
-      res.status(502).json({ success: false, error: "telegram_rejected" });
+      // Surface Telegram's own reason (e.g. "chat not found", "Unauthorized")
+      // so misconfiguration is diagnosable instead of a blank rejection.
+      res
+        .status(502)
+        .json({ success: false, error: "telegram_rejected", detail: json.description });
       return;
     }
     res.status(200).json({ success: true });
