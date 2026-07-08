@@ -101,29 +101,33 @@ function Overview() {
 
 /* ---------------- Gallery (asymmetric) ---------------- */
 
-/* Spans fill every 12-col row completely: 7+5 / 7+5 / 6+6, no grid holes. */
+/* Uniform grid: every tile is an equal 4:3 cell, so any number of photos
+   tiles cleanly (a partial last row just fills from the left) and the layout
+   never breaks when images are added or removed. */
 const GALLERY = [
   {
-    src: IMAGES.millInterior,
-    alt: "Roller mill hall with stainless milling stands",
-    span: "md:col-span-7 md:row-span-2",
-    fill: true,
+    src: "https://images.unsplash.com/photo-1627052428109-576e839d100a?q=80&w=1200&auto=format&fit=crop",
+    alt: "Grain storage and process tanks at the mill",
   },
   {
-    src: "https://picsum.photos/seed/fikir-silos/1200/900",
-    alt: "Wheat storage silos at dawn",
-    span: "md:col-span-5",
-  },
-  { src: IMAGES.milling, alt: "Milling equipment in operation", span: "md:col-span-5" },
-  {
-    src: "https://picsum.photos/seed/fikir-packhall/1200/900",
-    alt: "Automated packing hall",
-    span: "md:col-span-6",
+    src: "https://images.unsplash.com/photo-1549590143-d5855148a9d5?q=80&w=1200&auto=format&fit=crop",
+    alt: "Flour dusted across the mill bench",
   },
   {
-    src: IMAGES.flourPour,
-    alt: "Finished flour being sampled for testing",
-    span: "md:col-span-6",
+    src: "https://images.unsplash.com/photo-1714842981153-ffeaf74e7a1a?q=80&w=1200&auto=format&fit=crop",
+    alt: "Finished flour ready for laboratory testing",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1650387106190-c6a9013f3fc8?q=80&w=1200&auto=format&fit=crop",
+    alt: "Wheat ears at harvest maturity",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1564493031643-4be2c4347a17?q=80&w=1200&auto=format&fit=crop",
+    alt: "Wheat stalks against an open sky",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1667328925477-1cc446534413?q=80&w=1200&auto=format&fit=crop",
+    alt: "Milling machinery on the plant floor",
   },
 ];
 
@@ -134,17 +138,15 @@ function Gallery() {
         <Reveal>
           <h2 className="display-2 max-w-2xl text-4xl md:text-5xl">Inside the mill</h2>
         </Reveal>
-        <div className="mt-12 grid gap-4 md:grid-cols-12">
+        <div className="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
           {GALLERY.map((g, i) => (
-            <Reveal key={g.alt} delay={0.05 * i} className={g.span}>
-              <div className="group h-full overflow-hidden">
+            <Reveal key={g.alt} delay={0.05 * Math.min(i, 5)}>
+              <div className="group overflow-hidden">
                 <img
                   src={g.src}
                   alt={g.alt}
                   loading="lazy"
-                  className={`w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 ${
-                    g.fill ? "aspect-[4/3] h-full md:aspect-auto" : "aspect-[4/3]"
-                  }`}
+                  className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
                 />
               </div>
             </Reveal>

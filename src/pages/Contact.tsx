@@ -12,7 +12,7 @@ import {
 import PageHero from "../components/PageHero";
 import Reveal from "../components/Reveal";
 import { usePageMeta } from "../lib/usePageMeta";
-import { submitLead } from "../lib/web3forms";
+import { submitLead } from "../lib/leads";
 import { CONTACT, IMAGES } from "../data/site";
 
 export default function Contact() {

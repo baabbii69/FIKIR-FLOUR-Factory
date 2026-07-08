@@ -49,7 +49,7 @@ export const PRODUCTS: Product[] = [
       { label: "Ash", value: "0.55%" },
     ],
     image:
-      "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1200&q=80",
+      "https://images.unsplash.com/photo-1714842981153-ffeaf74e7a1a?q=80&w=1200&auto=format&fit=crop",
     badge: "Best seller",
   },
   {
@@ -65,7 +65,7 @@ export const PRODUCTS: Product[] = [
       { label: "Ash", value: "0.60%" },
     ],
     image:
-      "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=1200&q=80",
+      "https://images.unsplash.com/photo-1549413468-cd78edb7e75c?q=80&w=1200&auto=format&fit=crop",
   },
   {
     slug: "pastry",
@@ -79,7 +79,8 @@ export const PRODUCTS: Product[] = [
       { label: "Moisture", value: "≤13.5%" },
       { label: "Ash", value: "0.45%" },
     ],
-    image: "https://picsum.photos/seed/fikir-pastry-croissant/1200/900",
+    image:
+      "https://images.unsplash.com/photo-1623334044303-241021148842?q=80&w=1200&auto=format&fit=crop",
   },
   {
     slug: "whole-wheat",
@@ -94,7 +95,7 @@ export const PRODUCTS: Product[] = [
       { label: "Fiber", value: "10-12%" },
     ],
     image:
-      "https://images.unsplash.com/photo-1606914501449-5a96b6ce24ca?w=1200&q=80",
+      "https://images.unsplash.com/photo-1565181917578-a87c12e04ff7?q=80&w=1200&auto=format&fit=crop",
   },
   {
     slug: "spelt",
@@ -108,7 +109,8 @@ export const PRODUCTS: Product[] = [
       { label: "Moisture", value: "≤14%" },
       { label: "Origin", value: "Heritage" },
     ],
-    image: "https://picsum.photos/seed/fikir-spelt-grain/1200/900",
+    image:
+      "https://images.unsplash.com/photo-1650387106190-c6a9013f3fc8?q=80&w=1200&auto=format&fit=crop",
   },
   {
     slug: "tipo-00",
@@ -122,7 +124,8 @@ export const PRODUCTS: Product[] = [
       { label: "Moisture", value: "≤14%" },
       { label: "Grade", value: "Tipo 00" },
     ],
-    image: "https://picsum.photos/seed/fikir-tipo00-pizza/1200/900",
+    image:
+      "https://images.unsplash.com/photo-1537734796389-e1fc293cf856?q=80&w=1200&auto=format&fit=crop",
   },
   {
     slug: "semolina",
@@ -136,7 +139,8 @@ export const PRODUCTS: Product[] = [
       { label: "Moisture", value: "≤14.5%" },
       { label: "Color", value: "Golden" },
     ],
-    image: "https://picsum.photos/seed/fikir-semolina-pasta/1200/900",
+    image:
+      "https://images.unsplash.com/photo-1606091484089-089fa86fad4f?q=80&w=1200&auto=format&fit=crop",
   },
   {
     slug: "fortified",
@@ -150,7 +154,8 @@ export const PRODUCTS: Product[] = [
       { label: "Iron", value: "60 ppm" },
       { label: "Standard", value: "WHO/FAO" },
     ],
-    image: "https://picsum.photos/seed/fikir-fortified-bread/1200/900",
+    image:
+      "https://images.unsplash.com/photo-1586765501019-cbe3973ef8fa?q=80&w=1200&auto=format&fit=crop",
   },
   {
     slug: "custom",
@@ -164,7 +169,8 @@ export const PRODUCTS: Product[] = [
       { label: "Lead time", value: "3-6 wks" },
       { label: "NDA", value: "Available" },
     ],
-    image: "https://picsum.photos/seed/fikir-custom-lab/1200/900",
+    image:
+      "https://images.unsplash.com/photo-1717414245286-51496cc79325?q=80&w=1200&auto=format&fit=crop",
   },
 ];
 
@@ -205,14 +211,15 @@ export const NEWS = [
     excerpt:
       "Phase III adds 600 MT of daily milling capacity, bringing total output to 2,400 metric tons and creating 120 new jobs in Adama.",
     image:
-      "https://plus.unsplash.com/premium_photo-1682144551791-e400fcae2a2a?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1627052428109-576e839d100a?q=80&w=1600&auto=format&fit=crop",
   },
   {
     date: "November 3, 2024",
     title: "ISO 22000:2018 recertification achieved across all facilities",
     excerpt:
       "Following a comprehensive third-party audit, every production facility is recertified to the latest international food safety standard.",
-    image: "https://picsum.photos/seed/fikir-audit-lab/1200/800",
+    image:
+      "https://images.unsplash.com/photo-1684259498900-afdea87b1a97?q=80&w=1200&auto=format&fit=crop",
   },
   {
     date: "October 18, 2024",
@@ -220,7 +227,7 @@ export const NEWS = [
     excerpt:
       "Responding to growing demand, our heritage grain flour range now includes spelt, einkorn, and emmer varieties.",
     image:
-      "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=1200&q=80",
+      "https://images.unsplash.com/photo-1564493031643-4be2c4347a17?q=80&w=1200&auto=format&fit=crop",
   },
 ];
 
@@ -305,7 +312,8 @@ export const PROCESS = [
       "Mycotoxin screening to EC regulation standards",
       "Segregated silo storage by variety and grade",
     ],
-    image: "https://picsum.photos/seed/fikir-grain-intake/1400/1000",
+    image:
+      "https://images.unsplash.com/photo-1556114846-f753bec8a9f5?q=80&w=1600&auto=format&fit=crop",
   },
   {
     step: "Cleaning",
@@ -317,7 +325,8 @@ export const PROCESS = [
       "Optical sorting of discolored kernels",
       "Aspiration channels for dust and chaff",
     ],
-    image: "https://picsum.photos/seed/fikir-grain-cleaning/1400/1000",
+    image:
+      "https://images.unsplash.com/photo-1652950741256-bb58335f468f?q=80&w=1600&auto=format&fit=crop",
   },
   {
     step: "Conditioning",
@@ -329,7 +338,8 @@ export const PROCESS = [
       "Even bran separation during milling",
       "Closed-loop water recovery systems",
     ],
-    image: "https://picsum.photos/seed/fikir-conditioning/1400/1000",
+    image:
+      "https://images.unsplash.com/photo-1594020665090-970393850719?q=80&w=1600&auto=format&fit=crop",
   },
   {
     step: "Milling",
@@ -342,7 +352,7 @@ export const PROCESS = [
       "Real-time process control monitoring",
     ],
     image:
-      "https://images.unsplash.com/photo-1595976281013-8024ecc02575?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1632959788203-904c5a3c1e6b?q=80&w=1600&auto=format&fit=crop",
   },
   {
     step: "Quality & pack",
@@ -355,7 +365,7 @@ export const PROCESS = [
       "Quarantine hold until laboratory release",
     ],
     image:
-      "https://plus.unsplash.com/premium_photo-1661920615655-cf7c362a5109?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1627485937980-221c88ac04f9?q=80&w=1600&auto=format&fit=crop",
   },
 ];
 
@@ -383,20 +393,21 @@ export const FAQS = [
 ];
 
 export const IMAGES = {
+  // Hero left unchanged by request.
   heroWheat:
     "https://images.unsplash.com/photo-1592348665283-ab41f858f1b7?q=80&w=2070&auto=format&fit=crop",
   millInterior:
-    "https://images.unsplash.com/photo-1627735483792-233bf632619b?q=80&w=2085&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1667328925477-1cc446534413?q=80&w=1600&auto=format&fit=crop",
   factoryAbout:
-    "https://plus.unsplash.com/premium_photo-1661962572622-65ff129673f4?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1632959788203-904c5a3c1e6b?q=80&w=1600&auto=format&fit=crop",
   flourPour:
-    "https://plus.unsplash.com/premium_photo-1661920615655-cf7c362a5109?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1549590143-d5855148a9d5?q=80&w=1600&auto=format&fit=crop",
   wheatAerial:
-    "https://plus.unsplash.com/premium_photo-1682144551791-e400fcae2a2a?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1529511582893-2d7e684dd128?q=80&w=1600&auto=format&fit=crop",
   milling:
-    "https://images.unsplash.com/photo-1595976281013-8024ecc02575?q=80&w=2532&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1652950741256-bb58335f468f?q=80&w=1600&auto=format&fit=crop",
   wheatHarvest:
-    "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=1800&q=80",
+    "https://images.unsplash.com/photo-1635174815612-fd9636f70146?q=80&w=1600&auto=format&fit=crop",
   breadOven:
-    "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=1600&q=80",
+    "https://images.unsplash.com/photo-1567042661848-7161ce446f85?q=80&w=1600&auto=format&fit=crop",
 };

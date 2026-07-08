@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ChatCircleDots, X, PaperPlaneRight, CircleNotch } from "@phosphor-icons/react";
 import { answer, isLeadIntent } from "../lib/chatBrain";
-import { submitLead } from "../lib/web3forms";
+import { submitLead } from "../lib/leads";
 import { CONTACT } from "../data/site";
 
 type Msg = { id: number; from: "bot" | "user"; text: string; chips?: string[] };
