@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ChatWidget from "./components/ChatWidget";
 import ErrorBoundary from "./components/ErrorBoundary";
 import SmoothScroll from "./lib/SmoothScroll";
 import ScrollToTop from "./lib/ScrollToTop";
@@ -36,6 +37,7 @@ export default function App() {
         </ErrorBoundary>
       </main>
       <Footer />
+      <ChatWidget />
     </div>
   );
 }

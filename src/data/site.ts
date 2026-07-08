@@ -1,8 +1,6 @@
 export const CONTACT = {
-  phone: "+251 900 000 000",
-  email: "info@fikirflour.com",
-  salesEmail: "sales@fikirflour.com",
-  exportEmail: "export@fikirflour.com",
+  phone: "+251922802813",
+  email: "joealex69420@gmail.com",
   addressLines: ["Adama Kebele 03, Sodere Road", "Behind Bekelcha Transport", "Adama, Ethiopia"],
   hours: [
     { days: "Monday to Friday", time: "07:00 - 17:00" },

@@ -6,7 +6,7 @@ import PageHero from "../components/PageHero";
 import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import { usePageMeta } from "../lib/usePageMeta";
-import { PRODUCTS, PRODUCT_FILTERS, FAQS, IMAGES } from "../data/site";
+import { PRODUCTS, PRODUCT_FILTERS, FAQS, IMAGES, CONTACT } from "../data/site";
 import type { Product } from "../data/site";
 
 export default function Products() {
@@ -256,10 +256,10 @@ function FAQ() {
               <p className="mt-6 max-w-sm text-[15px] leading-relaxed">
                 The answers our sales team gives most often. For anything else, write to{" "}
                 <a
-                  href="mailto:sales@fikirflour.com"
+                  href={`mailto:${CONTACT.email}`}
                   className="text-gold-deep underline decoration-gold/40 underline-offset-4 transition-colors hover:text-ink"
                 >
-                  sales@fikirflour.com
+                  {CONTACT.email}
                 </a>
                 .
               </p>

@@ -12,6 +12,7 @@ import {
 import PageHero from "../components/PageHero";
 import Reveal from "../components/Reveal";
 import { usePageMeta } from "../lib/usePageMeta";
+import { submitLead } from "../lib/web3forms";
 import { CONTACT, IMAGES } from "../data/site";
 
 export default function Contact() {
@@ -61,15 +62,12 @@ export default function Contact() {
               </Reveal>
               <Reveal delay={0.14}>
                 <ContactRow icon={<EnvelopeSimple size={22} weight="duotone" />} label="Write">
-                  {[CONTACT.email, CONTACT.salesEmail, CONTACT.exportEmail].map((e) => (
-                    <a
-                      key={e}
-                      href={`mailto:${e}`}
-                      className="block transition-colors hover:text-gold"
-                    >
-                      {e}
-                    </a>
-                  ))}
+                  <a
+                    href={`mailto:${CONTACT.email}`}
+                    className="block transition-colors hover:text-gold"
+                  >
+                    {CONTACT.email}
+                  </a>
                 </ContactRow>
               </Reveal>
               <Reveal delay={0.18}>
@@ -157,11 +155,11 @@ const ENQUIRY_TYPES = [
 type Errors = Partial<Record<"firstName" | "lastName" | "email" | "message" | "consent", string>>;
 
 function QuoteForm() {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errors, setErrors] = useState<Errors>({});
   const reduce = useReducedMotion();
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
@@ -179,8 +177,23 @@ function QuoteForm() {
     if (Object.keys(next).length > 0) return;
 
     setStatus("sending");
-    // Prototype: no backend yet. Simulate a send so states are demonstrable.
-    window.setTimeout(() => setStatus("sent"), 1400);
+    try {
+      await submitLead({
+        subject: "New quote request from website",
+        from_name: `${data.get("firstName")} ${data.get("lastName")}`.trim(),
+        name: `${data.get("firstName")} ${data.get("lastName")}`.trim(),
+        email,
+        phone: String(data.get("phone") || ""),
+        company: String(data.get("company") || ""),
+        enquiry: String(data.get("enquiry") || ""),
+        volume: String(data.get("volume") || ""),
+        message: String(data.get("message") || ""),
+        source: "Contact page form",
+      });
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+    }
   }
 
   if (status === "sent") {
@@ -255,6 +268,13 @@ function QuoteForm() {
             "Send enquiry"
           )}
         </button>
+
+        {status === "error" && (
+          <p className="mt-4 text-sm text-[#9a2b1e]">
+            Something went wrong sending your enquiry. Please email {CONTACT.email} or call{" "}
+            {CONTACT.phone} and we'll help right away.
+          </p>
+        )}
       </form>
     </div>
   );
