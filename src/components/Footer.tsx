@@ -27,13 +27,13 @@ export default function Footer() {
             <Link to="/" className="flex items-center gap-3">
               <img
                 src="/logo-mark-cream.png"
-                alt="FIKIR FLOUR Factory logo"
+                alt="FIKIR FOOD PROCESSING logo"
                 className="h-12 w-auto"
               />
               <span className="flex flex-col leading-none">
                 <span className="font-display text-2xl font-bold text-cream">Fikir</span>
                 <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.28em] text-cream/60">
-                  Flour Factory
+                  Food Processing
                 </span>
               </span>
             </Link>
@@ -110,7 +110,7 @@ export default function Footer() {
 
         <div className="mt-16 flex flex-col items-center justify-between gap-6 border-t border-cream/10 pt-8 md:flex-row">
           <p className="text-center text-[13px] text-cream/50">
-            © {new Date().getFullYear()} FIKIR FLOUR Factory. All rights reserved.
+            © {new Date().getFullYear()} FIKIR FOOD PROCESSING. All rights reserved.
           </p>
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-cream/40">
             From grain to greatness

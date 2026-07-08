@@ -15,7 +15,7 @@ const VALUE_ICONS = {
 
 export default function About() {
   usePageMeta(
-    "About Us | FIKIR FLOUR Factory",
+    "About Us | FIKIR FOOD PROCESSING",
     "Six decades of milling excellence in Adama, Ethiopia. Our story, values, leadership, and certifications."
   );
 
@@ -48,7 +48,7 @@ export default function About() {
                 every shift.
               </p>
               <p className="mt-5 max-w-[62ch] text-base leading-relaxed">
-                Today FIKIR FLOUR mills 2,400 metric tons a day for 850+ clients in 38
+                Today FIKIR FOOD PROCESSING mills 2,400 metric tons a day for 850+ clients in 38
                 countries, from village bakeries to industrial food manufacturers. The scale
                 has changed. The standard has not: every batch is tested, every shipment is
                 certified, and every client is treated as a partner.

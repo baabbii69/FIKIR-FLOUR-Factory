@@ -182,13 +182,13 @@ export const PRODUCT_FILTERS = [
 export const TESTIMONIALS = [
   {
     quote:
-      "FIKIR FLOUR has been our primary supplier for eleven years. The consistency of their product is unmatched, and our bakers rely on it absolutely.",
+      "FIKIR FOOD PROCESSING has been our primary supplier for eleven years. The consistency of their product is unmatched, and our bakers rely on it absolutely.",
     name: "Ermias Tilahun",
     role: "Head of Procurement, Shoa Bakeries Group",
   },
   {
     quote:
-      "When we scaled to 40 tons per day, FIKIR FLOUR was the only supplier who could guarantee both quality and delivery timelines.",
+      "When we scaled to 40 tons per day, FIKIR FOOD PROCESSING was the only supplier who could guarantee both quality and delivery timelines.",
     name: "Sara Mekonnen",
     role: "Operations Director, Adisu Foods",
   },
@@ -203,7 +203,7 @@ export const TESTIMONIALS = [
 export const NEWS = [
   {
     date: "December 10, 2024",
-    title: "FIKIR FLOUR completes $42M capacity expansion project",
+    title: "FIKIR FOOD PROCESSING completes $42M capacity expansion project",
     excerpt:
       "Phase III adds 600 MT of daily milling capacity, bringing total output to 2,400 metric tons and creating 120 new jobs in Adama.",
     image:

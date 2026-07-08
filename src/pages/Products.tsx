@@ -11,7 +11,7 @@ import type { Product } from "../data/site";
 
 export default function Products() {
   usePageMeta(
-    "Products | FIKIR FLOUR Factory",
+    "Products | FIKIR FOOD PROCESSING",
     "Nine flour lines from all-purpose to custom R&D blends: specs, packaging formats, and answers to common questions."
   );
 

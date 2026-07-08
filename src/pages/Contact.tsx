@@ -16,7 +16,7 @@ import { CONTACT, IMAGES } from "../data/site";
 
 export default function Contact() {
   usePageMeta(
-    "Contact | FIKIR FLOUR Factory",
+    "Contact | FIKIR FOOD PROCESSING",
     "Request a quote, book a factory visit, or reach our sales and export teams in Adama, Ethiopia."
   );
 
@@ -106,10 +106,10 @@ export default function Contact() {
       </section>
 
       {/* Map */}
-      <section aria-label="Map to the FIKIR FLOUR factory" className="bg-cream">
+      <section aria-label="Map to the FIKIR FOOD PROCESSING factory" className="bg-cream">
         <div className="relative h-[420px] w-full">
           <iframe
-            title="FIKIR FLOUR Factory location in Adama, Ethiopia"
+            title="FIKIR FOOD PROCESSING location in Adama, Ethiopia"
             src="https://www.openstreetmap.org/export/embed.html?bbox=39.2189%2C8.4914%2C39.3189%2C8.5914&layer=mapnik&marker=8.5414%2C39.2689"
             className="h-full w-full border-0 grayscale-[35%]"
             loading="lazy"
@@ -236,7 +236,7 @@ function QuoteForm() {
             className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-[#8b5e2a]"
           />
           <span className="text-sm leading-relaxed text-clay/90">
-            I agree that FIKIR FLOUR may contact me about this enquiry.
+            I agree that FIKIR FOOD PROCESSING may contact me about this enquiry.
           </span>
         </label>
         {errors.consent && <p className="mt-2 text-sm text-[#9a2b1e]">{errors.consent}</p>}

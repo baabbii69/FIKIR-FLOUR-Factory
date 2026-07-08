@@ -111,7 +111,7 @@ function MarqueeBand() {
 
   return (
     <section
-      aria-label="FIKIR FLOUR at a glance"
+      aria-label="FIKIR FOOD PROCESSING at a glance"
       className="overflow-hidden border-t border-cream/10 bg-ink py-7 md:py-9"
     >
       <div className="flex w-max">
@@ -360,7 +360,7 @@ function Trust() {
 
 export default function Home() {
   usePageMeta(
-    "FIKIR FLOUR Factory | Premium Flour Manufacturing, Ethiopia",
+    "FIKIR FOOD PROCESSING | Premium Flour Manufacturing, Ethiopia",
     "2,400 metric tons of premium flour milled daily in Adama, Ethiopia. ISO 22000 certified, exporting to 38 countries since 1962.",
   );
 
@@ -376,7 +376,7 @@ export default function Home() {
         image={IMAGES.flourPour}
         alt="Flour pouring through milling machinery"
         title="Ready to partner with"
-        titleAccent="FIKIR FLOUR?"
+        titleAccent="FIKIR FOOD PROCESSING?"
         text="Whether you need 5 tons or 500 tons per month, our team will build a reliable, cost-effective supply agreement with you."
         primary="Request a quote"
         primaryTo="/contact"

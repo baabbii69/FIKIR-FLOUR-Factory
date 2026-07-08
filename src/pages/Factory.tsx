@@ -9,7 +9,7 @@ import { PROCESS, IMAGES } from "../data/site";
 
 export default function Factory() {
   usePageMeta(
-    "Our Factory | FIKIR FLOUR Factory",
+    "Our Factory | FIKIR FOOD PROCESSING",
     "Inside the Adama facility: 48 acres, six milling lines, a 14-stage process, and a sustainability roadmap to 2030."
   );
 
@@ -17,7 +17,7 @@ export default function Factory() {
     <>
       <PageHero
         image={IMAGES.millInterior}
-        alt="Interior of the FIKIR FLOUR roller milling hall"
+        alt="Interior of the FIKIR FOOD PROCESSING roller milling hall"
         crumb="Our Factory"
         title="Where wheat becomes"
         titleAccent="certainty."

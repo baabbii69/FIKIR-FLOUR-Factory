@@ -9,7 +9,7 @@ function Wordmark({ solid }: { solid: boolean }) {
   // solid = over a light (cream) header -> full-colour mark + ink text.
   // !solid = over the dark hero (or dark mobile menu) -> cream line-art mark + cream text.
   return (
-    <Link to="/" className="flex items-center gap-3" aria-label="FIKIR FLOUR Factory home">
+    <Link to="/" className="flex items-center gap-3" aria-label="FIKIR FOOD PROCESSING home">
       <img
         src={solid ? "/logo-mark.png" : "/logo-mark-cream.png"}
         alt=""
@@ -24,7 +24,7 @@ function Wordmark({ solid }: { solid: boolean }) {
         <span
           className={`mt-1 font-mono text-[9px] uppercase tracking-[0.28em] transition-colors duration-300 ${solid ? "text-clay/80" : "text-cream/70"}`}
         >
-          Flour Factory
+          Food Processing
         </span>
       </span>
     </Link>

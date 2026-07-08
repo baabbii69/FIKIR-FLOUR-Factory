@@ -2,7 +2,7 @@ import Btn from "../components/Btn";
 import { usePageMeta } from "../lib/usePageMeta";
 
 export default function NotFound() {
-  usePageMeta("Page not found | FIKIR FLOUR Factory");
+  usePageMeta("Page not found | FIKIR FOOD PROCESSING");
 
   return (
     <section className="flex min-h-[100dvh] items-center bg-ink">
