@@ -72,7 +72,7 @@ export default function Header() {
         <div className="mx-auto flex h-[72px] max-w-[1400px] items-center justify-between px-5 md:px-10">
           <Wordmark solid={solid} />
 
-          <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
+          <nav className="hidden items-center gap-6 lg:flex xl:gap-8" aria-label="Primary">
             {NAV.map((item) => (
               <NavLink
                 key={item.to}

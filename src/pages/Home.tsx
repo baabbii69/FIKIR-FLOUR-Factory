@@ -1,30 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useReducedMotion,
-} from "motion/react";
+import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, SealCheck } from "@phosphor-icons/react";
 import { usePageMeta } from "../lib/usePageMeta";
-import { STATS, PRODUCTS, CERTIFICATIONS, IMAGES } from "../data/site";
+import { STATS, CATEGORIES, CERTIFICATE, PRODUCTS, IMAGES, COMPANY } from "../data/site";
 import Btn from "../components/Btn";
 import Reveal from "../components/Reveal";
 import Stat from "../components/Stat";
 import FlourDust from "../components/FlourDust";
-import ProcessPan from "../components/ProcessPan";
 import TestimonialRotator from "../components/TestimonialRotator";
 import CTABanner from "../components/CTABanner";
 
 gsap.registerPlugin(ScrollTrigger);
-
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-/* ---------------- Hero (unchanged) ---------------- */
-
+/* ---------------- Hero ---------------- */
 function Hero() {
   const reduce = useReducedMotion();
   const item = (delay: number) => ({
@@ -32,38 +24,31 @@ function Hero() {
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.9, delay, ease: EASE },
   });
-
   return (
     <section className="relative flex min-h-[100dvh] items-center overflow-hidden bg-ink">
       <div className="absolute inset-0">
         <img
-          src={IMAGES.heroWheat}
-          alt="Golden wheat field at harvest near Adama"
+          src={IMAGES.hero}
+          alt="The Fikir Food Processing plant, fleet, and products at sunset"
           className="kenburns h-full w-full object-cover"
           fetchPriority="high"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/45 to-ink/15" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/60 to-ink/25" />
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-ink to-transparent" />
       </div>
       <FlourDust />
-
       <div className="relative mx-auto w-full max-w-[1400px] px-5 pt-24 md:px-10">
         <motion.span className="eyebrow" {...item(0.1)}>
-          Adama, Ethiopia · Since 1962
+          Adama, Ethiopia · {COMPANY.name}
         </motion.span>
-        <motion.h1
-          className="display-1 mt-6 max-w-3xl text-6xl !text-cream sm:text-7xl lg:text-8xl"
-          {...item(0.22)}
-        >
-          From grain to{" "}
-          <em className="inline-block pb-2 leading-[1.1] text-gold">greatness.</em>
+        <motion.h1 className="display-1 mt-6 max-w-4xl text-5xl !text-cream sm:text-6xl lg:text-8xl" {...item(0.22)}>
+          We produce quality,
+          <br />
+          we deliver <em className="inline-block pb-2 leading-[1.1] text-gold">trust.</em>
         </motion.h1>
-        <motion.p
-          className="mt-7 max-w-xl text-lg leading-relaxed text-cream/80"
-          {...item(0.36)}
-        >
-          2,400 metric tons of premium flour milled daily in Adama, supplying bakeries and
-          manufacturers across 38 countries.
+        <motion.p className="mt-7 max-w-xl text-lg leading-relaxed text-cream/85" {...item(0.36)}>
+          For over 15 years we've made fortified flour, Unic biscuits, wafers, and chips in Adama,
+          delivered fresh across Ethiopia by our own fleet.
         </motion.p>
         <motion.div className="mt-10 flex flex-col gap-4 sm:flex-row" {...item(0.48)}>
           <Btn to="/products" arrow>
@@ -78,28 +63,20 @@ function Hero() {
   );
 }
 
-/* ---------------- Marquee band ---------------- */
-
+/* ---------------- Text marquee ---------------- */
 const MARQUEE = [
-  "Est. 1962",
+  "Since 2004 E.C.",
   "Adama, Ethiopia",
-  "2,400 MT milled daily",
-  "ISO 22000 certified",
-  "38 export markets",
-  "From grain to greatness",
+  "Fortified up to Vitamin B12",
+  "600+ team members",
+  "Delivered nationwide",
+  "We produce quality, we deliver trust",
 ];
-
 function MarqueeBand() {
-  const strip = (hidden: boolean) => (
-    <ul
-      aria-hidden={hidden || undefined}
-      className="animate-marquee flex shrink-0 items-center"
-    >
+  const strip = (h: boolean) => (
+    <ul aria-hidden={h || undefined} className="animate-marquee flex shrink-0 items-center">
       {MARQUEE.map((m) => (
-        <li
-          key={m}
-          className="flex shrink-0 items-center whitespace-nowrap font-display text-3xl font-medium text-cream/85 md:text-4xl"
-        >
+        <li key={m} className="flex shrink-0 items-center whitespace-nowrap font-display text-3xl font-medium text-cream/85 md:text-4xl">
           <span className="px-8 md:px-12">{m}</span>
           <span className="text-2xl text-gold" aria-hidden>
             &middot;
@@ -108,12 +85,8 @@ function MarqueeBand() {
       ))}
     </ul>
   );
-
   return (
-    <section
-      aria-label="FIKIR FOOD PROCESSING at a glance"
-      className="overflow-hidden border-t border-cream/10 bg-ink py-7 md:py-9"
-    >
+    <section aria-label="Fikir at a glance" className="overflow-hidden border-y border-cream/10 bg-ink py-7 md:py-9">
       <div className="flex w-max">
         {strip(false)}
         {strip(true)}
@@ -122,72 +95,56 @@ function MarqueeBand() {
   );
 }
 
-/* ---------------- Manifesto: scroll-scrubbed word reveal ---------------- */
-
-const MANIFESTO: { t: string; gold?: boolean }[] =
-  `Flour looks simple. It is not. Four numbers decide whether a bakery's morning succeeds: protein, moisture, ash, granulation. For six decades we have measured, milled, and |perfected| those numbers, so 850 clients in 38 countries never have to think about them.`
+/* ---------------- Who we are (scroll-scrubbed reveal) ---------------- */
+const WORDS =
+  "A legally registered Ethiopian food manufacturer in Adama, making the highest-quality wheat flour, more than twelve kinds of biscuits, cream wafers, and potato chips, for |families across the country.|"
     .split(" ")
-    .map((w) =>
-      w.startsWith("|") && w.endsWith("|")
-        ? { t: w.slice(1, -1), gold: true }
-        : { t: w },
-    );
+    .map((w) => (w.startsWith("|") && w.endsWith("|") ? { t: w.slice(1, -1), gold: true } : { t: w }));
 
-function Manifesto() {
+function WhoWeAre() {
   const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-      const words = el.querySelectorAll<HTMLElement>("[data-w]");
       gsap.fromTo(
-        words,
+        el.querySelectorAll("[data-w]"),
         { opacity: 0.14 },
         {
           opacity: 1,
-          stagger: 0.04,
+          stagger: 0.05,
           ease: "none",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 78%",
-            end: "bottom 58%",
-            scrub: 0.8,
-          },
-        },
+          scrollTrigger: { trigger: el, start: "top 80%", end: "bottom 60%", scrub: 0.8 },
+        }
       );
     });
     return () => mm.revert();
   }, []);
-
   return (
     <section className="bg-cream">
       <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-36">
-        <div ref={ref}>
-          <p className="display-2 max-w-5xl text-3xl leading-[1.2] md:text-5xl md:leading-[1.18]">
-            {MANIFESTO.map((w, i) => (
+        <Reveal>
+          <span className="eyebrow">Who we are</span>
+        </Reveal>
+        <div ref={ref} className="mt-8">
+          <p className="display-2 max-w-5xl text-3xl leading-[1.22] md:text-5xl md:leading-[1.2]">
+            {WORDS.map((w, i) => (
               <span key={i} data-w className={w.gold ? "italic text-gold-deep" : undefined}>
                 {w.t}{" "}
               </span>
             ))}
           </p>
         </div>
-
         <Reveal delay={0.1}>
           <Link
             to="/about"
             className="group mt-10 inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-gold-deep transition-colors duration-300 hover:text-ink"
           >
             Our story
-            <ArrowRight
-              size={13}
-              weight="bold"
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            />
+            <ArrowRight size={13} weight="bold" className="transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </Reveal>
-
         <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-linen pt-12 md:mt-20 lg:grid-cols-4">
           {STATS.map((s, i) => (
             <Reveal key={s.label} delay={i * 0.07}>
@@ -200,108 +157,98 @@ function Manifesto() {
   );
 }
 
-/* ---------------- The flour index: hover-preview product list ---------------- */
+/* ---------------- Product pack marquee ---------------- */
+const PACKS = [
+  "b-high-energy",
+  "w-chocolate",
+  "b-cappuccino",
+  "w-vanilla",
+  "b-apple-vanilla",
+  "w-orange",
+  "b-banana",
+  "b-glucose",
+  "b-vanilla-sandwich",
+];
+function PackMarquee() {
+  const strip = (h: boolean) => (
+    <ul aria-hidden={h || undefined} className="flex shrink-0 items-center gap-10 pr-10 md:gap-16 md:pr-16" style={{ animation: "marquee 40s linear infinite" }}>
+      {PACKS.map((p) => (
+        <li key={p} className="shrink-0">
+          <img src={`/media/products/${p}.png`} alt="" className="h-28 w-auto object-contain md:h-36" loading="lazy" />
+        </li>
+      ))}
+    </ul>
+  );
+  return (
+    <section aria-hidden className="overflow-hidden bg-parchment py-10 md:py-14">
+      <div className="flex w-max">
+        {strip(false)}
+        {strip(true)}
+      </div>
+    </section>
+  );
+}
 
-const INDEX_SLUGS = ["all-purpose", "bread", "tipo-00", "whole-wheat", "semolina", "custom"];
-
-function FlourIndex() {
-  const items = INDEX_SLUGS.map((s) => PRODUCTS.find((p) => p.slug === s)!);
+/* ---------------- Interactive range (hover-preview) ---------------- */
+const FEATURED = ["high-energy", "wafer-chocolate", "chips-tomato", "special", "cappuccino", "wafer-orange"];
+function RangeIndex() {
+  const items = FEATURED.map((s) => PRODUCTS.find((p) => p.slug === s)!).filter(Boolean);
   const [active, setActive] = useState<number | null>(null);
   const reduce = useReducedMotion();
-  const wrapRef = useRef<HTMLDivElement>(null);
-
+  const wrap = useRef<HTMLDivElement>(null);
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 200, damping: 26, mass: 0.7 });
-  const sy = useSpring(my, { stiffness: 200, damping: 26, mass: 0.7 });
-
+  const sx = useSpring(mx, { stiffness: 220, damping: 26, mass: 0.6 });
+  const sy = useSpring(my, { stiffness: 220, damping: 26, mass: 0.6 });
   const onMove = (e: React.MouseEvent) => {
-    const rect = wrapRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    mx.set(e.clientX - rect.left + 36);
-    my.set(e.clientY - rect.top - 120);
+    const r = wrap.current?.getBoundingClientRect();
+    if (!r) return;
+    mx.set(e.clientX - r.left + 28);
+    my.set(e.clientY - r.top - 120);
   };
-
   return (
     <section className="bg-parchment">
       <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <Reveal>
-            <span className="eyebrow">The flour index</span>
-            <h2 className="display-2 mt-5 max-w-xl text-4xl md:text-5xl">
-              Nine flours, milled to a{" "}
-              <em className="pb-1 leading-[1.1] text-gold-deep">number.</em>
+            <span className="eyebrow">What we make</span>
+            <h2 className="display-2 mt-5 max-w-xl text-4xl md:text-6xl">
+              Four ranges, one <em className="pb-1 leading-[1.1] text-gold-deep">standard.</em>
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
-            <Link
-              to="/products"
-              className="group inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-gold-deep transition-colors duration-300 hover:text-ink"
-            >
-              See the full range
-              <ArrowRight
-                size={13}
-                weight="bold"
-                className="transition-transform duration-300 group-hover:translate-x-1"
-              />
-            </Link>
+            <Btn to="/products" variant="outline-ink" arrow>
+              All products
+            </Btn>
           </Reveal>
         </div>
-
-        <div
-          ref={wrapRef}
-          onMouseMove={reduce ? undefined : onMove}
-          className="relative mt-14 border-b border-linen"
-        >
+        <div ref={wrap} onMouseMove={reduce ? undefined : onMove} className="relative mt-14 border-b border-linen">
           {items.map((p, i) => (
             <Reveal key={p.slug} delay={0.04 * Math.min(i, 4)}>
               <Link
-                to={p.slug === "custom" ? "/products?cat=custom" : "/products"}
+                to={`/products?cat=${p.category}`}
                 onMouseEnter={() => setActive(i)}
                 onMouseLeave={() => setActive(null)}
                 className="group flex items-center gap-5 border-t border-linen py-6 md:gap-8 md:py-8"
               >
-                <span className="w-7 shrink-0 font-mono text-[11px] tabular-nums text-clay/60">
-                  0{i + 1}
-                </span>
-                <img
-                  src={p.image}
-                  alt=""
-                  loading="lazy"
-                  className="h-14 w-20 shrink-0 object-cover lg:hidden"
-                />
+                <span className="w-7 shrink-0 font-mono text-[11px] tabular-nums text-clay/60">0{i + 1}</span>
+                <img src={p.image} alt="" loading="lazy" className="h-14 w-20 shrink-0 object-contain lg:hidden" />
                 <h3 className="font-display text-2xl font-semibold leading-tight text-ink transition-[transform,color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2 group-hover:text-gold-deep md:text-4xl">
                   {p.name}
                 </h3>
                 <span className="ml-auto hidden shrink-0 font-mono text-[10px] uppercase tracking-[0.18em] text-clay/70 md:block">
-                  {p.categoryLabel}
+                  {p.meta}
                 </span>
-                <span className="hidden w-40 shrink-0 text-right font-mono text-sm tabular-nums text-clay/85 lg:block">
-                  {p.specs[0].label} {p.specs[0].value}
-                </span>
-                <ArrowRight
-                  size={18}
-                  weight="bold"
-                  className="shrink-0 -translate-x-2 text-gold opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
-                />
+                <ArrowRight size={18} weight="bold" className="shrink-0 -translate-x-2 text-gold opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
               </Link>
             </Reveal>
           ))}
-
-          {/* Floating cursor preview, desktop pointer only */}
           {!reduce && (
-            <motion.div
-              aria-hidden
-              style={{ x: sx, y: sy }}
-              className="pointer-events-none absolute left-0 top-0 z-10 hidden lg:block"
-            >
+            <motion.div style={{ x: sx, y: sy }} aria-hidden className="pointer-events-none absolute left-0 top-0 z-10 hidden lg:block">
               <motion.div
-                animate={{
-                  opacity: active !== null ? 1 : 0,
-                  scale: active !== null ? 1 : 0.92,
-                }}
+                animate={{ opacity: active !== null ? 1 : 0, scale: active !== null ? 1 : 0.9 }}
                 transition={{ duration: 0.3, ease: EASE }}
-                className="relative h-[230px] w-[320px] overflow-hidden shadow-2xl shadow-ink/30"
+                className="flex h-[240px] w-[320px] items-center justify-center overflow-hidden bg-white shadow-2xl shadow-ink/30"
               >
                 {items.map((p, i) => (
                   <img
@@ -309,46 +256,82 @@ function FlourIndex() {
                     src={p.image}
                     alt=""
                     loading="lazy"
-                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
-                      active === i ? "opacity-100" : "opacity-0"
-                    }`}
+                    className={`absolute inset-0 m-auto max-h-[85%] max-w-[85%] object-contain transition-opacity duration-300 ${active === i ? "opacity-100" : "opacity-0"}`}
                   />
                 ))}
               </motion.div>
             </motion.div>
           )}
         </div>
+
+        {/* Category cards */}
+        <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {CATEGORIES.map((c, i) => (
+            <Reveal key={c.id} delay={0.05 * i} className="h-full">
+              <Link to={`/products?cat=${c.id}`} className="group relative block h-full min-h-[240px] overflow-hidden bg-ink">
+                <img
+                  src={CAT_IMAGES[c.id]}
+                  alt={c.label}
+                  loading="lazy"
+                  className={`absolute inset-0 h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 ${c.id === "wafers" ? "bg-white object-contain p-6" : "object-cover"}`}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-5">
+                  <h3 className="font-display text-xl font-semibold text-cream">{c.label}</h3>
+                  <p className="mt-1 text-sm text-cream/70">{c.note}</p>
+                </div>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
+const CAT_IMAGES: Record<string, string> = {
+  flour: "/media/flour-special.jpg",
+  biscuits: IMAGES.stillMilk,
+  wafers: "/media/products/w-vanilla.png",
+  chips: IMAGES.chipsTomato,
+};
 
-/* ---------------- Trust: rotating quote + certifications ---------------- */
-
-function Trust() {
+/* ---------------- Quality ---------------- */
+function Quality() {
   return (
-    <section className="bg-cream">
-      <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
+    <section className="bg-ink">
+      <div className="mx-auto grid max-w-[1400px] items-center gap-14 px-5 py-24 md:px-10 md:py-32 lg:grid-cols-2 lg:gap-20">
         <Reveal>
-          <h2 className="font-mono text-[11px] uppercase tracking-[0.22em] text-gold-deep">
-            Trusted across the industry
+          <span className="eyebrow">Certified quality</span>
+          <h2 className="display-2 mt-5 text-4xl !text-cream md:text-6xl">
+            Fortified, tested, <em className="pb-1 leading-[1.1] text-gold">certified.</em>
           </h2>
+          <p className="mt-6 max-w-lg text-base leading-relaxed text-cream/70">
+            Our wheat flour is fortified up to Vitamin B12 and carries the Institute of Ethiopian
+            Standards mark. Every batch is tested in our own laboratory before it leaves the factory.
+          </p>
+          <div className="mt-9">
+            <Btn to="/facility" variant="outline-cream" arrow>
+              Our quality process
+            </Btn>
+          </div>
         </Reveal>
-        <div className="mt-10">
-          <TestimonialRotator />
-        </div>
-
-        <Reveal delay={0.1}>
-          <div className="mt-16 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-linen pt-10 md:mt-20">
-            {CERTIFICATIONS.map((c) => (
-              <span
-                key={c.name}
-                className="inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-clay/80"
-              >
-                <SealCheck size={18} weight="duotone" className="text-gold-deep" />
-                {c.name}
-              </span>
-            ))}
+        <Reveal delay={0.12}>
+          <div className="border border-gold/30 bg-ink-soft/40 p-8 md:p-10">
+            <SealCheck size={40} weight="duotone" className="text-gold" />
+            <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50">{CERTIFICATE.authority}</p>
+            <h3 className="mt-2 font-display text-3xl font-semibold text-cream">{CERTIFICATE.title}</h3>
+            <dl className="mt-6 space-y-3 border-t border-cream/10 pt-6 text-sm">
+              {[
+                ["Product", CERTIFICATE.product],
+                ["Standard", CERTIFICATE.standard],
+                ["License", CERTIFICATE.license],
+              ].map(([k, v]) => (
+                <div key={k} className="flex justify-between gap-6">
+                  <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-cream/50">{k}</dt>
+                  <dd className="text-right font-mono text-cream/85">{v}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </Reveal>
       </div>
@@ -356,32 +339,89 @@ function Trust() {
   );
 }
 
-/* ---------------- Page ---------------- */
+/* ---------------- Testimonials ---------------- */
+function Trusted() {
+  return (
+    <section className="bg-cream">
+      <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
+        <Reveal>
+          <span className="eyebrow">Trusted across Ethiopia</span>
+        </Reveal>
+        <div className="mt-10 grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-7">
+            <TestimonialRotator />
+          </div>
+          <div className="lg:col-span-5">
+            <Reveal delay={0.1}>
+              <img
+                src={IMAGES.lifeChipsGirl}
+                alt="A customer enjoying Unic chips"
+                loading="lazy"
+                className="aspect-[4/5] w-full object-cover"
+              />
+            </Reveal>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Lifestyle ---------------- */
+function Lifestyle() {
+  const imgs = [IMAGES.lifeBiscuit, IMAGES.stillTea, IMAGES.silos, IMAGES.lifeMarket, IMAGES.building];
+  return (
+    <section className="bg-parchment">
+      <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
+        <Reveal>
+          <h2 className="display-2 max-w-2xl text-4xl md:text-6xl">
+            From our factory to <em className="pb-1 leading-[1.1] text-gold-deep">your table.</em>
+          </h2>
+        </Reveal>
+        <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">
+          {imgs.map((src, i) => (
+            <Reveal key={src} delay={0.05 * i} className={i === 0 ? "col-span-2 row-span-2" : ""}>
+              <div className="h-full overflow-hidden">
+                <img
+                  src={src}
+                  alt="Fikir Food Processing"
+                  loading="lazy"
+                  className={`w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 ${i === 0 ? "aspect-square md:h-full" : "aspect-square"}`}
+                />
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function Home() {
   usePageMeta(
-    "FIKIR FOOD PROCESSING | Premium Flour Manufacturing, Ethiopia",
-    "2,400 metric tons of premium flour milled daily in Adama, Ethiopia. ISO 22000 certified, exporting to 38 countries since 1962.",
+    "FIKIR FOOD PROCESSING | Flour, Biscuits, Wafers & Chips, Ethiopia",
+    "Fikir Food Processing makes fortified flour, Unic biscuits, wafers, and chips in Adama, Ethiopia. Over 15 years, 600+ employees, delivered nationwide."
   );
-
   return (
     <>
       <Hero />
       <MarqueeBand />
-      <Manifesto />
-      <FlourIndex />
-      <ProcessPan />
-      <Trust />
+      <WhoWeAre />
+      <PackMarquee />
+      <RangeIndex />
+      <Quality />
+      <Trusted />
+      <Lifestyle />
       <CTABanner
-        image={IMAGES.flourPour}
-        alt="Flour pouring through milling machinery"
-        title="Ready to partner with"
-        titleAccent="FIKIR FOOD PROCESSING?"
-        text="Whether you need 5 tons or 500 tons per month, our team will build a reliable, cost-effective supply agreement with you."
-        primary="Request a quote"
+        image={IMAGES.fleet}
+        alt="The Fikir delivery fleet"
+        title="Stock Fikir, or"
+        titleAccent="just say hello."
+        text="Whether you're a shop, a wholesaler, or a family with a question, we'd love to hear from you."
+        primary="Get in touch"
         primaryTo="/contact"
-        secondary="Tour our factory"
-        secondaryTo="/factory"
+        secondary="See the facility"
+        secondaryTo="/facility"
       />
     </>
   );

@@ -7,11 +7,14 @@
   --color-parchment: #f7f3ec;
   --color-ink: #1c1308;
   --color-ink-soft: #2b1f10;
-  --color-gold: #e3a81c; /* primary marigold accent (pops on dark, reads on light) */
-  --color-gold-bright: #fbbc10; /* logo gold, for hover + bright-on-dark */
+  --color-gold: #e3a81c; /* logo gold accent (eyebrows, italics, highlights) */
+  --color-gold-bright: #fbbc10; /* logo gold, bright-on-dark */
   --color-gold-deep: #92671a; /* deep amber for accent text on light surfaces (AA) */
-  --color-leaf: #237a3c; /* logo leaf green, deep enough for cream text on it */
-  --color-leaf-bright: #4fa939; /* bright logo green for small accents */
+  /* Logo green — the primary brand/action color. */
+  --color-green: #2f9e3f; /* bright logo green (accents, hover, on-dark) */
+  --color-green-deep: #1a7a37; /* primary button bg, AA with cream text */
+  --color-leaf: #1f7a38; /* logo leaf green for section fills w/ cream text */
+  --color-leaf-bright: #4fb23f; /* bright logo green for small accents */
   --color-clay: #5a4a36;
   --color-linen: #e2d9cc;
 

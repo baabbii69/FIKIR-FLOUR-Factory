@@ -1,82 +1,76 @@
-import { SealCheck, Handshake, Leaf, Flask } from "@phosphor-icons/react";
+import { SealCheck, Handshake, Smiley, Flask, Leaf } from "@phosphor-icons/react";
 import PageHero from "../components/PageHero";
 import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import Btn from "../components/Btn";
 import { usePageMeta } from "../lib/usePageMeta";
-import { VALUES, TIMELINE, TEAM, CERTIFICATIONS, IMAGES } from "../data/site";
+import { VALUES, WHY_US, CERTIFICATE, IMAGES } from "../data/site";
 
-const VALUE_ICONS = {
-  seal: SealCheck,
-  handshake: Handshake,
-  leaf: Leaf,
-  flask: Flask,
-} as const;
+const VALUE_ICONS = { seal: SealCheck, handshake: Handshake, smiley: Smiley, flask: Flask, leaf: Leaf } as const;
 
 export default function About() {
   usePageMeta(
     "About Us | FIKIR FOOD PROCESSING",
-    "Six decades of milling excellence in Adama, Ethiopia. Our story, values, leadership, and certifications."
+    "Fikir Food Processing: a trusted Ethiopian food manufacturer in Adama for over 15 years, built on quality, honesty, and trust."
   );
 
   return (
     <>
       <PageHero
-        image={IMAGES.wheatAerial}
-        alt="Aerial view of golden wheat fields at harvest"
+        image={IMAGES.building}
+        alt="The Fikir Food Processing headquarters in Adama"
         crumb="About Us"
-        title="Six decades of"
-        titleAccent="devotion to grain."
+        title="Built on quality,"
+        titleAccent="run on trust."
       />
 
-      {/* Mission split */}
+      {/* Story */}
       <section className="bg-cream">
         <div className="mx-auto grid max-w-[1400px] gap-14 px-5 py-20 md:px-10 md:py-28 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-6">
             <Reveal>
               <span className="eyebrow">Who we are</span>
               <h2 className="display-2 mt-5 text-4xl md:text-5xl">
-                Fikir means love. It is also how we{" "}
-                <em className="pb-1 leading-[1.1] text-gold-deep">work.</em>
+                Fikir means love. It's how we <em className="pb-1 leading-[1.1] text-gold-deep">make food.</em>
               </h2>
             </Reveal>
             <Reveal delay={0.1}>
               <p className="mt-8 max-w-[62ch] text-base leading-relaxed">
-                In 1962, a single stone mill began turning beside the Awash River near Adama.
-                The founders had one conviction: that flour made with care behaves differently
-                in the hands of a baker. Sixty-two years later, that conviction still runs
-                every shift.
+                Fikir Food Processing was established in 2004 (Ethiopian calendar) in Adama, in the
+                Gara Lugo / Railway Station area. We are a legally registered Ethiopian manufacturer
+                producing the highest-quality wheat flour in several grades, more than twelve kinds
+                of sweet biscuits, cream wafers, and potato chips, all to national and international
+                quality standards.
               </p>
               <p className="mt-5 max-w-[62ch] text-base leading-relaxed">
-                Today FIKIR FOOD PROCESSING mills 2,400 metric tons a day for 850+ clients in 38
-                countries, from village bakeries to industrial food manufacturers. The scale
-                has changed. The standard has not: every batch is tested, every shipment is
-                certified, and every client is treated as a partner.
+                Built on honesty, quality, and innovation, we've grown into a trusted name in the
+                Ethiopian food industry, creating jobs for more than 600 people and delivering to
+                every region of the country.
               </p>
             </Reveal>
             <Reveal delay={0.16}>
               <div className="mt-10">
-                <Btn to="/factory" variant="outline-ink" arrow>
-                  Tour our factory
+                <Btn to="/facility" variant="outline-ink" arrow>
+                  See our facility
                 </Btn>
               </div>
             </Reveal>
           </div>
 
           <div className="relative lg:col-span-6">
-            <Reveal className="lg:pl-8">
+            <Reveal className="relative z-0 lg:pl-8">
               <img
-                src={IMAGES.factoryAbout}
-                alt="Modern flour milling facility interior"
+                src={IMAGES.lifeBiscuit}
+                alt="A customer enjoying a Unic biscuit"
                 loading="lazy"
                 className="aspect-[4/5] w-full object-cover"
               />
             </Reveal>
-            <Reveal delay={0.14}>
-              <div className="ml-auto -mt-16 w-fit max-w-[280px] bg-ink p-8 lg:-mt-24 lg:mr-8">
-                <div className="font-display text-6xl font-semibold text-gold">62</div>
+            <Reveal delay={0.14} className="relative z-10">
+              <div className="ml-auto -mt-16 w-fit max-w-[280px] bg-ink p-8 shadow-2xl shadow-ink/30 lg:-mt-24 lg:mr-8">
+                <div className="font-display text-6xl font-semibold text-gold">600+</div>
                 <div className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-cream/60">
-                  Years of milling on the same ground
+                  Ethiopians employed
                 </div>
               </div>
             </Reveal>
@@ -84,31 +78,45 @@ export default function About() {
         </div>
       </section>
 
+      {/* Vision & Mission */}
+      <section className="bg-ink">
+        <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-20 md:px-10 md:py-24 md:grid-cols-2">
+          <Reveal>
+            <div className="h-full border-l-2 border-gold/60 pl-8">
+              <span className="eyebrow">Vision</span>
+              <p className="mt-5 font-display text-2xl font-medium leading-snug text-cream md:text-3xl">
+                To be a leading food manufacturer in Ethiopia and Africa in quality and taste.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="h-full border-l-2 border-gold/60 pl-8">
+              <span className="eyebrow">Mission</span>
+              <p className="mt-5 font-display text-2xl font-medium leading-snug text-cream md:text-3xl">
+                To give our customers superior quality at affordable prices, using modern technology.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {/* Values */}
       <section className="bg-parchment">
         <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
           <Reveal>
-            <h2 className="display-2 max-w-2xl text-4xl md:text-5xl">
-              What we refuse to compromise
-            </h2>
+            <h2 className="display-2 max-w-2xl text-4xl md:text-5xl">The values behind every batch</h2>
           </Reveal>
-          <div className="mt-14 grid gap-x-10 gap-y-12 md:grid-cols-2">
+          <div className="mt-14 grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
             {VALUES.map((v, i) => {
               const Icon = VALUE_ICONS[v.icon as keyof typeof VALUE_ICONS];
               return (
-                <Reveal key={v.title} delay={0.06 * i}>
+                <Reveal key={v.title} delay={0.05 * i}>
                   <div className="border-t border-linen pt-8">
-                    <div className="flex items-start gap-5">
-                      <span className="flex h-12 w-12 shrink-0 items-center justify-center bg-gold/15 text-gold-deep">
-                        <Icon size={24} weight="duotone" />
-                      </span>
-                      <div>
-                        <h3 className="font-display text-2xl font-semibold text-ink">
-                          {v.title}
-                        </h3>
-                        <p className="mt-3 max-w-[52ch] text-[15px] leading-relaxed">{v.text}</p>
-                      </div>
-                    </div>
+                    <span className="flex h-12 w-12 items-center justify-center bg-gold/15 text-gold-deep">
+                      <Icon size={24} weight="duotone" />
+                    </span>
+                    <h3 className="mt-5 font-display text-2xl font-semibold text-ink">{v.title}</h3>
+                    <p className="mt-3 max-w-[46ch] text-[15px] leading-relaxed">{v.text}</p>
                   </div>
                 </Reveal>
               );
@@ -117,140 +125,82 @@ export default function About() {
         </div>
       </section>
 
-      {/* Timeline */}
-      <section id="history" className="bg-ink">
+      {/* Why us */}
+      <section className="bg-cream">
         <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
           <div className="grid gap-12 lg:grid-cols-12">
             <div className="lg:col-span-4">
-              <div className="lg:sticky lg:top-28">
-                <Reveal>
-                  <span className="eyebrow">Our history</span>
-                  <h2 className="display-2 mt-5 text-4xl !text-cream md:text-5xl">
-                    From one stone mill to{" "}
-                    <em className="pb-1 leading-[1.1] text-gold">2,400 tons a day.</em>
-                  </h2>
-                  <p className="mt-6 max-w-sm text-base leading-relaxed text-cream/65">
-                    Six milestones that shaped who we are, each one built on the last.
-                  </p>
-                </Reveal>
-              </div>
+              <Reveal>
+                <span className="eyebrow">Why choose us</span>
+                <h2 className="display-2 mt-5 text-4xl md:text-5xl">
+                  Reasons customers <em className="pb-1 leading-[1.1] text-gold-deep">stay with us.</em>
+                </h2>
+              </Reveal>
             </div>
-            <div className="lg:col-span-8 lg:col-start-5">
-              <ol className="relative border-l border-cream/15">
-                {TIMELINE.map((t, i) => (
-                  <Reveal key={t.year} delay={0.05 * Math.min(i, 3)}>
-                    <li className="relative pb-14 pl-10 last:pb-0 md:pl-14">
-                      <span className="absolute -left-[5px] top-2.5 h-[9px] w-[9px] rounded-full bg-gold" />
-                      <div className="font-display text-4xl font-semibold text-gold md:text-5xl">
-                        {t.year}
+            <div className="lg:col-span-7 lg:col-start-6">
+              <div className="grid gap-px border border-linen bg-linen sm:grid-cols-2">
+                {WHY_US.map((w, i) => (
+                  <Reveal key={w.title} delay={0.05 * i} className="h-full">
+                    <div className="flex h-full min-h-[180px] flex-col justify-between bg-cream p-7">
+                      <span className="font-display text-4xl font-semibold text-gold/50">0{i + 1}</span>
+                      <div>
+                        <h3 className="font-display text-xl font-semibold text-ink">{w.title}</h3>
+                        <p className="mt-2 text-sm leading-relaxed text-clay/90">{w.text}</p>
                       </div>
-                      <h3 className="mt-3 font-display text-2xl font-semibold text-cream">
-                        {t.title}
-                      </h3>
-                      <p className="mt-3 max-w-[58ch] text-[15px] leading-relaxed text-cream/70">
-                        {t.text}
-                      </p>
-                    </li>
+                    </div>
                   </Reveal>
                 ))}
-              </ol>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Leadership */}
-      <section id="team" className="bg-cream">
-        <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
-          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <Reveal>
-              <h2 className="display-2 max-w-xl text-4xl md:text-5xl">
-                The people behind the flour
-              </h2>
-            </Reveal>
-            <Reveal delay={0.08}>
-              <p className="max-w-sm text-[15px] leading-relaxed text-clay/90">
-                A leadership team of millers, engineers, and food scientists, most of whom
-                started on the production floor.
-              </p>
-            </Reveal>
-          </div>
-          <div className="mt-14 grid gap-px overflow-hidden border border-linen bg-linen sm:grid-cols-2 lg:grid-cols-4">
-            {TEAM.map((m, i) => (
-              <Reveal key={m.name} delay={0.05 * i} className="h-full">
-                <div className="group flex h-full min-h-[260px] flex-col justify-between bg-cream p-8 transition-colors duration-300 hover:bg-parchment">
-                  <span className="font-display text-5xl font-semibold text-gold/50 transition-colors duration-300 group-hover:text-gold">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <h3 className="font-display text-2xl font-semibold leading-tight text-ink">
-                      {m.name}
-                    </h3>
-                    <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-clay/80">
-                      {m.role}
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Certifications */}
+      {/* Certificate */}
       <section className="bg-parchment">
-        <div className="mx-auto grid max-w-[1400px] gap-14 px-5 py-20 md:px-10 md:py-28 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-5">
+        <div className="mx-auto grid max-w-[1400px] items-center gap-14 px-5 py-20 md:px-10 md:py-28 lg:grid-cols-12 lg:gap-10">
+          <div className="lg:col-span-6">
             <Reveal>
-              <span className="eyebrow">Certified quality</span>
+              <span className="eyebrow">Certified</span>
               <h2 className="display-2 mt-5 text-4xl md:text-5xl">
-                Audited. Certified.{" "}
-                <em className="pb-1 leading-[1.1] text-gold-deep">Proven.</em>
+                The National Fortified Food mark, <em className="pb-1 leading-[1.1] text-gold-deep">earned.</em>
               </h2>
-              <p className="mt-6 max-w-[52ch] text-base leading-relaxed">
-                Certificates are not decorations to us. They are third-party proof that the
-                systems behind every bag of flour hold up under scrutiny, year after year.
-              </p>
-            </Reveal>
-            <Reveal delay={0.12}>
-              <img
-                src={IMAGES.milling}
-                alt="Quality control laboratory inside the mill"
-                loading="lazy"
-                className="mt-10 aspect-[16/10] w-full object-cover"
-              />
+              <p className="mt-6 max-w-[54ch] text-base leading-relaxed">{CERTIFICATE.note}</p>
             </Reveal>
           </div>
-          <div className="lg:col-span-7 lg:col-start-6">
-            <div className="grid gap-px border border-linen bg-linen sm:grid-cols-2">
-              {CERTIFICATIONS.map((c, i) => (
-                <Reveal key={c.name} delay={0.05 * i} className="h-full">
-                  <div className="flex h-full min-h-[220px] flex-col justify-between bg-parchment p-8">
-                    <SealCheck size={28} weight="duotone" className="text-gold-deep" />
-                    <div>
-                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-clay/70">
-                        {c.label}
-                      </p>
-                      <h3 className="mt-2 font-display text-2xl font-semibold text-ink">
-                        {c.name}
-                      </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-clay/90">{c.meta}</p>
+          <div className="lg:col-span-6 lg:col-start-7">
+            <Reveal delay={0.1}>
+              <div className="border border-linen bg-cream p-8 md:p-10">
+                <SealCheck size={40} weight="duotone" className="text-gold-deep" />
+                <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.2em] text-clay/70">
+                  {CERTIFICATE.authority}
+                </p>
+                <h3 className="mt-2 font-display text-3xl font-semibold text-ink">{CERTIFICATE.title}</h3>
+                <dl className="mt-6 space-y-3 border-t border-linen pt-6 text-sm">
+                  {[
+                    ["Product", CERTIFICATE.product],
+                    ["Standard", CERTIFICATE.standard],
+                    ["License no.", CERTIFICATE.license],
+                  ].map(([k, v]) => (
+                    <div key={k} className="flex justify-between gap-6">
+                      <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-clay/70">{k}</dt>
+                      <dd className="text-right font-mono text-ink">{v}</dd>
                     </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
+                  ))}
+                </dl>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
       <CTABanner
-        image={IMAGES.wheatHarvest}
-        alt="Wheat harvest at golden hour"
-        title="Write the next chapter"
-        titleAccent="with us."
-        text="Whether you bake for a neighbourhood or manufacture for a continent, our team is ready to talk."
-        primary="Request a quote"
+        image={IMAGES.lifeMarket}
+        alt="Hands holding a variety of Fikir products"
+        title="Grow with"
+        titleAccent="Fikir."
+        text="Partner with a trusted Ethiopian manufacturer for reliable products and nationwide reach."
+        primary="Talk to us"
         primaryTo="/contact"
         secondary="Explore products"
         secondaryTo="/products"

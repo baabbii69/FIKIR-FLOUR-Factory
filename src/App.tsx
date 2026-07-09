@@ -8,7 +8,8 @@ import ScrollToTop from "./lib/ScrollToTop";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Products from "./pages/Products";
-import Factory from "./pages/Factory";
+import Facility from "./pages/Facility";
+import Careers from "./pages/Careers";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
@@ -30,7 +31,8 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/factory" element={<Factory />} />
+            <Route path="/facility" element={<Facility />} />
+            <Route path="/careers" element={<Careers />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

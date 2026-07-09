@@ -1,70 +1,85 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, Quotes } from "@phosphor-icons/react";
 import { TESTIMONIALS } from "../data/site";
 
-/** One large rotating quote instead of a generic three-card row. */
+/** Auto-advancing single-quote rotator. Pauses on hover / reduced motion. */
 export default function TestimonialRotator() {
-  const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const [i, setI] = useState(0);
+  const [dir, setDir] = useState(1);
+  const paused = useRef(false);
   const reduce = useReducedMotion();
-  const t = TESTIMONIALS[index];
+  const n = TESTIMONIALS.length;
+
+  const go = useCallback(
+    (d: number) => {
+      setDir(d);
+      setI((p) => (p + d + n) % n);
+    },
+    [n]
+  );
 
   useEffect(() => {
-    if (reduce || paused) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % TESTIMONIALS.length), 7000);
-    return () => clearInterval(id);
-  }, [reduce, paused]);
+    if (reduce) return;
+    const id = window.setInterval(() => {
+      if (!paused.current) go(1);
+    }, 6500);
+    return () => window.clearInterval(id);
+  }, [go, reduce]);
+
+  const t = TESTIMONIALS[i];
 
   return (
     <div
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      className="relative"
+      onMouseEnter={() => (paused.current = true)}
+      onMouseLeave={() => (paused.current = false)}
     >
-      <div className="min-h-[240px] md:min-h-[220px]">
-        <AnimatePresence mode="wait">
-          <motion.figure
-            key={index}
-            initial={reduce ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduce ? undefined : { opacity: 0, y: -14 }}
-            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      <Quotes size={48} weight="fill" className="text-gold/40" />
+      <div className="relative mt-6 min-h-[220px] sm:min-h-[180px]">
+        <AnimatePresence mode="wait" custom={dir}>
+          <motion.blockquote
+            key={i}
+            custom={dir}
+            initial={reduce ? { opacity: 0 } : { opacity: 0, x: dir * 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, x: dir * -40 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="font-display text-2xl font-medium leading-snug text-ink md:text-4xl md:leading-[1.2]"
           >
-            <blockquote className="display-2 max-w-4xl text-2xl leading-snug md:text-4xl">
-              &ldquo;{t.quote}&rdquo;
-            </blockquote>
-            <figcaption className="mt-8 flex items-center gap-4">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gold font-display text-xl font-semibold text-ink">
-                {t.name.charAt(0)}
-              </span>
-              <span>
-                <span className="block font-medium text-ink">{t.name}</span>
-                <span className="mt-0.5 block text-sm text-clay/80">{t.role}</span>
-              </span>
-            </figcaption>
-          </motion.figure>
+            &ldquo;{t.quote}&rdquo;
+          </motion.blockquote>
         </AnimatePresence>
       </div>
 
-      <div className="mt-10 flex items-center gap-3">
-        <button
-          onClick={() => setIndex((index - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)}
-          aria-label="Previous testimonial"
-          className="inline-flex h-12 w-12 items-center justify-center border border-linen text-ink transition-all duration-300 hover:border-gold hover:bg-gold active:scale-95"
-        >
-          <ArrowLeft size={18} />
-        </button>
-        <button
-          onClick={() => setIndex((index + 1) % TESTIMONIALS.length)}
-          aria-label="Next testimonial"
-          className="inline-flex h-12 w-12 items-center justify-center border border-linen text-ink transition-all duration-300 hover:border-gold hover:bg-gold active:scale-95"
-        >
-          <ArrowRight size={18} />
-        </button>
-        <span className="ml-4 font-mono text-[11px] uppercase tracking-[0.2em] text-clay/70">
-          {index + 1} of {TESTIMONIALS.length}
-        </span>
+      <div className="mt-8 flex items-center justify-between gap-6 border-t border-linen pt-6">
+        <div className="flex items-center gap-4">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gold/15 font-display text-lg font-semibold text-gold-deep">
+            {t.name.charAt(0)}
+          </span>
+          <div>
+            <div className="font-display text-lg font-semibold text-ink">{t.name}</div>
+            <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-clay/70">{t.role}</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="mr-2 font-mono text-[11px] tabular-nums text-clay/60">
+            {i + 1} / {n}
+          </span>
+          <button
+            onClick={() => go(-1)}
+            aria-label="Previous testimonial"
+            className="inline-flex h-10 w-10 items-center justify-center border border-linen text-ink transition-colors hover:border-ink hover:bg-ink hover:text-cream"
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <button
+            onClick={() => go(1)}
+            aria-label="Next testimonial"
+            className="inline-flex h-10 w-10 items-center justify-center border border-linen text-ink transition-colors hover:border-ink hover:bg-ink hover:text-cream"
+          >
+            <ArrowRight size={16} />
+          </button>
+        </div>
       </div>
     </div>
   );

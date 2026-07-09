@@ -4,18 +4,18 @@ import { CONTACT } from "../data/site";
 
 const COMPANY_LINKS = [
   { to: "/about", label: "About Us" },
-  { to: "/about#history", label: "Our History" },
-  { to: "/about#team", label: "Leadership" },
-  { to: "/factory", label: "Our Factory" },
-  { to: "/contact", label: "Careers" },
+  { to: "/facility", label: "Facility & Quality" },
+  { to: "/careers", label: "Careers" },
+  { to: "/contact", label: "Become a Distributor" },
+  { to: "/contact", label: "Contact" },
 ];
 
 const PRODUCT_LINKS = [
+  { to: "/products?cat=flour", label: "Flour" },
+  { to: "/products?cat=biscuits", label: "Unic Biscuits" },
+  { to: "/products?cat=wafers", label: "Unic Wafers" },
+  { to: "/products?cat=chips", label: "Unic Chips" },
   { to: "/products", label: "All Products" },
-  { to: "/products?cat=standard", label: "Standard Range" },
-  { to: "/products?cat=specialty", label: "Specialty Flour" },
-  { to: "/products?cat=whole", label: "Whole Grain" },
-  { to: "/products?cat=custom", label: "Custom Blends" },
 ];
 
 export default function Footer() {
@@ -38,11 +38,11 @@ export default function Footer() {
               </span>
             </Link>
             <p className="mt-6 max-w-xs text-[15px] leading-relaxed">
-              Milling premium flour for the world's food industry since 1962. Quality,
-              consistency, and partnership, every day.
+              An Ethiopian food manufacturer in Adama, producing fortified flour, biscuits,
+              wafers, and chips for over 15 years.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              {["ISO 22000", "Non-GMO", "Kosher", "Halal"].map((c) => (
+              {["Fortified up to B12", "Ethiopian Standards Mark"].map((c) => (
                 <span
                   key={c}
                   className="border border-cream/20 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-cream/60"
@@ -92,11 +92,15 @@ export default function Footer() {
                   ))}
                 </span>
               </li>
-              <li className="flex items-center gap-3">
-                <Phone size={18} className="shrink-0 text-gold" />
-                <a href={`tel:${CONTACT.phone.replace(/\s/g, "")}`} className="hover:text-cream">
-                  {CONTACT.phone}
-                </a>
+              <li className="flex items-start gap-3">
+                <Phone size={18} className="mt-0.5 shrink-0 text-gold" />
+                <span className="flex flex-col gap-1">
+                  {CONTACT.phones.map((p) => (
+                    <a key={p} href={`tel:${p.replace(/\s/g, "")}`} className="hover:text-cream">
+                      {p}
+                    </a>
+                  ))}
+                </span>
               </li>
               <li className="flex items-center gap-3">
                 <EnvelopeSimple size={18} className="shrink-0 text-gold" />
@@ -113,7 +117,7 @@ export default function Footer() {
             © {new Date().getFullYear()} FIKIR FOOD PROCESSING. All rights reserved.
           </p>
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-cream/40">
-            From grain to greatness
+            We produce quality; we deliver trust
           </p>
         </div>
       </div>

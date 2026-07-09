@@ -13,8 +13,8 @@ type LeadStep = null | "name" | "contact" | "interest" | "sending";
 const GREETING: Msg = {
   id: 0,
   from: "bot",
-  text: "Hi! I'm the FIKIR FOOD PROCESSING assistant. Ask me about our flours, specs, shipping, or pricing, and I can connect you with our team.",
-  chips: ["Our products", "Pricing & quote", "Shipping", "Talk to sales"],
+  text: "Hi! I'm the FIKIR FOOD PROCESSING assistant. Ask me about our flour, biscuits, wafers, and chips, or how to buy or distribute them.",
+  chips: ["Our products", "Where to buy", "Fortification", "Become a distributor"],
 };
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -123,7 +123,7 @@ export default function ChatWidget() {
       beginLead();
       return;
     }
-    if (isLeadIntent(text) || /talk to sales|pricing & quote|request a quote/i.test(text)) {
+    if (isLeadIntent(text) || /become a distributor|talk to us/i.test(text)) {
       beginLead();
       return;
     }
@@ -153,7 +153,7 @@ export default function ChatWidget() {
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? "Close chat" : "Open chat assistant"}
         aria-expanded={open}
-        className="fixed bottom-5 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-gold text-ink shadow-[0_10px_40px_rgba(28,19,8,0.28)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:bg-gold-bright active:scale-95 md:bottom-8 md:right-8"
+        className="fixed bottom-5 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-green-deep text-cream shadow-[0_10px_40px_rgba(28,19,8,0.28)] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:bg-green active:scale-95 md:bottom-8 md:right-8"
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
@@ -248,7 +248,7 @@ export default function ChatWidget() {
                 type="submit"
                 disabled={leadStep === "sending" || !draft.trim()}
                 aria-label="Send message"
-                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold text-ink transition-colors duration-200 hover:bg-gold-bright disabled:opacity-40"
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-deep text-cream transition-colors duration-200 hover:bg-green disabled:opacity-40"
               >
                 <PaperPlaneRight size={18} weight="fill" />
               </button>

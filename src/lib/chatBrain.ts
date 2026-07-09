@@ -1,144 +1,116 @@
-import { PRODUCTS, FAQS, CERTIFICATIONS, CONTACT } from "../data/site";
+import { PRODUCTS, CERTIFICATE, CONTACT } from "../data/site";
 
 export type BotReply = { text: string; chips?: string[] };
 
 const q = (s: string) => s.toLowerCase();
+const has = (t: string, keys: string[]) => keys.some((k) => t.includes(k));
 
-/** Distinctive keywords per product for reliable matching. */
-const PRODUCT_KEYWORDS: Record<string, string[]> = {
-  "all-purpose": ["all-purpose", "all purpose", "multipurpose", "multi purpose"],
-  bread: ["bread", "high-gluten", "high gluten"],
-  pastry: ["pastry", "cake", "croissant", "biscuit"],
-  "whole-wheat": ["whole wheat", "whole-wheat", "wholemeal", "wholewheat", "whole grain"],
-  spelt: ["spelt", "ancient grain"],
-  "tipo-00": ["tipo", "00", "pizza", "neapolitan"],
-  semolina: ["semolina", "durum", "couscous"],
-  fortified: ["fortified", "iron", "folic", "vitamin", "fortification"],
-  custom: ["custom", "bespoke", "formulation", "r&d", "rnd"],
-};
+const names = (cat: string) =>
+  PRODUCTS.filter((p) => p.category === cat).map((p) => p.name.replace(/^Unic /, ""));
 
-const includesAny = (text: string, keys: string[]) => keys.some((k) => text.includes(k));
-
-/** True when the message is really asking to buy / get pricing / reach sales. */
+/** True when the message is really about buying / stocking / distributing. */
 export function isLeadIntent(raw: string): boolean {
   const t = q(raw);
-  if (includesAny(t, ["minimum", "moq"])) return false; // that's an info question
-  return includesAny(t, [
+  // Note: "buy" is intentionally excluded so "where to buy" stays an info answer.
+  return has(t, [
+    "order",
+    "distributor",
+    "distribute",
+    "wholesale",
+    "agent",
+    "supply",
     "quote",
-    "price",
-    "pricing",
-    "cost",
-    "buy",
-    "purchase",
-    "sample",
-    "talk to sales",
-    "contact sales",
-    "sales team",
-    "request a quote",
-    "get a quote",
-    "place an order",
-    "order now",
+    "become a",
+    "talk to us",
+    "partner",
   ]);
 }
 
-function productReply(slug: string): BotReply {
-  const p = PRODUCTS.find((pr) => pr.slug === slug)!;
-  const specs = p.specs.map((s) => `${s.label} ${s.value}`).join(" · ");
-  return {
-    text: `${p.name}\n${p.description}\n\nKey specs: ${specs}.`,
-    chips: ["Request a quote", "See other products", "Shipping"],
-  };
-}
+const DEFAULT_CHIPS = ["Our products", "Where to buy", "Fortification", "Talk to us"];
 
-const DEFAULT_CHIPS = ["Our products", "Pricing & quote", "Shipping", "Talk to sales"];
-
-/** Rule-based answer over the site's own data. No LLM, instant, always accurate. */
 export function answer(raw: string): BotReply {
   const t = q(raw);
 
-  // Greetings
-  if (includesAny(t, ["hi", "hello", "hey", "selam", "good morning", "good afternoon"]) && t.length < 24)
+  if (has(t, ["hi", "hello", "hey", "selam", "good morning", "good afternoon"]) && t.length < 24)
     return {
-      text: "Hello! I can help with our flour products, specifications, pricing, shipping, and certifications. What are you looking for?",
+      text: "Hello! I can tell you about our flour, biscuits, wafers, and chips, where to buy them, or how to become a distributor. What would you like?",
       chips: DEFAULT_CHIPS,
     };
 
-  if (includesAny(t, ["thank", "thanks", "ameseginalehu"]))
-    return { text: "You're welcome. Anything else I can help with?", chips: DEFAULT_CHIPS };
+  if (has(t, ["thank", "ameseginalehu"]))
+    return { text: "You're welcome! Anything else?", chips: DEFAULT_CHIPS };
 
-  // Specific product
-  for (const slug of Object.keys(PRODUCT_KEYWORDS)) {
-    if (includesAny(t, PRODUCT_KEYWORDS[slug])) return productReply(slug);
-  }
-
-  // Product list
-  if (includesAny(t, ["product", "flour", "range", "types", "what do you", "sell", "offer", "catalog"]))
+  // Flour
+  if (has(t, ["flour", "wheat", "special", "3f", "1k", "corn", "grade"]))
     return {
       text:
-        "We mill nine flour lines:\n" +
-        PRODUCTS.map((p) => `• ${p.name}`).join("\n") +
-        "\n\nWhich one would you like details on?",
-      chips: ["All-Purpose Flour", "Bread Flour", "Whole Wheat", "Custom blends"],
+        "We make " +
+        names("flour").join(", ") +
+        ". Our wheat flour is fortified up to Vitamin B12 and carries the Ethiopian Standards mark. Special comes in 5-50 kg; 3F and 1K in 25 and 50 kg.",
+      chips: ["Fortification", "Where to buy", "Biscuits"],
     };
 
-  // Minimum order
-  if (includesAny(t, ["minimum", "moq", "smallest order", "min order"]))
-    return { text: FAQS[0].a, chips: ["Request a quote", "Shipping", "Our products"] };
+  // Biscuits
+  if (has(t, ["biscuit", "high energy", "cappuccino", "glucose", "abounded", "zoo", "cookie"]))
+    return {
+      text: "Our Unic biscuits include " + names("biscuits").join(", ") + ", and more than twelve flavors in all.",
+      chips: ["Wafers", "Chips", "Where to buy"],
+    };
 
-  // Shipping / export
-  if (includesAny(t, ["ship", "export", "deliver", "countr", "international", "abroad", "logistics"]))
+  // Wafers
+  if (has(t, ["wafer"]))
+    return { text: "Our Unic cream wafers come in " + names("wafers").join(", ") + ".", chips: ["Biscuits", "Chips", "Where to buy"] };
+
+  // Chips
+  if (has(t, ["chip", "crisp", "potato", "paprika", "tomato"]))
     return {
       text:
-        "We export to 38 countries with full documentation: phytosanitary certificates, certificates of origin, and dedicated export coordinators. Bulk tanker, big bags, palletised sacks, and retail packs are all available.",
-      chips: ["Request a quote", "Minimum order", "Talk to sales"],
+        "Our Unic potato chips come in " +
+        names("chips").join(", ") +
+        " (40g and 120g). 100% natural, made from the best Ethiopian potatoes, with no cholesterol.",
+      chips: ["Biscuits", "Where to buy"],
     };
 
-  // Certifications / quality
-  if (includesAny(t, ["cert", "iso", "halal", "kosher", "gmo", "quality", "safety", "standard"]))
+  // Product overview
+  if (has(t, ["product", "make", "sell", "range", "offer", "what do you", "catalog"]))
+    return {
+      text: "We make four ranges:\n• Flour (fortified wheat + corn)\n• Unic Biscuits (12+ flavors)\n• Unic Wafers\n• Unic Chips\nWhich would you like to know about?",
+      chips: ["Flour", "Biscuits", "Wafers", "Chips"],
+    };
+
+  // Fortification / cert / quality
+  if (has(t, ["fortif", "vitamin", "b12", "cert", "quality", "standard", "safe", "test", "iron", "ies"]))
     return {
       text:
-        "We hold " +
-        CERTIFICATIONS.map((c) => c.name).join(", ") +
-        ". Every batch is tested against protein, moisture, and ash targets, and ships with a certificate of analysis.",
-      chips: ["Our products", "Request a quote"],
+        "Our wheat flour is fortified up to Vitamin B12 and licensed under the " +
+        CERTIFICATE.authority +
+        " (" +
+        CERTIFICATE.title +
+        ", " +
+        CERTIFICATE.standard +
+        "). Every batch is laboratory-tested before release.",
+      chips: ["Our products", "Where to buy"],
     };
 
-  // Spec-match question
-  if (includesAny(t, ["protein", "moisture", "ash", "spec", "gluten"]))
+  // Where to buy / distributor
+  if (has(t, ["where", "buy", "find", "shop", "available", "stock", "distributor", "agent", "wholesale"]))
     return {
-      text: "Each flour has its own protein, moisture, and ash targets. Which product should I pull the specs for?",
-      chips: ["All-Purpose Flour", "Bread Flour", "Whole Wheat", "Durum Semolina"],
+      text: "Our products are sold across all regions of Ethiopia through agents, wholesalers, and retailers. If you'd like to stock Fikir or become a distributor, I can take your details for our team.",
+      chips: ["Become a distributor", "Contact details"],
     };
 
-  // Contact / location / hours / visit
-  if (
-    includesAny(t, [
-      "contact",
-      "email",
-      "phone",
-      "call",
-      "reach",
-      "address",
-      "location",
-      "where",
-      "visit",
-      "factory",
-      "hour",
-      "open",
-      "directions",
-    ])
-  )
+  // Contact / location / hours
+  if (has(t, ["contact", "email", "phone", "call", "reach", "address", "location", "where are", "adama", "hour", "open"]))
     return {
       text:
-        `You can reach us here:\n• Phone: ${CONTACT.phone}\n• Email: ${CONTACT.email}\n• ${CONTACT.addressLines.join(
+        `You can reach us here:\n• Phone: ${CONTACT.phones.join(" / ")}\n• Email: ${CONTACT.email}\n• ${CONTACT.addressLines.join(
           ", ",
-        )}\n\nHours: ${CONTACT.hours.map((h) => `${h.days} ${h.time}`).join(" · ")}.`,
-      chips: ["Request a quote", "Our products"],
+        )}`,
+      chips: ["Become a distributor", "Our products"],
     };
 
-  // Fallback
   return {
-    text: "I can help with our products, specifications, pricing, shipping, and certifications, or connect you with our sales team. What would you like?",
+    text: "I can help with our products, quality and fortification, where to buy, and becoming a distributor. What would you like?",
     chips: DEFAULT_CHIPS,
   };
 }

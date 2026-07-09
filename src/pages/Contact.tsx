@@ -18,17 +18,17 @@ import { CONTACT, IMAGES } from "../data/site";
 export default function Contact() {
   usePageMeta(
     "Contact | FIKIR FOOD PROCESSING",
-    "Request a quote, book a factory visit, or reach our sales and export teams in Adama, Ethiopia."
+    "Become a distributor, place a wholesale order, or reach the Fikir Food Processing team in Adama, Ethiopia."
   );
 
   return (
     <>
       <PageHero
-        image={IMAGES.wheatHarvest}
-        alt="Wheat field under an evening sky near Adama"
+        image={IMAGES.fleet}
+        alt="The Fikir delivery fleet at the plant in Adama"
         crumb="Contact"
-        title="Let's talk"
-        titleAccent="flour."
+        title="Let's"
+        titleAccent="talk."
       />
 
       {/* Full-bleed split: ink details left, parchment form right. Inner content
@@ -55,9 +55,11 @@ export default function Contact() {
               </Reveal>
               <Reveal delay={0.1}>
                 <ContactRow icon={<Phone size={22} weight="duotone" />} label="Call">
-                  <a href={`tel:${CONTACT.phone.replace(/\s/g, "")}`} className="transition-colors hover:text-gold">
-                    {CONTACT.phone}
-                  </a>
+                  {CONTACT.phones.map((p) => (
+                    <a key={p} href={`tel:${p.replace(/\s/g, "")}`} className="block transition-colors hover:text-gold">
+                      {p}
+                    </a>
+                  ))}
                 </ContactRow>
               </Reveal>
               <Reveal delay={0.14}>
@@ -87,8 +89,8 @@ export default function Contact() {
             <Reveal delay={0.22}>
               <div className="mt-12 border-t border-cream/15 pt-8">
                 <p className="text-sm leading-relaxed text-cream/60">
-                  For export documentation and shipping enquiries, write to our export desk
-                  and a coordinator will reply within one business day.
+                  Looking to stock Fikir products or become a distributor? Send us a message and our
+                  team will get back to you.
                 </p>
               </div>
             </Reveal>
@@ -145,10 +147,10 @@ function ContactRow({
 /* ---------------- Quote form ---------------- */
 
 const ENQUIRY_TYPES = [
-  "Request a quote",
-  "Book a factory visit",
-  "Custom blend development",
-  "Export & shipping",
+  "Become a distributor",
+  "Place a wholesale order",
+  "Product question",
+  "Partnership",
   "Something else",
 ];
 
@@ -217,10 +219,10 @@ function QuoteForm() {
   return (
     <div>
       <Reveal>
-        <h2 className="display-2 text-3xl md:text-4xl">Request a quote</h2>
+        <h2 className="display-2 text-3xl md:text-4xl">Send us a message</h2>
         <p className="mt-4 max-w-[56ch] text-[15px] leading-relaxed">
-          Tell us what you make and roughly how much flour you need. We reply to every
-          enquiry within one business day.
+          Want to stock Fikir products, become a distributor, or ask a question? Tell us a little
+          about you and we'll get back to you.
         </p>
       </Reveal>
 
@@ -232,13 +234,13 @@ function QuoteForm() {
           <Field label="Phone (optional)" name="phone" type="tel" autoComplete="tel" />
           <Field label="Company (optional)" name="company" autoComplete="organization" className="sm:col-span-2" />
           <SelectField label="Enquiry type" name="enquiry" options={ENQUIRY_TYPES} />
-          <Field label="Monthly volume (optional)" name="volume" placeholder="e.g. 120 MT" />
+          <Field label="City / region (optional)" name="volume" placeholder="e.g. Adama, Oromia" />
           <TextareaField
             label="Your message"
             name="message"
             error={errors.message}
             className="sm:col-span-2"
-            placeholder="What do you produce, and what flour are you looking for?"
+            placeholder="Tell us how we can help, which products you're interested in, and where you are."
           />
         </div>
 

@@ -1,413 +1,400 @@
+// All real Fikir Food Processing content. Contact shown here is the company's
+// public info; lead submissions still route to the owner's Telegram/email for
+// testing (see src/lib/leads.ts) until the client signs off.
+
 export const CONTACT = {
-  phone: "+251922802813",
-  email: "joealex69420@gmail.com",
-  addressLines: ["Adama Kebele 03, Sodere Road", "Behind Bekelcha Transport", "Adama, Ethiopia"],
+  phone: "+251911491816",
+  phones: ["+251911491816", "+251911491815", "+251930171717"],
+  email: "Info@fikirfoods.et",
+  addressLines: ["Garalugo, Railway Station Area", "Adama, Oromia", "Ethiopia"],
   hours: [
-    { days: "Monday to Friday", time: "07:00 - 17:00" },
+    { days: "Monday to Friday", time: "08:00 - 17:30" },
     { days: "Saturday", time: "08:00 - 13:00" },
     { days: "Sunday", time: "Closed" },
   ],
 };
 
+export const COMPANY = {
+  name: "Fikir Food Processing",
+  tagline: "We produce quality; we deliver trust.",
+  city: "Adama, Ethiopia",
+};
+
 export const NAV = [
   { to: "/", label: "Home" },
-  { to: "/about", label: "About Us" },
   { to: "/products", label: "Products" },
-  { to: "/factory", label: "Our Factory" },
+  { to: "/about", label: "About Us" },
+  { to: "/facility", label: "Facility" },
+  { to: "/careers", label: "Careers" },
   { to: "/contact", label: "Contact" },
 ];
 
-export const STATS = [
-  { value: 62, suffix: "+", label: "Years of milling" },
-  { value: 2400, suffix: " MT", label: "Daily production" },
-  { value: 38, suffix: "", label: "Export markets" },
-  { value: 850, suffix: "+", label: "Clients worldwide" },
+// Job openings. Edit this list to post/remove opportunities. Empty array =>
+// the Careers page shows a "no current openings, send your CV" state.
+export const OPENINGS = [
+  {
+    title: "Production Operators",
+    type: "Full-time",
+    location: "Adama plant",
+    note: "Operate and monitor our flour, biscuit, wafer, and chips lines, keeping quality and safety high.",
+  },
+  {
+    title: "Sales Representatives",
+    type: "Full-time",
+    location: "Nationwide",
+    note: "Grow our distribution network with agents, wholesalers, and retailers across Ethiopia.",
+  },
+  {
+    title: "Delivery Drivers",
+    type: "Full-time",
+    location: "Adama / regional",
+    note: "Operate our own branded fleet, delivering fresh products to customers on time.",
+  },
 ];
+
+export const STATS = [
+  { value: 15, suffix: "+", label: "Years of production" },
+  { value: 600, suffix: "+", label: "Team members" },
+  { value: 12, suffix: "+", label: "Biscuit flavors" },
+  { value: 4, suffix: "", label: "Flour grades" },
+];
+
+export type Category = "flour" | "biscuits" | "wafers" | "chips";
 
 export type Product = {
   slug: string;
   name: string;
-  category: "standard" | "specialty" | "whole" | "industrial" | "custom";
-  categoryLabel: string;
-  description: string;
-  specs: { label: string; value: string }[];
-  image: string;
+  category: Category;
+  brand: "Fikir" | "Unic";
+  image: string; // empty string => render a typographic placeholder card
+  blurb: string;
+  meta?: string; // pack sizes (flour) or descriptor (snacks)
   badge?: string;
 };
 
+export const CATEGORIES: { id: Category; label: string; note: string }[] = [
+  { id: "flour", label: "Flour", note: "Fortified wheat & corn flour" },
+  { id: "biscuits", label: "Biscuits", note: "Unic sweet & energy biscuits" },
+  { id: "wafers", label: "Wafers", note: "Unic cream wafers" },
+  { id: "chips", label: "Chips", note: "Unic potato chips" },
+];
+
+const M = "/media";
+const P = "/media/products";
+
 export const PRODUCTS: Product[] = [
+  // ---- Flour ----
   {
-    slug: "all-purpose",
-    name: "All-Purpose Flour",
-    category: "standard",
-    categoryLabel: "Standard Range",
-    description:
-      "Our flagship multipurpose flour for breads, pastries, biscuits, pasta, and coatings. The benchmark for manufacturers who need reliability and versatility.",
-    specs: [
-      { label: "Protein", value: "10-12%" },
-      { label: "Moisture", value: "≤14%" },
-      { label: "Ash", value: "0.55%" },
-    ],
-    image:
-      "https://images.unsplash.com/photo-1714842981153-ffeaf74e7a1a?q=80&w=1200&auto=format&fit=crop",
+    slug: "special",
+    name: "Special Flour",
+    category: "flour",
+    brand: "Fikir",
+    image: `${M}/flour-special.jpg`,
+    blurb:
+      "Our export-grade wheat flour, milled to a fine, consistent standard and fortified up to Vitamin B12. The choice for bakeries that need reliable results at scale.",
+    meta: "5 · 10 · 25 · 50 kg",
+    badge: "Export grade",
+  },
+  {
+    slug: "3f",
+    name: "3F Flour",
+    category: "flour",
+    brand: "Fikir",
+    image: `${M}/flour-3f.jpg`,
+    blurb:
+      "A dependable all-purpose wheat flour for everyday baking and injera, fortified to national standards and trusted across Ethiopian kitchens.",
+    meta: "25 · 50 kg",
+  },
+  {
+    slug: "1k",
+    name: "1K Flour",
+    category: "flour",
+    brand: "Fikir",
+    image: `${M}/flour-1k.jpg`,
+    blurb:
+      "Value wheat flour produced to international standard, fortified and packed for wholesalers, retailers, and high-volume kitchens.",
+    meta: "25 · 50 kg",
+  },
+  {
+    slug: "corn",
+    name: "Corn Flour",
+    category: "flour",
+    brand: "Fikir",
+    image: `${P}/p-corn.jpg`,
+    blurb:
+      "Finely milled corn flour for traditional and modern recipes, produced on the same modern lines and to the same quality standard as our wheat flour.",
+    meta: "By request",
+  },
+
+  // ---- Biscuits (Unic) ----
+  {
+    slug: "high-energy",
+    name: "Unic High Energy Biscuits",
+    category: "biscuits",
+    brand: "Unic",
+    image: `${P}/b-high-energy.png`,
+    blurb: "Our flagship glucose-rich biscuit, baked for everyday energy. A national favorite.",
+    meta: "Sweet biscuit",
     badge: "Best seller",
   },
   {
-    slug: "bread",
-    name: "High-Gluten Bread Flour",
-    category: "standard",
-    categoryLabel: "Standard Range",
-    description:
-      "Milled from hard wheat for superior gluten development. Consistent volume, excellent crust formation, and reliable results on industrial dough lines.",
-    specs: [
-      { label: "Protein", value: "13-14.5%" },
-      { label: "Moisture", value: "≤14%" },
-      { label: "Ash", value: "0.60%" },
-    ],
-    image:
-      "https://images.unsplash.com/photo-1549413468-cd78edb7e75c?q=80&w=1200&auto=format&fit=crop",
+    slug: "vanilla-sandwich",
+    name: "Unic Vanilla Sandwich",
+    category: "biscuits",
+    brand: "Unic",
+    image: `${P}/b-vanilla-sandwich.png`,
+    blurb: "Crisp biscuits filled with smooth vanilla cream.",
+    meta: "Cream biscuit",
   },
   {
-    slug: "pastry",
-    name: "Silken Pastry Flour",
-    category: "standard",
-    categoryLabel: "Standard Range",
-    description:
-      "Low-protein, finely ground flour for delicate pastry work: croissants, biscuits, wafers, and cakes that need tenderness and a fine crumb.",
-    specs: [
-      { label: "Protein", value: "8-9%" },
-      { label: "Moisture", value: "≤13.5%" },
-      { label: "Ash", value: "0.45%" },
-    ],
-    image:
-      "https://images.unsplash.com/photo-1623334044303-241021148842?q=80&w=1200&auto=format&fit=crop",
+    slug: "apple-vanilla",
+    name: "Unic Apple Vanilla",
+    category: "biscuits",
+    brand: "Unic",
+    image: `${P}/b-apple-vanilla.png`,
+    blurb: "Cream sandwich biscuits with a bright apple-vanilla flavor.",
+    meta: "Cream biscuit",
   },
   {
-    slug: "whole-wheat",
-    name: "Stone-Ground Whole Wheat",
-    category: "whole",
-    categoryLabel: "Whole Grain",
-    description:
-      "Complete whole grain flour with bran, germ, and endosperm fully retained. Rich in fiber and minerals, in fine, medium, and coarse granulations.",
-    specs: [
-      { label: "Protein", value: "13-15%" },
-      { label: "Moisture", value: "≤14.5%" },
-      { label: "Fiber", value: "10-12%" },
-    ],
-    image:
-      "https://images.unsplash.com/photo-1565181917578-a87c12e04ff7?q=80&w=1200&auto=format&fit=crop",
+    slug: "banana",
+    name: "Unic Banana",
+    category: "biscuits",
+    brand: "Unic",
+    image: `${P}/b-banana.png`,
+    blurb: "Banana-flavored cream biscuits that kids and grown-ups reach for.",
+    meta: "Cream biscuit",
   },
   {
-    slug: "spelt",
-    name: "Spelt Flour",
-    category: "specialty",
-    categoryLabel: "Specialty",
-    description:
-      "An ancient grain prized for its nutty flavor and digestibility, milled carefully to preserve its heritage character. Excellent for artisan breads.",
-    specs: [
-      { label: "Protein", value: "12-14%" },
-      { label: "Moisture", value: "≤14%" },
-      { label: "Origin", value: "Heritage" },
-    ],
-    image:
-      "https://images.unsplash.com/photo-1650387106190-c6a9013f3fc8?q=80&w=1200&auto=format&fit=crop",
+    slug: "cappuccino",
+    name: "Unic Cappuccino",
+    category: "biscuits",
+    brand: "Unic",
+    image: `${P}/b-cappuccino.png`,
+    blurb: "Coffee-cream filled biscuits with a rich cappuccino note.",
+    meta: "Cream biscuit",
   },
   {
-    slug: "tipo-00",
-    name: "Tipo 00 Artisan Flour",
-    category: "specialty",
-    categoryLabel: "Specialty",
-    description:
-      "Ultra-fine, double-milled flour with exceptional elasticity and a silky texture. The benchmark for Neapolitan pizza, fresh pasta, and gnocchi.",
-    specs: [
-      { label: "Protein", value: "11.5-12.5%" },
-      { label: "Moisture", value: "≤14%" },
-      { label: "Grade", value: "Tipo 00" },
-    ],
-    image:
-      "https://images.unsplash.com/photo-1537734796389-e1fc293cf856?q=80&w=1200&auto=format&fit=crop",
+    slug: "glucose",
+    name: "Unic Glucose",
+    category: "biscuits",
+    brand: "Unic",
+    image: `${P}/b-glucose.png`,
+    blurb: "Light, crisp glucose biscuits, perfect with tea or milk.",
+    meta: "Sweet biscuit",
   },
   {
-    slug: "semolina",
-    name: "Durum Semolina",
-    category: "industrial",
-    categoryLabel: "Industrial",
-    description:
-      "Premium golden semolina milled from durum wheat for pasta and couscous production. Superior color, high protein, consistent granulometry.",
-    specs: [
-      { label: "Protein", value: "13.5-15%" },
-      { label: "Moisture", value: "≤14.5%" },
-      { label: "Color", value: "Golden" },
-    ],
-    image:
-      "https://images.unsplash.com/photo-1606091484089-089fa86fad4f?q=80&w=1200&auto=format&fit=crop",
+    slug: "abounded",
+    name: "Unic Abounded Sandwich",
+    category: "biscuits",
+    brand: "Unic",
+    image: `${M}/life-abounded.jpg`,
+    blurb: "Round sandwich biscuits in a family box, a lunchbox and tea-time staple.",
+    meta: "Boxed sandwich biscuit",
   },
   {
-    slug: "fortified",
-    name: "Fortified All-Purpose Flour",
-    category: "industrial",
-    categoryLabel: "Industrial",
-    description:
-      "Government-standard fortified flour with iron, folic acid, zinc, and B vitamins. Produced to meet national fortification mandates in export markets.",
-    specs: [
-      { label: "Protein", value: "10-12%" },
-      { label: "Iron", value: "60 ppm" },
-      { label: "Standard", value: "WHO/FAO" },
-    ],
-    image:
-      "https://images.unsplash.com/photo-1586765501019-cbe3973ef8fa?q=80&w=1200&auto=format&fit=crop",
+    slug: "zoo",
+    name: "Unic Zoo Biscuits",
+    category: "biscuits",
+    brand: "Unic",
+    image: `${P}/p-zoo.jpg`,
+    blurb: "Fun animal-shaped biscuits made for little hands and big smiles.",
+    meta: "Kids' biscuit",
   },
-  {
-    slug: "custom",
-    name: "Custom Flour Blends",
-    category: "custom",
-    categoryLabel: "Custom R&D",
-    description:
-      "Bespoke formulations developed by our R&D team: custom protein targets, unique grain blends, and performance specifications built for your product.",
-    specs: [
-      { label: "MOQ", value: "5 MT" },
-      { label: "Lead time", value: "3-6 wks" },
-      { label: "NDA", value: "Available" },
-    ],
-    image:
-      "https://images.unsplash.com/photo-1717414245286-51496cc79325?q=80&w=1200&auto=format&fit=crop",
-  },
-];
 
-export const PRODUCT_FILTERS = [
-  { id: "all", label: "All Products" },
-  { id: "standard", label: "Standard Range" },
-  { id: "specialty", label: "Specialty" },
-  { id: "whole", label: "Whole Grain" },
-  { id: "industrial", label: "Industrial" },
-  { id: "custom", label: "Custom R&D" },
-];
+  // ---- Wafers (Unic) ----
+  {
+    slug: "wafer-chocolate",
+    name: "Unic Wafer Chocolate",
+    category: "wafers",
+    brand: "Unic",
+    image: `${P}/w-chocolate.png`,
+    blurb: "Crisp wafers layered with rich chocolate cream.",
+    meta: "Cream wafer",
+  },
+  {
+    slug: "wafer-vanilla",
+    name: "Unic Wafer Vanilla",
+    category: "wafers",
+    brand: "Unic",
+    image: `${P}/w-vanilla.png`,
+    blurb: "Light wafers with smooth vanilla cream.",
+    meta: "Cream wafer",
+  },
+  {
+    slug: "wafer-orange",
+    name: "Unic Wafer Orange",
+    category: "wafers",
+    brand: "Unic",
+    image: `${P}/w-orange.png`,
+    blurb: "Crisp wafers with a zesty orange cream filling.",
+    meta: "Cream wafer",
+  },
 
-export const TESTIMONIALS = [
+  // ---- Chips (Unic) ----
   {
-    quote:
-      "FIKIR FOOD PROCESSING has been our primary supplier for eleven years. The consistency of their product is unmatched, and our bakers rely on it absolutely.",
-    name: "Ermias Tilahun",
-    role: "Head of Procurement, Shoa Bakeries Group",
+    slug: "chips-tomato",
+    name: "Unic Chips Tomato",
+    category: "chips",
+    brand: "Unic",
+    image: `${M}/chips-tomato.jpg`,
+    blurb: "Crunchy potato chips with a tangy tomato seasoning. 100% natural.",
+    meta: "40g · 120g",
+    badge: "New",
   },
   {
-    quote:
-      "When we scaled to 40 tons per day, FIKIR FOOD PROCESSING was the only supplier who could guarantee both quality and delivery timelines.",
-    name: "Sara Mekonnen",
-    role: "Operations Director, Adisu Foods",
+    slug: "chips-paprika",
+    name: "Unic Chips Paprika",
+    category: "chips",
+    brand: "Unic",
+    image: `${M}/chips-paprika.jpg`,
+    blurb: "Bold paprika-spiced potato chips made from the best Ethiopian potatoes.",
+    meta: "40g · 120g",
   },
   {
-    quote:
-      "Their technical team helped us reformulate our whole-wheat line. We saw a 12% improvement in shelf life and our customers noticed immediately.",
-    name: "Kaleb Demeke",
-    role: "R&D Manager, Hibret Bakeries S.C.",
+    slug: "chips-natural",
+    name: "Unic Chips Natural",
+    category: "chips",
+    brand: "Unic",
+    image: `${P}/p-natural.jpg`,
+    blurb: "Lightly salted natural potato chips, no cholesterol, 100% natural.",
+    meta: "40g · 120g",
   },
-];
-
-export const NEWS = [
-  {
-    date: "December 10, 2024",
-    title: "FIKIR FOOD PROCESSING completes $42M capacity expansion project",
-    excerpt:
-      "Phase III adds 600 MT of daily milling capacity, bringing total output to 2,400 metric tons and creating 120 new jobs in Adama.",
-    image:
-      "https://images.unsplash.com/photo-1627052428109-576e839d100a?q=80&w=1600&auto=format&fit=crop",
-  },
-  {
-    date: "November 3, 2024",
-    title: "ISO 22000:2018 recertification achieved across all facilities",
-    excerpt:
-      "Following a comprehensive third-party audit, every production facility is recertified to the latest international food safety standard.",
-    image:
-      "https://images.unsplash.com/photo-1684259498900-afdea87b1a97?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    date: "October 18, 2024",
-    title: "New ancient grain blend line launches for specialty markets",
-    excerpt:
-      "Responding to growing demand, our heritage grain flour range now includes spelt, einkorn, and emmer varieties.",
-    image:
-      "https://images.unsplash.com/photo-1564493031643-4be2c4347a17?q=80&w=1200&auto=format&fit=crop",
-  },
-];
-
-export const TIMELINE = [
-  {
-    year: "1962",
-    title: "Founded on the Awash River",
-    text: "A small grain processing facility opens near Adama with 18 employees and a single stone mill.",
-  },
-  {
-    year: "1978",
-    title: "First industrial bakery contract",
-    text: "A major supply agreement with Shoa Bakeries marks the shift from regional processor to industrial flour supplier.",
-  },
-  {
-    year: "1995",
-    title: "Modernisation and first ISO certification",
-    text: "A $12M project installs automated milling lines and in-line quality systems, earning our first food safety certification.",
-  },
-  {
-    year: "2008",
-    title: "International export launch",
-    text: "First shipments cross borders to Djibouti and Kenya. Within five years, exports reach 14 countries on three continents.",
-  },
-  {
-    year: "2019",
-    title: "R&D centre of excellence opens",
-    text: "A dedicated 12,000 sq ft food science facility houses grain analysis labs, pilot milling lines, and a full test bakery.",
-  },
-  {
-    year: "2024",
-    title: "Phase III expansion complete",
-    text: "A $42M expansion brings daily capacity to 2,400 MT, serving 850+ clients across 38 countries with 480 employees.",
-  },
-];
-
-export const TEAM = [
-  { name: "Abebe Girma", role: "Chief Executive Officer" },
-  { name: "Dr. Tigist Assefa", role: "Chief Operations Officer" },
-  { name: "Dawit Tadesse", role: "Head of Production & Engineering" },
-  { name: "Dr. Mahlet Mengistu", role: "Director of R&D & Food Science" },
 ];
 
 export const VALUES = [
   {
     icon: "seal",
-    title: "Quality without compromise",
-    text: "Every bag that leaves our facility has passed a 14-stage quality control process. We set the standard for ourselves and for the industry.",
+    title: "Quality",
+    text: "Every batch is made from selected raw materials and released only after strict laboratory testing.",
   },
   {
     icon: "handshake",
-    title: "Partnership first",
-    text: "We work alongside your procurement and production teams as a genuine extension of your business, not just a vendor.",
+    title: "Honesty",
+    text: "We build long-term trust with customers and partners through fair dealing and consistent products.",
   },
   {
-    icon: "leaf",
-    title: "Environmental responsibility",
-    text: "Water usage down 31% and carbon emissions down 24% over the last decade. Our 2030 roadmap targets full renewable energy.",
+    icon: "smiley",
+    title: "Customer satisfaction",
+    text: "From village shops to wholesalers, we serve every customer with the same care and reliability.",
   },
   {
     icon: "flask",
-    title: "Continuous innovation",
-    text: "28 food scientists and grain technologists develop new flour solutions, from specialty blends to fortified formulations.",
+    title: "Innovation",
+    text: "Modern imported machinery and new recipes let us keep introducing products people love.",
+  },
+  {
+    icon: "leaf",
+    title: "Social responsibility",
+    text: "We create jobs for 600+ Ethiopians and contribute to our community and country's development.",
   },
 ];
 
-export const CERTIFICATIONS = [
-  { label: "Food Safety Management", name: "ISO 22000:2018", meta: "All facilities, recertified 2024" },
-  { label: "Grade AA Food Safety", name: "BRC Global", meta: "Highest grade, held since 2009" },
-  { label: "Verified Non-GMO", name: "Non-GMO Project", meta: "All wheat product lines" },
-  { label: "Dual Certified", name: "Kosher & Halal", meta: "All product lines certified" },
+export const WHY_US = [
+  { title: "Over 15 years of experience", text: "A trusted Ethiopian manufacturer producing at scale since 2004 E.C." },
+  { title: "High, certified quality", text: "Fortified flour carrying the Ethiopian Standards Mark, tested every batch." },
+  { title: "A wide range", text: "Flour, biscuits, wafers, and chips, all under one trusted name." },
+  { title: "Fast, nationwide delivery", text: "Our own fleet reaches agents, wholesalers, and retailers across Ethiopia." },
 ];
 
-export const PROCESS = [
+// The real fortification certificate (Institute of Ethiopian Standards).
+export const CERTIFICATE = {
+  authority: "Institute of Ethiopian Standards (IES)",
+  title: "Ethiopian Standards Mark License",
+  product: "Fortified Wheat Flour",
+  standard: "CES 309:2024",
+  license: "IES-CSMA/ESM51/2018R",
+  note: "Fortified up to Vitamin B12, verified and licensed under the National Fortified Food scheme.",
+};
+
+export const QUALITY_STEPS = [
   {
-    step: "Grain intake",
-    title: "Receiving and testing",
-    text: "Every truck of wheat is sampled and tested before acceptance. In-line NIR analysers report protein, moisture, and falling number within minutes; only grain meeting specification enters storage.",
-    points: [
-      "Automated NIR protein and moisture analysis",
-      "Falling number assessment for enzymatic activity",
-      "Mycotoxin screening to EC regulation standards",
-      "Segregated silo storage by variety and grade",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1556114846-f753bec8a9f5?q=80&w=1600&auto=format&fit=crop",
+    step: "01",
+    title: "Selected raw materials",
+    text: "We source clean, high-grade wheat and potatoes, checking every intake before it enters production.",
   },
   {
-    step: "Cleaning",
-    title: "Multi-stage grain cleaning",
-    text: "A seven-stage cleaning system removes stones, sand, foreign seeds, dust, and light impurities. Magnetic separators capture metallic particles, delivering the cleanest possible grain to the mill.",
-    points: [
-      "Seven-stage mechanical cleaning line",
-      "Magnetic separation of metallic particles",
-      "Optical sorting of discolored kernels",
-      "Aspiration channels for dust and chaff",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1652950741256-bb58335f468f?q=80&w=1600&auto=format&fit=crop",
+    step: "02",
+    title: "Modern manufacturing",
+    text: "Imported, world-standard machinery mills, mixes, bakes, and packs with consistency at volume.",
   },
   {
-    step: "Conditioning",
-    title: "Tempering and conditioning",
-    text: "Water is precisely added to bring grain to optimal milling moisture. Tempered grain rests 18 to 24 hours in conditioning bins so moisture penetrates each kernel evenly.",
-    points: [
-      "Precision water dosing to target moisture",
-      "18 to 24 hour controlled resting period",
-      "Even bran separation during milling",
-      "Closed-loop water recovery systems",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1594020665090-970393850719?q=80&w=1600&auto=format&fit=crop",
+    step: "03",
+    title: "Strict laboratory testing",
+    text: "Our lab tests each batch against quality and fortification targets before it is released.",
   },
   {
-    step: "Milling",
-    title: "Roller milling",
-    text: "Conditioned grain passes through corrugated and smooth roller mills that progressively break down the kernel. 14 roller stands and 28 sieve sections yield flour streams of precisely controlled quality.",
-    points: [
-      "14 roller stands, 28 sieve sections",
-      "Progressive kernel reduction passes",
-      "Stream separation by granulometry and ash",
-      "Real-time process control monitoring",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1632959788203-904c5a3c1e6b?q=80&w=1600&auto=format&fit=crop",
-  },
-  {
-    step: "Quality & pack",
-    title: "Quality control and packaging",
-    text: "Every flour stream is continuously sampled. In-line moisture and protein analysers feed real-time data; flour is blended to exact targets, then bagged or bulk-loaded and held in quarantine until lab release.",
-    points: [
-      "Continuous in-line sampling and analysis",
-      "Precision blending to target specification",
-      "Automated bagging and bulk loading",
-      "Quarantine hold until laboratory release",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1627485937980-221c88ac04f9?q=80&w=1600&auto=format&fit=crop",
+    step: "04",
+    title: "Food safety requirements",
+    text: "Every product meets national and international food-safety standards, batch after batch.",
   },
 ];
 
 export const FAQS = [
   {
-    q: "What is the minimum order quantity?",
-    a: "Standard MOQ for palletised product is 1 MT (one pallet). Bulk tanker deliveries start at 25 MT. Custom blends carry a 5 MT minimum per formulation.",
+    q: "Where can I buy Fikir products?",
+    a: "Our flour, biscuits, wafers, and chips are distributed across all regions of Ethiopia through agents, wholesalers, and retailers. Contact us and we'll point you to the nearest supplier.",
   },
   {
-    q: "Do you ship internationally?",
-    a: "Yes. We currently export to 38 countries with full documentation: phytosanitary certificates, certificates of origin, and dedicated export coordinators.",
+    q: "How do I become a distributor or agent?",
+    a: "We're always expanding our distribution network. Send us your details through the contact form or call us, and our team will get back to you.",
   },
   {
-    q: "Can you match a specification we already use?",
-    a: "In most cases, yes. Send us your current spec sheet and our lab will produce a matched sample for your evaluation, usually within two weeks.",
+    q: "Is your flour fortified?",
+    a: "Yes. Our wheat flour is fortified up to Vitamin B12 and carries the Institute of Ethiopian Standards mark for fortified wheat flour (CES 309:2024).",
   },
   {
-    q: "How is product quality guaranteed?",
-    a: "Every batch is tested against protein, moisture, and ash targets before release. A certificate of analysis accompanies each shipment.",
+    q: "What pack sizes do you offer?",
+    a: "Special flour comes in 5, 10, 25, and 50 kg; 3F and 1K in 25 and 50 kg. Biscuits, wafers, and chips are available in single packs and wholesale cartons.",
   },
   {
-    q: "Do you offer private-label retail packaging?",
-    a: "Yes. Retail packs from 1 kg to 5 kg can be produced under your own brand, with design support from our packaging team.",
+    q: "Do you export?",
+    a: "We currently serve the Ethiopian market nationwide. Expanding to export markets is part of our growth plan, so please reach out to discuss opportunities.",
+  },
+];
+
+// Placeholder testimonials — replace the quotes/names with real customer
+// feedback when the client provides it. Kept generic and true-to-business.
+export const TESTIMONIALS = [
+  {
+    quote:
+      "We've stocked Fikir flour and Unic biscuits for years. The quality is consistent and our customers keep coming back.",
+    name: "Wholesale partner",
+    role: "Adama",
+  },
+  {
+    quote:
+      "Deliveries arrive on time with their own trucks, and the fortified flour is exactly what families ask for.",
+    name: "Retail shop owner",
+    role: "Oromia",
+  },
+  {
+    quote:
+      "Unic biscuits and chips move fast off our shelves. A trusted Ethiopian brand at a fair price.",
+    name: "Distributor",
+    role: "Ethiopia",
   },
 ];
 
 export const IMAGES = {
-  // Hero left unchanged by request.
-  heroWheat:
-    "https://images.unsplash.com/photo-1592348665283-ab41f858f1b7?q=80&w=2070&auto=format&fit=crop",
-  millInterior:
-    "https://images.unsplash.com/photo-1667328925477-1cc446534413?q=80&w=1600&auto=format&fit=crop",
-  factoryAbout:
-    "https://images.unsplash.com/photo-1632959788203-904c5a3c1e6b?q=80&w=1600&auto=format&fit=crop",
-  flourPour:
-    "https://images.unsplash.com/photo-1549590143-d5855148a9d5?q=80&w=1600&auto=format&fit=crop",
-  wheatAerial:
-    "https://images.unsplash.com/photo-1529511582893-2d7e684dd128?q=80&w=1600&auto=format&fit=crop",
-  milling:
-    "https://images.unsplash.com/photo-1652950741256-bb58335f468f?q=80&w=1600&auto=format&fit=crop",
-  wheatHarvest:
-    "https://images.unsplash.com/photo-1635174815612-fd9636f70146?q=80&w=1600&auto=format&fit=crop",
-  breadOven:
-    "https://images.unsplash.com/photo-1567042661848-7161ce446f85?q=80&w=1600&auto=format&fit=crop",
+  // Brand / hero
+  hero: `${M}/hero-banner.jpg`,
+  building: `${M}/building.jpg`,
+  silos: `${M}/silos.jpg`,
+  flourPoster: `${M}/flour-poster.jpg`,
+  signageHero: `${M}/signage-1.jpg`,
+  signageAlt: `${M}/signage-2.jpg`,
+  lifeBiscuit: `${M}/life-2.jpg`,
+  lifeChipsGirl: `${M}/life-1.jpg`,
+  lifeChipsHand: `${M}/life-chips.jpg`,
+  lifeMarket: `${M}/life-market.jpg`,
+  lifeAbounded: `${M}/life-abounded.jpg`,
+  stillMilk: `${M}/still-milk.jpg`,
+  stillTea: `${M}/still-tea.jpg`,
+  // Facility / distribution
+  fleet: `${M}/fleet-2.jpg`,
+  fleetAlt: `${M}/fleet-1.jpg`,
+  warehouse: `${M}/warehouse-flour.jpg`,
+  // Products
+  chipsTomato: `${M}/chips-tomato.jpg`,
+  chipsPaprika: `${M}/chips-paprika.jpg`,
 };
