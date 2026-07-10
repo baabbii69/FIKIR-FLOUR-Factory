@@ -2,7 +2,7 @@
  * Protected lead endpoint for Vercel.
  *
  * Required: TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.
- * Optional: WEB3FORMS_ACCESS_KEY, TURNSTILE_SECRET_KEY,
+ * Optional: TURNSTILE_SECRET_KEY, LEAD_ALERT_WEBHOOK_URL, and ALLOWED_ORIGINS.
  * LEAD_ALERT_WEBHOOK_URL, and ALLOWED_ORIGINS (comma-separated).
  *
  * The in-memory limiter protects each warm function instance. Enable Vercel WAF
@@ -192,27 +192,6 @@ async function sendTelegram(data) {
   }
 }
 
-async function sendWeb3Forms(data) {
-  const accessKey = (process.env.WEB3FORMS_ACCESS_KEY || "").trim();
-  if (!accessKey) return { ok: false, reason: "email_not_configured" };
-
-  try {
-    const response = await fetchWithTimeout(
-      "https://api.web3forms.com/submit",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ access_key: accessKey, ...data }),
-      },
-      8_000
-    );
-    const result = await response.json().catch(() => ({}));
-    return response.ok && result.success !== false ? { ok: true } : { ok: false, reason: "email_rejected" };
-  } catch {
-    return { ok: false, reason: "email_unreachable" };
-  }
-}
-
 async function alertOperations(event, detail) {
   const webhook = (process.env.LEAD_ALERT_WEBHOOK_URL || "").trim();
   if (!webhook) return;
@@ -288,14 +267,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  const email = await sendWeb3Forms(parsed.data);
-  if (email.ok) {
-    console.warn(JSON.stringify({ event: "lead_fallback_delivered", from: telegram.reason, channel: "email", source: parsed.data.source }));
-    reply(res, 200, { success: true });
-    return;
-  }
-
-  console.error(JSON.stringify({ event: "lead_delivery_failed", telegram: telegram.reason, email: email.reason, source: parsed.data.source }));
-  await alertOperations("delivery_failed", { telegram: telegram.reason, email: email.reason });
-  reply(res, 503, { success: false, error: "delivery_unavailable" });
+  console.error(JSON.stringify({ event: "telegram_delivery_failed", telegram: telegram.reason, source: parsed.data.source }));
+  await alertOperations("telegram_delivery_failed", { telegram: telegram.reason });
+  reply(res, 503, { success: false, error: "telegram_unavailable" });
 }
