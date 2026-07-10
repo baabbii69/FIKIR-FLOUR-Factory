@@ -150,3 +150,24 @@
     }
   }
 }
+
+/* ---- Amharic (Ge'ez script) typography ---- */
+html[lang="am"] {
+  --font-display: "Noto Serif Ethiopic", "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Noto Sans Ethiopic", "DM Sans", system-ui, sans-serif;
+  --font-mono: "Noto Sans Ethiopic", "DM Mono", ui-monospace, monospace;
+}
+/* Ge'ez glyphs are taller and have no case; give headings room and ease the
+   wide tracking used on Latin labels so Amharic stays readable. */
+html[lang="am"] .display-1 {
+  line-height: 1.14;
+}
+html[lang="am"] .display-2 {
+  line-height: 1.2;
+}
+html[lang="am"] .eyebrow {
+  letter-spacing: 0.06em;
+}
+html[lang="am"] .font-mono {
+  letter-spacing: 0.02em;
+}

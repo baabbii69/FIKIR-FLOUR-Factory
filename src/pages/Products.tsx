@@ -9,6 +9,7 @@ import Btn from "../components/Btn";
 import { usePageMeta } from "../lib/usePageMeta";
 import { PRODUCTS, CATEGORIES, FAQS, IMAGES } from "../data/site";
 import type { Product, Category } from "../data/site";
+import { useI18n } from "../i18n/I18nProvider";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const isPackImg = (src: string) => src.endsWith(".png");
@@ -18,6 +19,7 @@ export default function Products() {
     "Products | FIKIR FOOD PROCESSING",
     "Fortified flour, Unic biscuits, wafers, and chips, made in Adama, Ethiopia and distributed nationwide."
   );
+  const { t } = useI18n();
   const [selected, setSelected] = useState<Product | null>(null);
 
   return (
@@ -25,19 +27,22 @@ export default function Products() {
       <PageHero
         image={IMAGES.hero}
         alt="Fikir products with the factory behind"
-        crumb="Products"
-        title="One name, a whole"
-        titleAccent="shelf."
+        crumb={t("nav.products", "Products")}
+        title={t("prod.hero.title", "One name, a whole")}
+        titleAccent={t("prod.hero.accent", "shelf.")}
       />
       <ProductBrowser onOpen={setSelected} />
       <FAQ />
       <CTABanner
         image={IMAGES.warehouse}
         alt="Fikir products stacked in the warehouse"
-        title="Want to stock"
-        titleAccent="Fikir?"
-        text="Tell us what you sell and where you are. We'll connect you with the nearest supplier or set you up as a distributor."
-        primary="Become a distributor"
+        title={t("prod.cta.title", "Want to stock")}
+        titleAccent={t("prod.cta.accent", "Fikir?")}
+        text={t(
+          "prod.cta.text",
+          "Tell us what you sell and where you are. We'll connect you with the nearest supplier or set you up as a distributor."
+        )}
+        primary={t("cta.becomeDistributor", "Become a distributor")}
         primaryTo="/contact"
       />
       <ProductModal product={selected} onClose={() => setSelected(null)} />
@@ -46,6 +51,7 @@ export default function Products() {
 }
 
 function ProductBrowser({ onOpen }: { onOpen: (p: Product) => void }) {
+  const { t } = useI18n();
   const [params, setParams] = useSearchParams();
   const active = (params.get("cat") as Category | "all") ?? "all";
   const [query, setQuery] = useState("");
@@ -63,7 +69,7 @@ function ProductBrowser({ onOpen }: { onOpen: (p: Product) => void }) {
         <Reveal>
           <div className="flex flex-col gap-4 border-b border-linen pb-6 lg:flex-row lg:items-center lg:justify-between">
             <div role="tablist" aria-label="Filter products" className="flex flex-wrap gap-2">
-              {[{ id: "all", label: "All" }, ...CATEGORIES].map((c) => {
+              {[{ id: "all", label: "All", tk: "common.all" }, ...CATEGORIES.map((c) => ({ id: c.id, label: c.label, tk: `cat.${c.id}.label` }))].map((c) => {
                 const on = active === c.id;
                 return (
                   <button
@@ -75,7 +81,7 @@ function ProductBrowser({ onOpen }: { onOpen: (p: Product) => void }) {
                       on ? "bg-ink text-cream" : "border border-linen text-clay hover:border-ink/40 hover:text-ink"
                     }`}
                   >
-                    {c.label}
+                    {t(c.tk, c.label)}
                   </button>
                 );
               })}
@@ -85,7 +91,7 @@ function ProductBrowser({ onOpen }: { onOpen: (p: Product) => void }) {
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search products..."
+                placeholder={t("prod.search.placeholder", "Search products...")}
                 aria-label="Search products"
                 className="w-full border border-linen bg-parchment py-2.5 pl-10 pr-9 font-mono text-[12px] tracking-wide text-ink placeholder:text-clay/50 focus:border-gold-deep focus:outline-none"
               />
@@ -101,7 +107,7 @@ function ProductBrowser({ onOpen }: { onOpen: (p: Product) => void }) {
         {q ? (
           <div className="mt-12">
             <p className="mb-8 font-mono text-[11px] uppercase tracking-[0.18em] text-clay/70">
-              {searchResults.length} result{searchResults.length === 1 ? "" : "s"} for &ldquo;{query}&rdquo;
+              {searchResults.length} {t("prod.search.resultsFor", "results for")} &ldquo;{query}&rdquo;
             </p>
             {searchResults.length ? (
               <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
@@ -110,7 +116,9 @@ function ProductBrowser({ onOpen }: { onOpen: (p: Product) => void }) {
                 ))}
               </div>
             ) : (
-              <p className="text-clay">No products match. Try another word, or browse the categories above.</p>
+              <p className="text-clay">
+                {t("prod.search.noMatch", "No products match. Try another word, or browse the categories above.")}
+              </p>
             )}
           </div>
         ) : (
@@ -122,14 +130,15 @@ function ProductBrowser({ onOpen }: { onOpen: (p: Product) => void }) {
 }
 
 function CategorySection({ cat, onOpen }: { cat: Category; onOpen: (p: Product) => void }) {
+  const { t } = useI18n();
   const info = CATEGORIES.find((c) => c.id === cat)!;
   const items = useMemo(() => PRODUCTS.filter((p) => p.category === cat), [cat]);
   return (
     <div className="mt-14 first:mt-12">
       <Reveal>
         <div className="flex items-baseline justify-between gap-4 border-b border-linen/70 pb-4">
-          <h2 className="display-2 text-3xl md:text-4xl">{info.label}</h2>
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-clay/70">{info.note}</span>
+          <h2 className="display-2 text-3xl md:text-4xl">{t(`cat.${cat}.label`, info.label)}</h2>
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-clay/70">{t(`cat.${cat}.note`, info.note)}</span>
         </div>
       </Reveal>
       <div className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
@@ -143,6 +152,7 @@ function CategorySection({ cat, onOpen }: { cat: Category; onOpen: (p: Product) 
 
 function ProductCard({ product: p, index, onOpen }: { product: Product; index: number; onOpen: (p: Product) => void }) {
   const reduce = useReducedMotion();
+  const { t } = useI18n();
   const isPack = isPackImg(p.image);
   return (
     <motion.button
@@ -162,16 +172,16 @@ function ProductCard({ product: p, index, onOpen }: { product: Product; index: n
           className={`h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05] ${isPack ? "object-contain p-4" : "object-cover"}`}
         />
         {p.badge && (
-          <span className="absolute left-3 top-3 bg-gold px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-ink">{p.badge}</span>
+          <span className="absolute left-3 top-3 bg-gold px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-ink">{t(`badge.${p.badge}`, p.badge)}</span>
         )}
         <span className="absolute bottom-3 right-3 inline-flex translate-y-1 items-center gap-1.5 bg-ink/90 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-cream opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-          <Eye size={13} weight="bold" /> View
+          <Eye size={13} weight="bold" /> {t("cta.view", "View")}
         </span>
       </div>
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-display text-xl font-semibold leading-tight text-ink">{p.name}</h3>
-        <p className="mt-2 flex-1 text-[13.5px] leading-relaxed text-clay/90 line-clamp-3">{p.blurb}</p>
-        {p.meta && <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep">{p.meta}</p>}
+        <h3 className="font-display text-xl font-semibold leading-tight text-ink">{t(`prod.${p.slug}.name`, p.name)}</h3>
+        <p className="mt-2 flex-1 text-[13.5px] leading-relaxed text-clay/90 line-clamp-3">{t(`prod.${p.slug}.blurb`, p.blurb)}</p>
+        {p.meta && <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep">{t(`prod.${p.slug}.meta`, p.meta)}</p>}
       </div>
     </motion.button>
   );
@@ -180,6 +190,7 @@ function ProductCard({ product: p, index, onOpen }: { product: Product; index: n
 /* ---------------- Detail modal ---------------- */
 function ProductModal({ product: p, onClose }: { product: Product | null; onClose: () => void }) {
   const reduce = useReducedMotion();
+  const { t } = useI18n();
   useEffect(() => {
     if (!p) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -224,24 +235,24 @@ function ProductModal({ product: p, onClose }: { product: Product | null; onClos
             </div>
             <div className="flex flex-col p-7 md:p-9">
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold-deep">
-                {p.brand} · {CATEGORIES.find((c) => c.id === p.category)?.label}
+                {p.brand} · {t(`cat.${p.category}.label`, CATEGORIES.find((c) => c.id === p.category)?.label ?? "")}
               </span>
-              <h2 className="mt-3 font-display text-3xl font-semibold leading-tight text-ink">{p.name}</h2>
-              <p className="mt-4 text-[15px] leading-relaxed text-clay/90">{p.blurb}</p>
+              <h2 className="mt-3 font-display text-3xl font-semibold leading-tight text-ink">{t(`prod.${p.slug}.name`, p.name)}</h2>
+              <p className="mt-4 text-[15px] leading-relaxed text-clay/90">{t(`prod.${p.slug}.blurb`, p.blurb)}</p>
               {p.meta && (
                 <div className="mt-6 border-t border-linen pt-5">
                   <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-clay/60">
-                    {p.category === "flour" ? "Pack sizes" : "Type"}
+                    {p.category === "flour" ? t("prod.modal.packSizes", "Pack sizes") : t("prod.modal.type", "Type")}
                   </div>
-                  <div className="mt-1 font-display text-lg font-semibold text-ink">{p.meta}</div>
+                  <div className="mt-1 font-display text-lg font-semibold text-ink">{t(`prod.${p.slug}.meta`, p.meta)}</div>
                 </div>
               )}
               <div className="mt-auto flex flex-col gap-3 pt-8">
                 <Btn to="/contact" arrow className="w-full">
-                  Enquire / order
+                  {t("cta.enquireOrder", "Enquire / order")}
                 </Btn>
                 <Btn to={`/products?cat=${p.category}`} variant="outline-ink" className="w-full">
-                  More {CATEGORIES.find((c) => c.id === p.category)?.label.toLowerCase()}
+                  {t("prod.modal.more", "More")} {t(`cat.${p.category}.label`, CATEGORIES.find((c) => c.id === p.category)?.label ?? "").toLowerCase()}
                 </Btn>
               </div>
             </div>
@@ -253,19 +264,20 @@ function ProductModal({ product: p, onClose }: { product: Product | null; onClos
 }
 
 function FAQ() {
+  const { t } = useI18n();
   return (
     <section className="bg-parchment">
       <div className="mx-auto grid max-w-[1400px] gap-12 px-5 py-20 md:px-10 md:py-28 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
             <Reveal>
-              <h2 className="display-2 text-4xl md:text-5xl">Common questions</h2>
+              <h2 className="display-2 text-4xl md:text-5xl">{t("prod.faq.title", "Common questions")}</h2>
               <p className="mt-6 max-w-sm text-[15px] leading-relaxed">
-                For anything else, reach us anytime through the{" "}
+                {t("prod.faq.subPre", "For anything else, reach us anytime through the ")}
                 <Link to="/contact" className="text-gold-deep underline decoration-gold/40 underline-offset-4 transition-colors hover:text-ink">
-                  contact page
+                  {t("prod.faq.contactPage", "contact page")}
                 </Link>
-                .
+                {t("prod.faq.subPost", ".")}
               </p>
             </Reveal>
           </div>
@@ -275,8 +287,8 @@ function FAQ() {
             {FAQS.map((f, i) => (
               <Reveal key={f.q} delay={0.04 * Math.min(i, 3)}>
                 <div className="grid gap-3 py-8 md:grid-cols-12 md:gap-8">
-                  <dt className="font-display text-xl font-semibold text-ink md:col-span-5">{f.q}</dt>
-                  <dd className="text-[15px] leading-relaxed text-clay/90 md:col-span-7">{f.a}</dd>
+                  <dt className="font-display text-xl font-semibold text-ink md:col-span-5">{t(`faq.${i}.q`, f.q)}</dt>
+                  <dd className="text-[15px] leading-relaxed text-clay/90 md:col-span-7">{t(`faq.${i}.a`, f.a)}</dd>
                 </div>
               </Reveal>
             ))}

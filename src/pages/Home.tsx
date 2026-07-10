@@ -6,6 +6,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, SealCheck } from "@phosphor-icons/react";
 import { usePageMeta } from "../lib/usePageMeta";
 import { STATS, CATEGORIES, CERTIFICATE, PRODUCTS, IMAGES, COMPANY } from "../data/site";
+import { useI18n } from "../i18n/I18nProvider";
+import { Accent } from "../i18n/Accent";
 import Btn from "../components/Btn";
 import Reveal from "../components/Reveal";
 import Stat from "../components/Stat";
@@ -19,6 +21,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 /* ---------------- Hero ---------------- */
 function Hero() {
   const reduce = useReducedMotion();
+  const { t } = useI18n();
   const item = (delay: number) => ({
     initial: reduce ? false : { opacity: 0, y: 32 },
     animate: { opacity: 1, y: 0 },
@@ -39,23 +42,23 @@ function Hero() {
       <FlourDust />
       <div className="relative mx-auto w-full max-w-[1400px] px-5 pt-24 md:px-10">
         <motion.span className="eyebrow" {...item(0.1)}>
-          Adama, Ethiopia · {COMPANY.name}
+          {t("home.hero.eyebrow", `Adama, Ethiopia · ${COMPANY.name}`)}
         </motion.span>
         <motion.h1 className="display-1 mt-6 max-w-4xl text-5xl !text-cream sm:text-6xl lg:text-8xl" {...item(0.22)}>
-          We produce quality,
-          <br />
-          we deliver <em className="inline-block pb-2 leading-[1.1] text-gold">trust.</em>
+          <Accent text={t("home.hero.title", "We produce quality, *we deliver trust.*")} tone="dark" />
         </motion.h1>
         <motion.p className="mt-7 max-w-xl text-lg leading-relaxed text-cream/85" {...item(0.36)}>
-          For over 15 years we've made fortified flour, Unic biscuits, wafers, and chips in Adama,
-          delivered fresh across Ethiopia by our own fleet.
+          {t(
+            "home.hero.sub",
+            "For over 15 years we've made fortified flour, Unic biscuits, wafers, and chips in Adama, delivered fresh across Ethiopia by our own fleet."
+          )}
         </motion.p>
         <motion.div className="mt-10 flex flex-col gap-4 sm:flex-row" {...item(0.48)}>
           <Btn to="/products" arrow>
-            Explore products
+            {t("cta.exploreProducts", "Explore products")}
           </Btn>
           <Btn to="/about" variant="outline-cream">
-            Our story
+            {t("cta.ourStory", "Our story")}
           </Btn>
         </motion.div>
       </div>
@@ -65,19 +68,20 @@ function Hero() {
 
 /* ---------------- Text marquee ---------------- */
 const MARQUEE = [
-  "Since 2004 E.C.",
-  "Adama, Ethiopia",
-  "Fortified up to Vitamin B12",
-  "600+ team members",
-  "Delivered nationwide",
-  "We produce quality, we deliver trust",
+  { k: "home.mq.1", en: "Since 2004 E.C." },
+  { k: "home.mq.2", en: "Adama, Ethiopia" },
+  { k: "home.mq.3", en: "Fortified up to Vitamin B12" },
+  { k: "home.mq.4", en: "600+ team members" },
+  { k: "home.mq.5", en: "Delivered nationwide" },
+  { k: "home.mq.6", en: "We produce quality, we deliver trust" },
 ];
 function MarqueeBand() {
+  const { t } = useI18n();
   const strip = (h: boolean) => (
     <ul aria-hidden={h || undefined} className="animate-marquee flex shrink-0 items-center">
       {MARQUEE.map((m) => (
-        <li key={m} className="flex shrink-0 items-center whitespace-nowrap font-display text-3xl font-medium text-cream/85 md:text-4xl">
-          <span className="px-8 md:px-12">{m}</span>
+        <li key={m.k} className="flex shrink-0 items-center whitespace-nowrap font-display text-3xl font-medium text-cream/85 md:text-4xl">
+          <span className="px-8 md:px-12">{t(m.k, m.en)}</span>
           <span className="text-2xl text-gold" aria-hidden>
             &middot;
           </span>
@@ -96,12 +100,30 @@ function MarqueeBand() {
 }
 
 /* ---------------- Who we are (scroll-scrubbed reveal) ---------------- */
-const WORDS =
-  "A legally registered Ethiopian food manufacturer in Adama, making the highest-quality wheat flour, more than twelve kinds of biscuits, cream wafers, and potato chips, for |families across the country.|"
-    .split(" ")
-    .map((w) => (w.startsWith("|") && w.endsWith("|") ? { t: w.slice(1, -1), gold: true } : { t: w }));
+const WHO_EN =
+  "A legally registered Ethiopian food manufacturer in Adama, making the highest-quality wheat flour, more than twelve kinds of biscuits, cream wafers, and potato chips, for *families across the country.*";
+
+// Split a *starred* string into words, flagging which fall inside the accent.
+function splitWords(s: string) {
+  let inAccent = false;
+  return s
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => {
+      const hasStart = w.startsWith("*");
+      let text = w.replace(/^\*+/, "");
+      const hasEnd = text.endsWith("*");
+      text = text.replace(/\*+$/, "");
+      const gold = inAccent || hasStart;
+      if (hasStart && !hasEnd) inAccent = true;
+      if (hasEnd) inAccent = false;
+      return { t: text, gold };
+    });
+}
 
 function WhoWeAre() {
+  const { t, lang } = useI18n();
+  const words = splitWords(t("home.who.body", WHO_EN));
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
@@ -120,16 +142,16 @@ function WhoWeAre() {
       );
     });
     return () => mm.revert();
-  }, []);
+  }, [lang]); // re-init when the words change on language switch
   return (
     <section className="bg-cream">
       <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-36">
         <Reveal>
-          <span className="eyebrow">Who we are</span>
+          <span className="eyebrow">{t("home.who.eyebrow", "Who we are")}</span>
         </Reveal>
         <div ref={ref} className="mt-8">
           <p className="display-2 max-w-5xl text-3xl leading-[1.22] md:text-5xl md:leading-[1.2]">
-            {WORDS.map((w, i) => (
+            {words.map((w, i) => (
               <span key={i} data-w className={w.gold ? "italic text-gold-deep" : undefined}>
                 {w.t}{" "}
               </span>
@@ -141,14 +163,14 @@ function WhoWeAre() {
             to="/about"
             className="group mt-10 inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.2em] text-gold-deep transition-colors duration-300 hover:text-ink"
           >
-            Our story
+            {t("cta.ourStory", "Our story")}
             <ArrowRight size={13} weight="bold" className="transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </Reveal>
         <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-linen pt-12 md:mt-20 lg:grid-cols-4">
           {STATS.map((s, i) => (
             <Reveal key={s.label} delay={i * 0.07}>
-              <Stat {...s} />
+              <Stat {...s} label={t(`stats.${i}`, s.label)} />
             </Reveal>
           ))}
         </div>
@@ -192,6 +214,7 @@ function PackMarquee() {
 /* ---------------- Interactive range (hover-preview) ---------------- */
 const FEATURED = ["high-energy", "wafer-chocolate", "chips-tomato", "special", "cappuccino", "wafer-orange"];
 function RangeIndex() {
+  const { t } = useI18n();
   const items = FEATURED.map((s) => PRODUCTS.find((p) => p.slug === s)!).filter(Boolean);
   const [active, setActive] = useState<number | null>(null);
   const reduce = useReducedMotion();
@@ -211,14 +234,14 @@ function RangeIndex() {
       <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <Reveal>
-            <span className="eyebrow">What we make</span>
+            <span className="eyebrow">{t("home.range.eyebrow", "What we make")}</span>
             <h2 className="display-2 mt-5 max-w-xl text-4xl md:text-6xl">
-              Four ranges, one <em className="pb-1 leading-[1.1] text-gold-deep">standard.</em>
+              <Accent text={t("home.range.title", "Four ranges, one *standard.*")} />
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
             <Btn to="/products" variant="outline-ink" arrow>
-              All products
+              {t("cta.allProducts", "All products")}
             </Btn>
           </Reveal>
         </div>
@@ -277,8 +300,8 @@ function RangeIndex() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5">
-                  <h3 className="font-display text-xl font-semibold text-cream">{c.label}</h3>
-                  <p className="mt-1 text-sm text-cream/70">{c.note}</p>
+                  <h3 className="font-display text-xl font-semibold text-cream">{t(`cat.${c.id}.label`, c.label)}</h3>
+                  <p className="mt-1 text-sm text-cream/70">{t(`cat.${c.id}.note`, c.note)}</p>
                 </div>
               </Link>
             </Reveal>
@@ -297,34 +320,37 @@ const CAT_IMAGES: Record<string, string> = {
 
 /* ---------------- Quality ---------------- */
 function Quality() {
+  const { t } = useI18n();
   return (
     <section className="bg-ink">
       <div className="mx-auto grid max-w-[1400px] items-center gap-14 px-5 py-24 md:px-10 md:py-32 lg:grid-cols-2 lg:gap-20">
         <Reveal>
-          <span className="eyebrow">Certified quality</span>
+          <span className="eyebrow">{t("home.quality.eyebrow", "Certified quality")}</span>
           <h2 className="display-2 mt-5 text-4xl !text-cream md:text-6xl">
-            Fortified, tested, <em className="pb-1 leading-[1.1] text-gold">certified.</em>
+            <Accent text={t("home.quality.title", "Fortified, tested, *certified.*")} tone="dark" />
           </h2>
           <p className="mt-6 max-w-lg text-base leading-relaxed text-cream/70">
-            Our wheat flour is fortified up to Vitamin B12 and carries the Institute of Ethiopian
-            Standards mark. Every batch is tested in our own laboratory before it leaves the factory.
+            {t(
+              "home.quality.body",
+              "Our wheat flour is fortified up to Vitamin B12 and carries the Institute of Ethiopian Standards mark. Every batch is tested in our own laboratory before it leaves the factory."
+            )}
           </p>
           <div className="mt-9">
             <Btn to="/facility" variant="outline-cream" arrow>
-              Our quality process
+              {t("cta.qualityProcess", "Our quality process")}
             </Btn>
           </div>
         </Reveal>
         <Reveal delay={0.12}>
           <div className="border border-gold/30 bg-ink-soft/40 p-8 md:p-10">
             <SealCheck size={40} weight="duotone" className="text-gold" />
-            <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50">{CERTIFICATE.authority}</p>
-            <h3 className="mt-2 font-display text-3xl font-semibold text-cream">{CERTIFICATE.title}</h3>
+            <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50">{t("cert.authority", CERTIFICATE.authority)}</p>
+            <h3 className="mt-2 font-display text-3xl font-semibold text-cream">{t("cert.title", CERTIFICATE.title)}</h3>
             <dl className="mt-6 space-y-3 border-t border-cream/10 pt-6 text-sm">
               {[
-                ["Product", CERTIFICATE.product],
-                ["Standard", CERTIFICATE.standard],
-                ["License", CERTIFICATE.license],
+                [t("cert.lblProduct", "Product"), t("cert.product", CERTIFICATE.product)],
+                [t("cert.lblStandard", "Standard"), CERTIFICATE.standard],
+                [t("cert.lblLicense", "License"), CERTIFICATE.license],
               ].map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-6">
                   <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-cream/50">{k}</dt>
@@ -341,11 +367,12 @@ function Quality() {
 
 /* ---------------- Testimonials ---------------- */
 function Trusted() {
+  const { t } = useI18n();
   return (
     <section className="bg-cream">
       <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
         <Reveal>
-          <span className="eyebrow">Trusted across Ethiopia</span>
+          <span className="eyebrow">{t("home.trusted.eyebrow", "Trusted across Ethiopia")}</span>
         </Reveal>
         <div className="mt-10 grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
@@ -369,13 +396,14 @@ function Trusted() {
 
 /* ---------------- Lifestyle ---------------- */
 function Lifestyle() {
+  const { t } = useI18n();
   const imgs = [IMAGES.lifeBiscuit, IMAGES.stillTea, IMAGES.silos, IMAGES.lifeMarket, IMAGES.building];
   return (
     <section className="bg-parchment">
       <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
         <Reveal>
           <h2 className="display-2 max-w-2xl text-4xl md:text-6xl">
-            From our factory to <em className="pb-1 leading-[1.1] text-gold-deep">your table.</em>
+            <Accent text={t("home.life.title", "From our factory to *your table.*")} />
           </h2>
         </Reveal>
         <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -398,6 +426,7 @@ function Lifestyle() {
 }
 
 export default function Home() {
+  const { t } = useI18n();
   usePageMeta(
     "FIKIR FOOD PROCESSING | Flour, Biscuits, Wafers & Chips, Ethiopia",
     "Fikir Food Processing makes fortified flour, Unic biscuits, wafers, and chips in Adama, Ethiopia. Over 15 years, 600+ employees, delivered nationwide."
@@ -415,12 +444,12 @@ export default function Home() {
       <CTABanner
         image={IMAGES.fleet}
         alt="The Fikir delivery fleet"
-        title="Stock Fikir, or"
-        titleAccent="just say hello."
-        text="Whether you're a shop, a wholesaler, or a family with a question, we'd love to hear from you."
-        primary="Get in touch"
+        title={t("home.cta.titleLead", "Stock Fikir, or")}
+        titleAccent={t("home.cta.titleAccent", "just say hello.")}
+        text={t("home.cta.text", "Whether you're a shop, a wholesaler, or a family with a question, we'd love to hear from you.")}
+        primary={t("cta.getInTouch", "Get in touch")}
         primaryTo="/contact"
-        secondary="See the facility"
+        secondary={t("cta.seeFacility", "See the facility")}
         secondaryTo="/facility"
       />
     </>

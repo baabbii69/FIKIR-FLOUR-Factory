@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "motion/react";
+import { useI18n } from "../i18n/I18nProvider";
 
 /** Interior page hero: full-bleed image, bottom-left aligned title. */
 export default function PageHero({
@@ -16,6 +17,7 @@ export default function PageHero({
   titleAccent?: string;
 }) {
   const reduce = useReducedMotion();
+  const { t } = useI18n();
   return (
     <section className="relative flex min-h-[52vh] items-end overflow-hidden bg-ink pt-24">
       <div className="absolute inset-0">
@@ -31,7 +33,7 @@ export default function PageHero({
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
           <Link to="/" className="transition-colors hover:text-gold">
-            Home
+            {t("crumb.home", "Home")}
           </Link>
           <span className="mx-3 text-gold">/</span>
           <span className="text-cream/85">{crumb}</span>

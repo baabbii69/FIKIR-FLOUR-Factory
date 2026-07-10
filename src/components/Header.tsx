@@ -3,11 +3,23 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { List, X } from "@phosphor-icons/react";
 import { NAV, CONTACT } from "../data/site";
+import { useI18n } from "../i18n/I18nProvider";
+import LangSwitcher from "../i18n/LangSwitcher";
 import Btn from "./Btn";
+
+const NAV_KEY: Record<string, string> = {
+  "/": "nav.home",
+  "/products": "nav.products",
+  "/about": "nav.about",
+  "/facility": "nav.facility",
+  "/careers": "nav.careers",
+  "/contact": "nav.contact",
+};
 
 function Wordmark({ solid }: { solid: boolean }) {
   // solid = over a light (cream) header -> full-colour mark + ink text.
   // !solid = over the dark hero (or dark mobile menu) -> cream line-art mark + cream text.
+  const { t } = useI18n();
   return (
     <Link to="/" className="flex items-center gap-3" aria-label="FIKIR FOOD PROCESSING home">
       <img
@@ -24,7 +36,7 @@ function Wordmark({ solid }: { solid: boolean }) {
         <span
           className={`mt-1 font-mono text-[9px] uppercase tracking-[0.28em] transition-colors duration-300 ${solid ? "text-clay/80" : "text-cream/70"}`}
         >
-          Food Processing
+          {t("brand.sub", "Food Processing")}
         </span>
       </span>
     </Link>
@@ -37,6 +49,7 @@ export default function Header() {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const reduce = useReducedMotion();
+  const { t } = useI18n();
 
   // Sentinel-based sticky state: no scroll listeners.
   useEffect(() => {
@@ -91,14 +104,17 @@ export default function Header() {
                   }`
                 }
               >
-                {item.label}
+                {t(NAV_KEY[item.to] ?? "", item.label)}
               </NavLink>
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <div className="hidden lg:block">
+              <LangSwitcher tone={solid ? "solid" : "transparent"} />
+            </div>
             <Btn to="/contact" className="hidden !px-6 !py-3 md:inline-flex">
-              Request a Quote
+              {t("header.quote", "Request a Quote")}
             </Btn>
             <button
               onClick={() => setOpen(true)}
@@ -149,13 +165,13 @@ export default function Header() {
                       }`
                     }
                   >
-                    {item.label}
+                    {t(NAV_KEY[item.to] ?? "", item.label)}
                   </NavLink>
                 </motion.div>
               ))}
             </nav>
             <motion.div
-              className="border-t border-cream/10 px-8 py-6 md:px-16"
+              className="flex items-center justify-between gap-4 border-t border-cream/10 px-8 py-6 md:px-16"
               initial={reduce ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.45, duration: 0.5 }}
@@ -165,6 +181,7 @@ export default function Header() {
                 <span className="mx-3 text-gold">·</span>
                 {CONTACT.email}
               </p>
+              <LangSwitcher tone="transparent" />
             </motion.div>
           </motion.div>
         )}

@@ -4,24 +4,33 @@ import { ChatCircleDots, X, PaperPlaneRight, CircleNotch } from "@phosphor-icons
 import { answer, isLeadIntent } from "../lib/chatBrain";
 import { submitLead } from "../lib/leads";
 import { CONTACT } from "../data/site";
+import { useI18n } from "../i18n/I18nProvider";
 
 type Msg = { id: number; from: "bot" | "user"; text: string; chips?: string[] };
 
 /** Guided lead capture: collect the essentials, then submit to Web3Forms. */
 type LeadStep = null | "name" | "contact" | "interest" | "sending";
 
-const GREETING: Msg = {
-  id: 0,
-  from: "bot",
-  text: "Hi! I'm the FIKIR FOOD PROCESSING assistant. Ask me about our flour, biscuits, wafers, and chips, or how to buy or distribute them.",
-  chips: ["Our products", "Where to buy", "Fortification", "Become a distributor"],
-};
-
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function ChatWidget() {
+  const { t } = useI18n();
+  const greeting = (): Msg => ({
+    id: 0,
+    from: "bot",
+    text: t(
+      "chat.greeting",
+      "Hi! I'm the FIKIR FOOD PROCESSING assistant. Ask me about our flour, biscuits, wafers, and chips, or how to buy or distribute them."
+    ),
+    chips: [
+      t("chat.chip.products", "Our products"),
+      t("chat.chip.buy", "Where to buy"),
+      t("chat.chip.fortification", "Fortification"),
+      t("chat.chip.distributor", "Become a distributor"),
+    ],
+  });
   const [open, setOpen] = useState(false);
-  const [msgs, setMsgs] = useState<Msg[]>([GREETING]);
+  const [msgs, setMsgs] = useState<Msg[]>(() => [greeting()]);
   const [draft, setDraft] = useState("");
   const [leadStep, setLeadStep] = useState<LeadStep>(null);
   const lead = useRef<{ name: string; contact: string; interest: string }>({
@@ -59,12 +68,12 @@ export default function ChatWidget() {
 
   function beginLead() {
     setLeadStep("name");
-    pushBot("Great, I'll take a few quick details. First, what's your name?");
+    pushBot(t("chat.lead.start", "Great, I'll take a few quick details. First, what's your name?"));
   }
 
   async function finishLead() {
     setLeadStep("sending");
-    pushBot("Sending your details to our team...");
+    pushBot(t("chat.lead.sending", "Sending your details to our team..."));
     try {
       await submitLead({
         subject: "New lead from website chat",
@@ -75,13 +84,19 @@ export default function ChatWidget() {
         source: "Website chat widget",
       });
       pushBot(
-        `Thank you, ${lead.current.name || "there"}. Our team will reach out within one business day. Anything else I can help with?`,
-        ["Our products", "Shipping"],
+        t("chat.lead.thanks1", "Thank you, ") +
+          (lead.current.name || t("chat.you", "there")) +
+          t("chat.lead.thanks2", ". Our team will reach out within one business day. Anything else I can help with?"),
+        [t("chat.chip.products", "Our products")],
       );
     } catch {
       pushBot(
-        `Sorry, I couldn't send that just now. You can reach us directly at ${CONTACT.phone} or ${CONTACT.email}.`,
-        ["Try again", "Our products"],
+        t("chat.lead.error1", "Sorry, I couldn't send that just now. You can reach us directly at ") +
+          CONTACT.phone +
+          t("chat.lead.error2", " or ") +
+          CONTACT.email +
+          t("chat.lead.error3", "."),
+        [t("chat.chip.tryAgain", "Try again"), t("chat.chip.products", "Our products")],
       );
     } finally {
       lead.current = { name: "", contact: "", interest: "" };
@@ -98,18 +113,18 @@ export default function ChatWidget() {
     if (leadStep === "name") {
       lead.current.name = text;
       setLeadStep("contact");
-      pushBot(`Thanks ${text}. What's the best email or phone number to reach you?`);
+      pushBot(t("chat.lead.name1", "Thanks ") + text + t("chat.lead.name2", ". What's the best email or phone number to reach you?"));
       return;
     }
     if (leadStep === "contact") {
       const valid = /@/.test(text) || (text.replace(/\D/g, "").length >= 7);
       if (!valid) {
-        pushBot("That doesn't look quite right. Please share an email address or a phone number.");
+        pushBot(t("chat.lead.contactInvalid", "That doesn't look quite right. Please share an email address or a phone number."));
         return;
       }
       lead.current.contact = text;
       setLeadStep("interest");
-      pushBot("Which product and roughly what monthly volume are you interested in? Add any details you like.");
+      pushBot(t("chat.lead.interest", "Which product and roughly what monthly volume are you interested in? Add any details you like."));
       return;
     }
     if (leadStep === "interest") {
@@ -119,7 +134,7 @@ export default function ChatWidget() {
     }
 
     // Normal conversation.
-    if (/^try again$/i.test(text)) {
+    if (/^try again$/i.test(text) || text === t("chat.chip.tryAgain", "Try again")) {
       beginLead();
       return;
     }
@@ -127,7 +142,7 @@ export default function ChatWidget() {
       beginLead();
       return;
     }
-    const reply = answer(text);
+    const reply = answer(text, t);
     pushBot(reply.text, reply.chips);
   }
 
@@ -139,12 +154,12 @@ export default function ChatWidget() {
 
   const placeholder =
     leadStep === "name"
-      ? "Type your name..."
+      ? t("chat.ph.name", "Type your name...")
       : leadStep === "contact"
-        ? "Email or phone..."
+        ? t("chat.ph.contact", "Email or phone...")
         : leadStep === "interest"
-          ? "Product and volume..."
-          : "Ask about our flour...";
+          ? t("chat.ph.interest", "Product and volume...")
+          : t("chat.ph.ask", "Ask about our products...");
 
   return (
     <>
@@ -183,9 +198,9 @@ export default function ChatWidget() {
             <div className="flex items-center gap-3 border-b border-cream/10 bg-ink px-4 py-3.5">
               <img src="/logo-mark-cream.png" alt="" className="h-8 w-auto" />
               <div className="leading-tight">
-                <p className="font-display text-lg font-semibold text-cream">Fikir Assistant</p>
+                <p className="font-display text-lg font-semibold text-cream">{t("chat.title", "Fikir Assistant")}</p>
                 <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-gold">
-                  Usually replies instantly
+                  {t("chat.status", "Usually replies instantly")}
                 </p>
               </div>
               <button
@@ -228,7 +243,7 @@ export default function ChatWidget() {
               {leadStep === "sending" && (
                 <div className="mr-auto inline-flex items-center gap-2 rounded-2xl rounded-bl-sm bg-parchment px-3.5 py-2.5 text-[14px] text-clay ring-1 ring-linen">
                   <CircleNotch size={15} weight="bold" className="animate-spin text-gold-deep" />
-                  Sending...
+                  {t("chat.sending", "Sending...")}
                 </div>
               )}
             </div>

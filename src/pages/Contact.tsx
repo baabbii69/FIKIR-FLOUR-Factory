@@ -14,21 +14,23 @@ import Reveal from "../components/Reveal";
 import { usePageMeta } from "../lib/usePageMeta";
 import { submitLead } from "../lib/leads";
 import { CONTACT, IMAGES } from "../data/site";
+import { useI18n } from "../i18n/I18nProvider";
 
 export default function Contact() {
   usePageMeta(
     "Contact | FIKIR FOOD PROCESSING",
     "Become a distributor, place a wholesale order, or reach the Fikir Food Processing team in Adama, Ethiopia."
   );
+  const { t } = useI18n();
 
   return (
     <>
       <PageHero
         image={IMAGES.fleet}
         alt="The Fikir delivery fleet at the plant in Adama"
-        crumb="Contact"
-        title="Let's"
-        titleAccent="talk."
+        crumb={t("nav.contact", "Contact")}
+        title={t("con.hero.title", "Let's")}
+        titleAccent={t("con.hero.accent", "talk.")}
       />
 
       {/* Full-bleed split: ink details left, parchment form right. Inner content
@@ -37,15 +39,15 @@ export default function Contact() {
         <div className="bg-ink">
           <div className="w-full max-w-[700px] px-5 py-16 md:px-10 md:py-20 lg:ml-auto lg:pr-14">
             <Reveal>
-              <span className="eyebrow">Reach us directly</span>
+              <span className="eyebrow">{t("con.details.eyebrow", "Reach us directly")}</span>
               <h2 className="display-2 mt-5 text-3xl !text-cream md:text-4xl">
-                One conversation is usually all it takes.
+                {t("con.details.title", "One conversation is usually all it takes.")}
               </h2>
             </Reveal>
 
             <div className="mt-12 space-y-8">
               <Reveal delay={0.06}>
-                <ContactRow icon={<MapPin size={22} weight="duotone" />} label="Visit">
+                <ContactRow icon={<MapPin size={22} weight="duotone" />} label={t("con.label.visit", "Visit")}>
                   {CONTACT.addressLines.map((l) => (
                     <span key={l} className="block">
                       {l}
@@ -54,7 +56,7 @@ export default function Contact() {
                 </ContactRow>
               </Reveal>
               <Reveal delay={0.1}>
-                <ContactRow icon={<Phone size={22} weight="duotone" />} label="Call">
+                <ContactRow icon={<Phone size={22} weight="duotone" />} label={t("con.label.call", "Call")}>
                   {CONTACT.phones.map((p) => (
                     <a key={p} href={`tel:${p.replace(/\s/g, "")}`} className="block transition-colors hover:text-gold">
                       {p}
@@ -63,7 +65,7 @@ export default function Contact() {
                 </ContactRow>
               </Reveal>
               <Reveal delay={0.14}>
-                <ContactRow icon={<EnvelopeSimple size={22} weight="duotone" />} label="Write">
+                <ContactRow icon={<EnvelopeSimple size={22} weight="duotone" />} label={t("con.label.write", "Write")}>
                   <a
                     href={`mailto:${CONTACT.email}`}
                     className="block transition-colors hover:text-gold"
@@ -73,12 +75,12 @@ export default function Contact() {
                 </ContactRow>
               </Reveal>
               <Reveal delay={0.18}>
-                <ContactRow icon={<Clock size={22} weight="duotone" />} label="Hours">
-                  {CONTACT.hours.map((h) => (
+                <ContactRow icon={<Clock size={22} weight="duotone" />} label={t("con.label.hours", "Hours")}>
+                  {CONTACT.hours.map((h, i) => (
                     <span key={h.days} className="flex justify-between gap-6">
-                      <span>{h.days}</span>
+                      <span>{t(`con.hours.${i}.days`, h.days)}</span>
                       <span className="font-mono text-sm tabular-nums text-cream/60">
-                        {h.time}
+                        {h.time === "Closed" ? t("con.hours.closed", "Closed") : h.time}
                       </span>
                     </span>
                   ))}
@@ -89,8 +91,7 @@ export default function Contact() {
             <Reveal delay={0.22}>
               <div className="mt-12 border-t border-cream/15 pt-8">
                 <p className="text-sm leading-relaxed text-cream/60">
-                  Looking to stock Fikir products or become a distributor? Send us a message and our
-                  team will get back to you.
+                  {t("con.details.note", "Looking to stock Fikir products or become a distributor? Send us a message and our team will get back to you.")}
                 </p>
               </div>
             </Reveal>
@@ -146,7 +147,8 @@ function ContactRow({
 
 /* ---------------- Quote form ---------------- */
 
-const ENQUIRY_TYPES = [
+const ENQUIRY_KEYS = ["enq.0", "enq.1", "enq.2", "enq.3", "enq.4"] as const;
+const ENQUIRY_EN = [
   "Become a distributor",
   "Place a wholesale order",
   "Product question",
@@ -157,6 +159,7 @@ const ENQUIRY_TYPES = [
 type Errors = Partial<Record<"firstName" | "lastName" | "email" | "message" | "consent", string>>;
 
 function QuoteForm() {
+  const { t } = useI18n();
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errors, setErrors] = useState<Errors>({});
   const reduce = useReducedMotion();
@@ -167,13 +170,13 @@ function QuoteForm() {
     const data = new FormData(form);
     const next: Errors = {};
 
-    if (!String(data.get("firstName")).trim()) next.firstName = "First name is required.";
-    if (!String(data.get("lastName")).trim()) next.lastName = "Last name is required.";
+    if (!String(data.get("firstName")).trim()) next.firstName = t("con.form.errFirst", "First name is required.");
+    if (!String(data.get("lastName")).trim()) next.lastName = t("con.form.errLast", "Last name is required.");
     const email = String(data.get("email")).trim();
-    if (!email) next.email = "Email is required.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = "Enter a valid email address.";
-    if (!String(data.get("message")).trim()) next.message = "Tell us a little about your needs.";
-    if (!data.get("consent")) next.consent = "Please agree so we can respond to you.";
+    if (!email) next.email = t("con.form.errEmailReq", "Email is required.");
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = t("con.form.errEmailBad", "Enter a valid email address.");
+    if (!String(data.get("message")).trim()) next.message = t("con.form.errMsg", "Tell us a little about your needs.");
+    if (!data.get("consent")) next.consent = t("con.form.errConsent", "Please agree so we can respond to you.");
 
     setErrors(next);
     if (Object.keys(next).length > 0) return;
@@ -207,10 +210,11 @@ function QuoteForm() {
         className="flex min-h-[480px] flex-col items-start justify-center"
       >
         <CheckCircle size={44} weight="duotone" className="text-gold-deep" />
-        <h2 className="display-2 mt-6 text-3xl md:text-4xl">Message received.</h2>
+        <h2 className="display-2 mt-6 text-3xl md:text-4xl">{t("con.form.sentTitle", "Message received.")}</h2>
         <p className="mt-4 max-w-[52ch] text-base leading-relaxed">
-          Thank you. A member of our sales team will reply within one business day. If your
-          enquiry is urgent, call us on {CONTACT.phone}.
+          {t("con.form.sentBody1", "Thank you. A member of our sales team will reply within one business day. If your enquiry is urgent, call us on ")}
+          {CONTACT.phone}
+          {t("con.form.sentBody2", ".")}
         </p>
       </motion.div>
     );
@@ -219,28 +223,31 @@ function QuoteForm() {
   return (
     <div>
       <Reveal>
-        <h2 className="display-2 text-3xl md:text-4xl">Send us a message</h2>
+        <h2 className="display-2 text-3xl md:text-4xl">{t("con.form.title", "Send us a message")}</h2>
         <p className="mt-4 max-w-[56ch] text-[15px] leading-relaxed">
-          Want to stock Fikir products, become a distributor, or ask a question? Tell us a little
-          about you and we'll get back to you.
+          {t("con.form.sub", "Want to stock Fikir products, become a distributor, or ask a question? Tell us a little about you and we'll get back to you.")}
         </p>
       </Reveal>
 
       <form onSubmit={handleSubmit} noValidate className="mt-10">
         <div className="grid gap-6 sm:grid-cols-2">
-          <Field label="First name" name="firstName" autoComplete="given-name" error={errors.firstName} />
-          <Field label="Last name" name="lastName" autoComplete="family-name" error={errors.lastName} />
-          <Field label="Work email" name="email" type="email" autoComplete="email" error={errors.email} />
-          <Field label="Phone (optional)" name="phone" type="tel" autoComplete="tel" />
-          <Field label="Company (optional)" name="company" autoComplete="organization" className="sm:col-span-2" />
-          <SelectField label="Enquiry type" name="enquiry" options={ENQUIRY_TYPES} />
-          <Field label="City / region (optional)" name="volume" placeholder="e.g. Adama, Oromia" />
+          <Field label={t("con.form.firstName", "First name")} name="firstName" autoComplete="given-name" error={errors.firstName} />
+          <Field label={t("con.form.lastName", "Last name")} name="lastName" autoComplete="family-name" error={errors.lastName} />
+          <Field label={t("con.form.email", "Work email")} name="email" type="email" autoComplete="email" error={errors.email} />
+          <Field label={t("con.form.phone", "Phone (optional)")} name="phone" type="tel" autoComplete="tel" />
+          <Field label={t("con.form.company", "Company (optional)")} name="company" autoComplete="organization" className="sm:col-span-2" />
+          <SelectField
+            label={t("con.form.enquiry", "Enquiry type")}
+            name="enquiry"
+            options={ENQUIRY_KEYS.map((k, i) => t(k, ENQUIRY_EN[i]))}
+          />
+          <Field label={t("con.form.city", "City / region (optional)")} name="volume" placeholder={t("con.form.cityPh", "e.g. Adama, Oromia")} />
           <TextareaField
-            label="Your message"
+            label={t("con.form.message", "Your message")}
             name="message"
             error={errors.message}
             className="sm:col-span-2"
-            placeholder="Tell us how we can help, which products you're interested in, and where you are."
+            placeholder={t("con.form.messagePh", "Tell us how we can help, which products you're interested in, and where you are.")}
           />
         </div>
 
@@ -251,7 +258,7 @@ function QuoteForm() {
             className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-[#8b5e2a]"
           />
           <span className="text-sm leading-relaxed text-clay/90">
-            I agree that FIKIR FOOD PROCESSING may contact me about this enquiry.
+            {t("con.form.consent", "I agree that FIKIR FOOD PROCESSING may contact me about this enquiry.")}
           </span>
         </label>
         {errors.consent && <p className="mt-2 text-sm text-[#9a2b1e]">{errors.consent}</p>}
@@ -259,22 +266,25 @@ function QuoteForm() {
         <button
           type="submit"
           disabled={status === "sending"}
-          className="group mt-10 inline-flex items-center justify-center gap-2.5 bg-ink px-10 py-4 font-mono text-[11px] uppercase tracking-[0.18em] text-cream transition-all duration-300 hover:-translate-y-px hover:bg-gold-deep active:translate-y-0 active:scale-[0.98] disabled:cursor-wait disabled:opacity-70"
+          className="group mt-10 inline-flex items-center justify-center gap-2.5 bg-green-deep px-10 py-4 font-mono text-[11px] uppercase tracking-[0.18em] text-cream transition-all duration-300 hover:-translate-y-px hover:bg-green active:translate-y-0 active:scale-[0.98] disabled:cursor-wait disabled:opacity-70"
         >
           {status === "sending" ? (
             <>
               <CircleNotch size={14} weight="bold" className="animate-spin" />
-              Sending
+              {t("con.form.sending", "Sending")}
             </>
           ) : (
-            "Send enquiry"
+            t("con.form.send", "Send enquiry")
           )}
         </button>
 
         {status === "error" && (
           <p className="mt-4 text-sm text-[#9a2b1e]">
-            Something went wrong sending your enquiry. Please email {CONTACT.email} or call{" "}
-            {CONTACT.phone} and we'll help right away.
+            {t("con.form.errorMsg1", "Something went wrong sending your enquiry. Please email ")}
+            {CONTACT.email}
+            {t("con.form.errorMsg2", " or call ")}
+            {CONTACT.phone}
+            {t("con.form.errorMsg3", " and we'll help right away.")}
           </p>
         )}
       </form>

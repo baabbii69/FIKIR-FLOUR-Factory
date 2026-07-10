@@ -12,6 +12,8 @@
     "@fontsource/cormorant-garamond": "^5.2.5",
     "@fontsource/dm-mono": "^5.2.5",
     "@fontsource/dm-sans": "^5.2.5",
+    "@fontsource/noto-sans-ethiopic": "^5.2.7",
+    "@fontsource/noto-serif-ethiopic": "^5.2.9",
     "@phosphor-icons/react": "^2.1.7",
     "gsap": "^3.12.7",
     "lenis": "^1.1.20",
