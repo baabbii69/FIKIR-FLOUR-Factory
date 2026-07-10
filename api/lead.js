@@ -1,41 +1,149 @@
 /**
- * Free lead delivery via Telegram Bot API.
+ * Protected lead endpoint for Vercel.
  *
- * Runs as a Vercel Serverless Function (free on the Hobby plan). The bot token
- * and chat id live in Vercel environment variables, never in the client bundle:
- *   TELEGRAM_BOT_TOKEN  - from @BotFather
- *   TELEGRAM_CHAT_ID    - your numeric chat id (see setup notes)
+ * Required: TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID.
+ * Optional: WEB3FORMS_ACCESS_KEY, TURNSTILE_SECRET_KEY,
+ * LEAD_ALERT_WEBHOOK_URL, and ALLOWED_ORIGINS (comma-separated).
  *
- * The browser POSTs the lead here; we format it and push it to Telegram. If the
- * bot isn't configured yet, we return 502 so the client falls back to email.
+ * The in-memory limiter protects each warm function instance. Enable Vercel WAF
+ * or a distributed limiter for full production protection across instances.
  */
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.status(405).json({ success: false, error: "method_not_allowed" });
-    return;
+const MAX_BODY_BYTES = 10_000;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX_SUBMISSIONS = 5;
+const rateBuckets = new Map();
+
+const LIMITS = {
+  subject: 80,
+  from_name: 120,
+  name: 120,
+  email: 254,
+  contact: 120,
+  phone: 50,
+  company: 160,
+  enquiry: 80,
+  volume: 120,
+  interest: 600,
+  message: 2_000,
+  source: 80,
+  website: 200,
+};
+const ALLOWED_FIELDS = new Set(Object.keys(LIMITS));
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function reply(res, status, payload, headers = {}) {
+  res.setHeader("Cache-Control", "no-store");
+  for (const [name, value] of Object.entries(headers)) res.setHeader(name, value);
+  res.status(status).json(payload);
+}
+
+function cleanString(value, limit) {
+  if (typeof value !== "string") return null;
+  const clean = value.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim();
+  return clean.length <= limit ? clean : null;
+}
+
+function getClientIp(req) {
+  const forwarded = req.headers["x-forwarded-for"];
+  if (typeof forwarded === "string") return forwarded.split(",")[0].trim() || "unknown";
+  return req.headers["x-real-ip"] || req.socket?.remoteAddress || "unknown";
+}
+
+function takeRateLimitSlot(ip) {
+  const now = Date.now();
+  for (const [key, timestamps] of rateBuckets) {
+    const fresh = timestamps.filter((timestamp) => now - timestamp < RATE_WINDOW_MS);
+    if (fresh.length) rateBuckets.set(key, fresh);
+    else rateBuckets.delete(key);
   }
 
-  // Trim so a stray space/newline pasted into the Vercel env var can't break it.
-  const token = (process.env.TELEGRAM_BOT_TOKEN || "").trim();
-  const chatId = (process.env.TELEGRAM_CHAT_ID || "").trim();
-  if (!token || !chatId) {
-    res.status(502).json({ success: false, error: "not_configured" });
-    return;
+  const timestamps = rateBuckets.get(ip) ?? [];
+  if (timestamps.length >= RATE_MAX_SUBMISSIONS) {
+    return { allowed: false, retryAfter: Math.max(1, Math.ceil((RATE_WINDOW_MS - (now - timestamps[0])) / 1000)) };
   }
+  rateBuckets.set(ip, [...timestamps, now]);
+  return { allowed: true };
+}
 
-  let data = {};
+function requestOrigins(req) {
+  const host = String(req.headers["x-forwarded-host"] || req.headers.host || "").split(",")[0].trim();
+  const protocol = String(req.headers["x-forwarded-proto"] || "https").split(",")[0].trim();
+  const configured = (process.env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  return new Set([host ? `${protocol}://${host}` : "", ...configured].filter(Boolean));
+}
+
+function originIsAllowed(req) {
+  const origin = req.headers.origin;
+  if (typeof origin !== "string" || !origin) return false;
   try {
-    data = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+    return requestOrigins(req).has(new URL(origin).origin);
   } catch {
-    data = {};
+    return false;
+  }
+}
+
+function validateLead(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) return { error: "invalid_payload" };
+
+  const data = {};
+  for (const [key, value] of Object.entries(body)) {
+    if (!ALLOWED_FIELDS.has(key)) continue;
+    const clean = cleanString(value, LIMITS[key]);
+    if (clean === null) return { error: "invalid_field" };
+    data[key] = clean;
   }
 
+  // Legitimate forms never fill this hidden honeypot field.
+  if (data.website) return { error: "spam_detected" };
+  if (!data.source || !["Contact page form", "Website chat widget"].includes(data.source)) return { error: "invalid_source" };
+  if (data.email && !EMAIL_RE.test(data.email)) return { error: "invalid_email" };
+  if (!data.email && !data.phone && !data.contact) return { error: "missing_contact" };
+  if (!data.message && !data.interest) return { error: "missing_message" };
+  return { data };
+}
+
+async function fetchWithTimeout(url, options, timeoutMs) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function verifyTurnstile(token, ip) {
+  const secret = (process.env.TURNSTILE_SECRET_KEY || "").trim();
+  if (!secret) return { ok: true, enabled: false };
+  if (!token || typeof token !== "string") return { ok: false, code: "captcha_required" };
+
+  try {
+    const response = await fetchWithTimeout(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ secret, response: token, remoteip: ip }),
+      },
+      5_000
+    );
+    const result = await response.json().catch(() => ({}));
+    return result.success === true ? { ok: true, enabled: true } : { ok: false, code: "captcha_failed" };
+  } catch {
+    return { ok: false, code: "captcha_unavailable" };
+  }
+}
+
+function formatLead(data) {
   const row = (emoji, label, value) => (value ? `${emoji} ${label}: ${value}` : "");
-  const text = [
+  return [
     "🌾 New lead — FIKIR FOOD PROCESSING",
     data.subject ? `(${data.subject})` : "",
     "",
-    row("👤", "Name", data.name),
+    row("👤", "Name", data.name || data.from_name),
     row("✉️", "Email", data.email),
     row("📞", "Contact", data.contact),
     row("📞", "Phone", data.phone),
@@ -45,29 +153,136 @@ export default async function handler(req, res) {
     row("📦", "Interest", data.interest),
     row("📝", "Message", data.message),
     "",
-    data.source ? `via ${data.source}` : "",
-  ]
-    .filter((line) => line !== "")
-    .join("\n");
+    `via ${data.source}`,
+  ].filter(Boolean).join("\n");
+}
+
+async function sendTelegram(data) {
+  const token = (process.env.TELEGRAM_BOT_TOKEN || "").trim();
+  const chatId = (process.env.TELEGRAM_CHAT_ID || "").trim();
+  if (!token || !chatId) return { ok: false, reason: "telegram_not_configured" };
 
   try {
-    const tg = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      // plain text (no parse_mode) so special characters in user input never 400
-      body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
-    });
-    const json = await tg.json();
-    if (!json.ok) {
-      // Surface Telegram's own reason (e.g. "chat not found", "Unauthorized")
-      // so misconfiguration is diagnosable instead of a blank rejection.
-      res
-        .status(502)
-        .json({ success: false, error: "telegram_rejected", detail: json.description });
+    const response = await fetchWithTimeout(
+      `https://api.telegram.org/bot${token}/sendMessage`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: formatLead(data), disable_web_page_preview: true }),
+      },
+      8_000
+    );
+    const result = await response.json().catch(() => ({}));
+    return result.ok === true ? { ok: true } : { ok: false, reason: "telegram_rejected" };
+  } catch {
+    return { ok: false, reason: "telegram_unreachable" };
+  }
+}
+
+async function sendWeb3Forms(data) {
+  const accessKey = (process.env.WEB3FORMS_ACCESS_KEY || "").trim();
+  if (!accessKey) return { ok: false, reason: "email_not_configured" };
+
+  try {
+    const response = await fetchWithTimeout(
+      "https://api.web3forms.com/submit",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ access_key: accessKey, ...data }),
+      },
+      8_000
+    );
+    const result = await response.json().catch(() => ({}));
+    return response.ok && result.success !== false ? { ok: true } : { ok: false, reason: "email_rejected" };
+  } catch {
+    return { ok: false, reason: "email_unreachable" };
+  }
+}
+
+async function alertOperations(event, detail) {
+  const webhook = (process.env.LEAD_ALERT_WEBHOOK_URL || "").trim();
+  if (!webhook) return;
+  try {
+    await fetchWithTimeout(
+      webhook,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ service: "fikir-lead-api", event, detail, occurredAt: new Date().toISOString() }),
+      },
+      2_000
+    );
+  } catch {
+    // The user-facing response must never depend on an optional alert channel.
+  }
+}
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    reply(res, 405, { success: false, error: "method_not_allowed" }, { Allow: "POST" });
+    return;
+  }
+  if (!originIsAllowed(req)) {
+    reply(res, 403, { success: false, error: "origin_not_allowed" });
+    return;
+  }
+  if (!String(req.headers["content-type"] || "").toLowerCase().startsWith("application/json")) {
+    reply(res, 415, { success: false, error: "json_required" });
+    return;
+  }
+  if (Number(req.headers["content-length"] || 0) > MAX_BODY_BYTES) {
+    reply(res, 413, { success: false, error: "payload_too_large" });
+    return;
+  }
+
+  const ip = getClientIp(req);
+  const limit = takeRateLimitSlot(ip);
+  if (!limit.allowed) {
+    console.warn(JSON.stringify({ event: "lead_rate_limited" }));
+    reply(res, 429, { success: false, error: "rate_limited" }, { "Retry-After": String(limit.retryAfter) });
+    return;
+  }
+
+  let body = req.body;
+  if (typeof body === "string") {
+    try {
+      body = JSON.parse(body);
+    } catch {
+      reply(res, 400, { success: false, error: "invalid_json" });
       return;
     }
-    res.status(200).json({ success: true });
-  } catch {
-    res.status(502).json({ success: false, error: "telegram_unreachable" });
   }
+  const parsed = validateLead(body);
+  if (parsed.error) {
+    reply(res, 400, { success: false, error: parsed.error });
+    return;
+  }
+
+  const captcha = await verifyTurnstile(req.headers["cf-turnstile-response"], ip);
+  if (!captcha.ok) {
+    console.warn(JSON.stringify({ event: "lead_captcha_rejected", code: captcha.code, source: parsed.data.source }));
+    if (captcha.code === "captcha_unavailable") await alertOperations("captcha_unavailable", captcha.code);
+    reply(res, captcha.code === "captcha_unavailable" ? 503 : 400, { success: false, error: captcha.code });
+    return;
+  }
+
+  console.info(JSON.stringify({ event: "lead_received", source: parsed.data.source, captcha: captcha.enabled }));
+  const telegram = await sendTelegram(parsed.data);
+  if (telegram.ok) {
+    console.info(JSON.stringify({ event: "lead_delivered", channel: "telegram", source: parsed.data.source }));
+    reply(res, 200, { success: true });
+    return;
+  }
+
+  const email = await sendWeb3Forms(parsed.data);
+  if (email.ok) {
+    console.warn(JSON.stringify({ event: "lead_fallback_delivered", from: telegram.reason, channel: "email", source: parsed.data.source }));
+    reply(res, 200, { success: true });
+    return;
+  }
+
+  console.error(JSON.stringify({ event: "lead_delivery_failed", telegram: telegram.reason, email: email.reason, source: parsed.data.source }));
+  await alertOperations("delivery_failed", { telegram: telegram.reason, email: email.reason });
+  reply(res, 503, { success: false, error: "delivery_unavailable" });
 }
