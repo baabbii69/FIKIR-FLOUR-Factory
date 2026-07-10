@@ -85,6 +85,17 @@ function originIsAllowed(req) {
   }
 }
 
+function turnstileHostnameMatches(req, hostname) {
+  if (typeof hostname !== "string" || !hostname) return false;
+  return [...requestOrigins(req)].some((origin) => {
+    try {
+      return new URL(origin).hostname.toLowerCase() === hostname.toLowerCase();
+    } catch {
+      return false;
+    }
+  });
+}
+
 function validateLead(body) {
   if (!body || typeof body !== "object" || Array.isArray(body)) return { error: "invalid_payload" };
 
@@ -115,7 +126,7 @@ async function fetchWithTimeout(url, options, timeoutMs) {
   }
 }
 
-async function verifyTurnstile(token, ip) {
+async function verifyTurnstile(token, ip, req) {
   const secret = (process.env.TURNSTILE_SECRET_KEY || "").trim();
   if (!secret) return { ok: true, enabled: false };
   if (!token || typeof token !== "string") return { ok: false, code: "captcha_required" };
@@ -131,7 +142,9 @@ async function verifyTurnstile(token, ip) {
       5_000
     );
     const result = await response.json().catch(() => ({}));
-    return result.success === true ? { ok: true, enabled: true } : { ok: false, code: "captcha_failed" };
+    if (result.success !== true) return { ok: false, code: "captcha_failed" };
+    if (!turnstileHostnameMatches(req, result.hostname)) return { ok: false, code: "captcha_hostname_mismatch" };
+    return { ok: true, enabled: true };
   } catch {
     return { ok: false, code: "captcha_unavailable" };
   }
@@ -259,7 +272,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  const captcha = await verifyTurnstile(req.headers["cf-turnstile-response"], ip);
+  const captcha = await verifyTurnstile(req.headers["cf-turnstile-response"], ip, req);
   if (!captcha.ok) {
     console.warn(JSON.stringify({ event: "lead_captcha_rejected", code: captcha.code, source: parsed.data.source }));
     if (captcha.code === "captcha_unavailable") await alertOperations("captcha_unavailable", captcha.code);
