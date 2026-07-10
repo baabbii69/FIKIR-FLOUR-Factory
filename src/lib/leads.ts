@@ -44,6 +44,10 @@ async function sendViaProtectedEndpoint(fields: Fields): Promise<"sent" | "fallb
   const result = (await response.json().catch(() => ({}))) as LeadResponse;
   if (response.ok && result.success === true) return "sent";
   if (result.error === "telegram_unavailable") return "fallback";
+  // Endpoint missing or server error (local dev, 404, 5xx) -> fall back to email
+  // so a lead is never lost. Genuine client rejections (rate limit, validation,
+  // captcha) still surface as errors below.
+  if (response.status === 404 || response.status >= 500) return "fallback";
   throw new LeadSubmissionError(result.error || "submission_failed");
 }
 
