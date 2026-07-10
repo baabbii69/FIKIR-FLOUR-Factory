@@ -269,5 +269,15 @@ export default async function handler(req, res) {
 
   console.error(JSON.stringify({ event: "telegram_delivery_failed", telegram: telegram.reason, source: parsed.data.source }));
   await alertOperations("telegram_delivery_failed", { telegram: telegram.reason });
-  reply(res, 503, { success: false, error: "telegram_unavailable" });
+  // TEMP DEBUG: surface why Telegram failed (reason + env presence, no secret values).
+  reply(res, 503, {
+    success: false,
+    error: "telegram_unavailable",
+    debug: {
+      reason: telegram.reason,
+      hasToken: !!(process.env.TELEGRAM_BOT_TOKEN || "").trim(),
+      hasChat: !!(process.env.TELEGRAM_CHAT_ID || "").trim(),
+      chatStart: (process.env.TELEGRAM_CHAT_ID || "").trim().slice(0, 4),
+    },
+  });
 }
