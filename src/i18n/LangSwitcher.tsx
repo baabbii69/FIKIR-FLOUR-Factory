@@ -7,6 +7,7 @@ import type { Lang } from "./I18nProvider";
 const LANGS: { id: Lang; label: string }[] = [
   { id: "en", label: "EN" },
   { id: "am", label: "አማ" },
+  { id: "om", label: "OR" },
 ];
 
 /** Segmented EN / አማ toggle with a sliding pill. `tone` matches the header state. */

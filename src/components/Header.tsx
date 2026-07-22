@@ -113,7 +113,7 @@ export default function Header() {
             <div className="hidden lg:block">
               <LangSwitcher tone={solid ? "solid" : "transparent"} />
             </div>
-            <Btn to="/contact" className="hidden !px-6 !py-3 md:inline-flex">
+            <Btn to="/contact" className="hidden !px-6 !py-3 lg:inline-flex">
               {t("header.quote", "Request a Quote")}
             </Btn>
             <button
@@ -171,17 +171,19 @@ export default function Header() {
               ))}
             </nav>
             <motion.div
-              className="flex items-center justify-between gap-4 border-t border-cream/10 px-8 py-6 md:px-16"
+              className="flex flex-col items-start gap-4 border-t border-cream/10 px-8 py-6 sm:flex-row sm:items-center sm:justify-between md:px-16"
               initial={reduce ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.45, duration: 0.5 }}
             >
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-cream/50">
+              <p className="min-w-0 break-words font-mono text-[11px] uppercase tracking-[0.18em] text-cream/50">
                 {CONTACT.phone}
                 <span className="mx-3 text-gold">·</span>
                 {CONTACT.email}
               </p>
-              <LangSwitcher tone="transparent" />
+              <div className="shrink-0">
+                <LangSwitcher tone="transparent" />
+              </div>
             </motion.div>
           </motion.div>
         )}

@@ -397,7 +397,7 @@ function Trusted() {
 /* ---------------- Lifestyle ---------------- */
 function Lifestyle() {
   const { t } = useI18n();
-  const imgs = [IMAGES.lifeBiscuit, IMAGES.stillTea, IMAGES.silos, IMAGES.lifeMarket, IMAGES.building];
+  const imgs = [IMAGES.proRange, IMAGES.proWaferFace, IMAGES.proBiscuitBite, IMAGES.proCrackers, IMAGES.proVanilla];
   return (
     <section className="bg-parchment">
       <div className="mx-auto max-w-[1400px] px-5 py-24 md:px-10 md:py-32">
