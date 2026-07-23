@@ -112,6 +112,27 @@
   }
 }
 
+/* ---- Software-renderer (no GPU) fast path ----
+   When html[data-perf="lite"] is set (hardware acceleration off or reduced
+   motion), drop the continuous, repaint-heavy decorative effects. A fixed
+   blurred/textured layer over scrolling content, and infinite transform
+   animations, are the main scroll-jank sources on CPU rasterization.
+   Interaction, entrance and hover animations are untouched. */
+:root[data-perf="lite"] {
+  scroll-behavior: auto;
+}
+:root[data-perf="lite"] .grain::after {
+  display: none;
+}
+:root[data-perf="lite"] .animate-marquee {
+  animation: none;
+  will-change: auto;
+}
+:root[data-perf="lite"] .kenburns {
+  animation: none;
+  transform: none;
+}
+
 /* Grain texture overlay, fixed + pointer-events-none so it never repaints on scroll */
 .grain::after {
   content: "";

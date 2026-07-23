@@ -25,6 +25,7 @@ export const NAV = [
   { to: "/products", label: "Products" },
   { to: "/about", label: "About Us" },
   { to: "/facility", label: "Facility" },
+  { to: "/gallery", label: "Gallery" },
   { to: "/careers", label: "Careers" },
   { to: "/contact", label: "Contact" },
 ];
@@ -61,15 +62,23 @@ export const STATS = [
 
 export type Category = "flour" | "biscuits" | "wafers" | "chips";
 
+export type NutritionRow = { label: string; value: string };
+
 export type Product = {
   slug: string;
   name: string;
   category: Category;
   brand: "Fikir" | "Unic";
-  image: string; // empty string => render a typographic placeholder card
+  image: string; // primary/card image. empty string => typographic placeholder card
+  gallery?: string[]; // extra detail-page shots, shown after `image`
   blurb: string;
   meta?: string; // pack sizes (flour) or descriptor (snacks)
   badge?: string;
+  // Reserved for later (kept optional so the model is CMS-ready). The detail
+  // page only renders these blocks when real data is present — we never invent
+  // nutrition figures for a real product.
+  nutrition?: NutritionRow[];
+  ingredients?: string;
 };
 
 export const CATEGORIES: { id: Category; label: string; note: string }[] = [
@@ -90,6 +99,7 @@ export const PRODUCTS: Product[] = [
     category: "flour",
     brand: "Fikir",
     image: `${M}/flour-special.jpg`,
+    gallery: [`${M}/pack-flour-special-1.jpg`, `${M}/pack-flour-special-2.jpg`, `${M}/pack-flour-special-3.jpg`],
     blurb:
       "Our export-grade wheat flour, milled to a fine, consistent standard and fortified up to Vitamin B12. The choice for bakeries that need reliable results at scale.",
     meta: "5 · 10 · 25 · 50 kg",
@@ -101,6 +111,7 @@ export const PRODUCTS: Product[] = [
     category: "flour",
     brand: "Fikir",
     image: `${M}/flour-3f.jpg`,
+    gallery: [`${M}/pack-flour-3f-1.jpg`],
     blurb:
       "A dependable all-purpose wheat flour for everyday baking and injera, fortified to national standards and trusted across Ethiopian kitchens.",
     meta: "25 · 50 kg",
@@ -132,7 +143,8 @@ export const PRODUCTS: Product[] = [
     name: "Unic High Energy Biscuits",
     category: "biscuits",
     brand: "Unic",
-    image: `${P}/b-high-energy.png`,
+    image: `${M}/pack-high-energy-1.jpg`,
+    gallery: [`${M}/pack-high-energy-2.jpg`, `${M}/pack-high-energy-3.jpg`],
     blurb: "Our flagship glucose-rich biscuit, baked for everyday energy. A national favorite.",
     meta: "Sweet biscuit",
     badge: "Best seller",
@@ -142,7 +154,8 @@ export const PRODUCTS: Product[] = [
     name: "Unic Vanilla Sandwich",
     category: "biscuits",
     brand: "Unic",
-    image: `${P}/b-vanilla-sandwich.png`,
+    image: `${M}/pack-vanilla-sandwich-1.jpg`,
+    gallery: [`${M}/pack-vanilla-sandwich-2.jpg`],
     blurb: "Crisp biscuits filled with smooth vanilla cream.",
     meta: "Cream biscuit",
   },
@@ -151,7 +164,7 @@ export const PRODUCTS: Product[] = [
     name: "Unic Apple Vanilla",
     category: "biscuits",
     brand: "Unic",
-    image: `${P}/b-apple-vanilla.png`,
+    image: `${M}/pack-apple-vanilla-1.jpg`,
     blurb: "Cream sandwich biscuits with a bright apple-vanilla flavor.",
     meta: "Cream biscuit",
   },
@@ -187,7 +200,8 @@ export const PRODUCTS: Product[] = [
     name: "Unic Abounded Sandwich",
     category: "biscuits",
     brand: "Unic",
-    image: `${M}/pro-abounded.jpg`,
+    image: `${M}/pack-abounded-1.jpg`,
+    gallery: [`${M}/pack-abounded-2.jpg`, `${M}/pack-abounded-3.jpg`, `${M}/pro-abounded.jpg`],
     blurb: "Round sandwich biscuits in a family box, a lunchbox and tea-time staple.",
     meta: "Boxed sandwich biscuit",
   },
@@ -200,6 +214,16 @@ export const PRODUCTS: Product[] = [
     blurb: "Fun animal-shaped biscuits made for little hands and big smiles.",
     meta: "Kids' biscuit",
   },
+  {
+    slug: "crackers",
+    name: "Unic Crackers",
+    category: "biscuits",
+    brand: "Unic",
+    image: `${M}/pack-crackers-1.jpg`,
+    gallery: [`${M}/pack-crackers-2.jpg`],
+    blurb: "Light, crisp savory crackers, made for snacking on their own or with a spread.",
+    meta: "Savory biscuit",
+  },
 
   // ---- Wafers (Unic) ----
   {
@@ -207,7 +231,7 @@ export const PRODUCTS: Product[] = [
     name: "Unic Wafer Chocolate",
     category: "wafers",
     brand: "Unic",
-    image: `${P}/w-chocolate.png`,
+    image: `${M}/pack-wafer-chocolate-1.jpg`,
     blurb: "Crisp wafers layered with rich chocolate cream.",
     meta: "Cream wafer",
   },
@@ -216,9 +240,21 @@ export const PRODUCTS: Product[] = [
     name: "Unic Wafer Vanilla",
     category: "wafers",
     brand: "Unic",
-    image: `${P}/w-vanilla.png`,
+    image: `${M}/pack-wafer-vanilla-2.jpg`,
+    gallery: [`${M}/pack-wafer-vanilla-1.jpg`, `${M}/pack-wafer-vanilla-3.jpg`],
     blurb: "Light wafers with smooth vanilla cream.",
     meta: "Cream wafer",
+  },
+  {
+    slug: "wafer-mango",
+    name: "Unic Wafer Mango",
+    category: "wafers",
+    brand: "Unic",
+    image: `${M}/pack-wafer-mango-1.jpg`,
+    gallery: [`${M}/pack-wafer-mango-2.jpg`, `${M}/pack-wafer-mango-3.jpg`, `${M}/pack-wafer-mango-4.jpg`],
+    blurb: "Crisp wafers layered with sweet mango cream.",
+    meta: "Cream wafer",
+    badge: "New",
   },
   {
     slug: "wafer-orange",
@@ -408,4 +444,99 @@ export const IMAGES = {
   // Products
   chipsTomato: `${M}/chips-tomato.jpg`,
   chipsPaprika: `${M}/chips-paprika.jpg`,
+  // Facility shoot 03 (real plant photography)
+  facQcLab: `${M}/fac-qc-lab.jpg`,
+  facMill1: `${M}/fac-mill-1.jpg`,
+  facMill2: `${M}/fac-mill-2.jpg`,
+  facMill3: `${M}/fac-mill-3.jpg`,
+  facMill4: `${M}/fac-mill-4.jpg`,
+  facFlourWarehouse: `${M}/fac-flour-warehouse.jpg`,
+  facFlourBags: `${M}/fac-flour-bags.jpg`,
+  facSilos1: `${M}/fac-silos-1.jpg`,
+  facSilos2: `${M}/fac-silos-2.jpg`,
+  facExterior: `${M}/fac-exterior.jpg`,
+  facReception: `${M}/fac-reception.jpg`,
+  facOffice1: `${M}/fac-office-1.jpg`,
+  facOffice2: `${M}/fac-office-2.jpg`,
+  facSecurity1: `${M}/fac-security-1.jpg`,
+  facSecurity2: `${M}/fac-security-2.jpg`,
+  facLounge: `${M}/fac-lounge.jpg`,
+  facTrucks: `${M}/fac-trucks.jpg`,
+  facBiscuitWarehouse: `${M}/fac-biscuit-warehouse.jpg`,
+  facPacking1: `${M}/fac-packing-1.jpg`,
+  facPacking2: `${M}/fac-packing-2.jpg`,
+  facProductionHall: `${M}/fac-production-hall.jpg`,
 };
+
+/* --------------------------------------------------------------------------
+ * Gallery — photos from around the company and the range.
+ * `span` is a layout hint for the bento/masonry gallery ("wide" = 2 cols,
+ * "tall" = 2 rows). `featured` items surface in the homepage/facility teaser.
+ * Seeded from current media; the batch-02/03 studio + factory photos get
+ * curated in here during the asset pass.
+ * ------------------------------------------------------------------------ */
+export type GalleryGroup = "facility" | "production" | "products" | "people";
+
+export type GalleryItem = {
+  src: string;
+  group: GalleryGroup;
+  caption: string;
+  span?: "wide" | "tall";
+  featured?: boolean;
+};
+
+/* --------------------------------------------------------------------------
+ * Video — a single place to switch on a feature video when footage arrives.
+ * Set FEATURE_VIDEO to a source and it appears on the Facility page; leave it
+ * null and nothing renders. `poster` is a still shown before play (use a real
+ * frame or any facility image). Self-hosted files go in /public/media.
+ * ------------------------------------------------------------------------ */
+export type VideoSource =
+  | { type: "youtube"; id: string; poster?: string; title?: string }
+  | { type: "vimeo"; id: string; poster?: string; title?: string }
+  | { type: "file"; src: string; poster?: string; title?: string };
+
+export const FEATURE_VIDEO: VideoSource | null = null;
+
+/* How Fikir is made — the pinned horizontal journey on the homepage. */
+export type ProcessStep = { n: string; title: string; text: string; img: string };
+
+export const PROCESS: ProcessStep[] = [
+  { n: "01", title: "Grain intake", text: "Clean, high-grade wheat and potatoes are selected and checked before anything enters production.", img: IMAGES.facFlourBags },
+  { n: "02", title: "Milling & fortification", text: "Modern imported mills turn wheat into fine, consistent flour, fortified up to Vitamin B12 to national standard.", img: IMAGES.facMill1 },
+  { n: "03", title: "Baking & frying", text: "On dedicated lines we bake the Unic biscuits and wafers and fry the chips, fresh every shift.", img: IMAGES.facProductionHall },
+  { n: "04", title: "Laboratory testing", text: "Our in-house lab tests every batch against quality and fortification targets before it is released.", img: IMAGES.facQcLab },
+  { n: "05", title: "Packing", text: "Products are sealed, boxed, and stacked in the warehouse, ready to ship.", img: IMAGES.facPacking1 },
+  { n: "06", title: "Nationwide delivery", text: "Our own branded fleet carries Fikir to agents, wholesalers, and shops across every region of Ethiopia.", img: IMAGES.facTrucks },
+];
+
+export const GALLERY: GalleryItem[] = [
+  // Facility
+  { src: IMAGES.facExterior, group: "facility", caption: "The plant, Adama", span: "tall", featured: true },
+  { src: IMAGES.facSilos1, group: "facility", caption: "Grain storage silos", featured: true },
+  { src: IMAGES.facReception, group: "facility", caption: "Reception" },
+  { src: IMAGES.facOffice1, group: "facility", caption: "Our offices" },
+  { src: IMAGES.facLounge, group: "facility", caption: "Executive lounge" },
+  { src: IMAGES.facTrucks, group: "facility", caption: "Our own delivery fleet", span: "wide", featured: true },
+  { src: IMAGES.facSecurity1, group: "facility", caption: "Round-the-clock monitoring" },
+  // Production
+  { src: IMAGES.facMill1, group: "production", caption: "The flour mill", span: "wide", featured: true },
+  { src: IMAGES.facMill3, group: "production", caption: "Milling line" },
+  { src: IMAGES.facQcLab, group: "production", caption: "Quality-control laboratory", featured: true },
+  { src: IMAGES.facPacking1, group: "production", caption: "Packing the Unic lines" },
+  { src: IMAGES.facBiscuitWarehouse, group: "production", caption: "Finished biscuits, ready to ship", span: "tall" },
+  { src: IMAGES.facProductionHall, group: "production", caption: "Production hall", span: "wide" },
+  { src: IMAGES.facFlourBags, group: "production", caption: "Fortified flour, bagged" },
+  // Products / range
+  { src: IMAGES.proRange, group: "products", caption: "The Unic range", span: "wide", featured: true },
+  { src: `${M}/pack-abounded-1.jpg`, group: "products", caption: "Abounded sandwich biscuits", span: "tall" },
+  { src: IMAGES.proCrackers, group: "products", caption: "Unic Crackers" },
+  { src: `${M}/pack-wafer-vanilla-2.jpg`, group: "products", caption: "Unic wafer, vanilla" },
+  { src: IMAGES.chipsTomato, group: "products", caption: "Unic chips, tomato" },
+  { src: IMAGES.chipsPaprika, group: "products", caption: "Unic chips, paprika" },
+  // People / lifestyle
+  { src: IMAGES.proWaferFace, group: "people", caption: "Made for tea time", span: "tall", featured: true },
+  { src: IMAGES.proBiscuitBite, group: "people", caption: "An everyday treat" },
+  { src: IMAGES.lifeMarket, group: "people", caption: "On shelves nationwide" },
+  { src: IMAGES.stillTea, group: "people", caption: "Better with a cup" },
+];

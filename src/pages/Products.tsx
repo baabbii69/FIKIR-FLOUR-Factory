@@ -1,15 +1,19 @@
-import { useMemo, useState, useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { MagnifyingGlass, X, Eye } from "@phosphor-icons/react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { AnimatePresence, motion } from "motion/react";
+import { CaretDown, MagnifyingGlassPlus, ArrowRight } from "@phosphor-icons/react";
 import PageHero from "../components/PageHero";
 import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import Btn from "../components/Btn";
+import Lightbox from "../components/Lightbox";
 import { usePageMeta } from "../lib/usePageMeta";
-import { PRODUCTS, CATEGORIES, FAQS, IMAGES } from "../data/site";
-import type { Product, Category } from "../data/site";
+import { useHorizontalScroll } from "../lib/useHorizontalScroll";
+import { CATEGORIES, FAQS, IMAGES } from "../data/site";
+import type { Product } from "../data/site";
+import { getProductsByCategory, getProductImages } from "../content";
 import { useI18n } from "../i18n/I18nProvider";
+import { Accent } from "../i18n/Accent";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const isPackImg = (src: string) => src.endsWith(".png");
@@ -20,249 +24,431 @@ export default function Products() {
     "Fortified flour, Unic biscuits, wafers, and chips, made in Adama, Ethiopia and distributed nationwide."
   );
   const { t } = useI18n();
-  const [selected, setSelected] = useState<Product | null>(null);
-
   return (
     <>
       <PageHero
-        image={IMAGES.hero}
-        alt="Fikir products with the factory behind"
+        image={IMAGES.proRange}
+        alt="The Unic range"
         crumb={t("nav.products", "Products")}
         title={t("prod.hero.title", "One name, a whole")}
         titleAccent={t("prod.hero.accent", "shelf.")}
       />
-      <ProductBrowser onOpen={setSelected} />
+      {/* Desktop keeps the pinned horizontal scroller; mobile gets a natural
+          vertical, tabbed layout (the carousel felt broken on small screens). */}
+      <CategoryScroller />
+      <MobileCategoryBrowser />
       <FAQ />
       <CTABanner
         image={IMAGES.warehouse}
         alt="Fikir products stacked in the warehouse"
         title={t("prod.cta.title", "Want to stock")}
         titleAccent={t("prod.cta.accent", "Fikir?")}
-        text={t(
-          "prod.cta.text",
-          "Tell us what you sell and where you are. We'll connect you with the nearest supplier or set you up as a distributor."
-        )}
+        text={t("prod.cta.text", "Tell us what you sell and where you are. We'll connect you with the nearest supplier or set you up as a distributor.")}
         primary={t("cta.becomeDistributor", "Become a distributor")}
         primaryTo="/contact"
       />
-      <ProductModal product={selected} onClose={() => setSelected(null)} />
     </>
   );
 }
 
-function ProductBrowser({ onOpen }: { onOpen: (p: Product) => void }) {
+/* ---------------- Horizontal category scroller ---------------- */
+function CategoryScroller() {
   const { t } = useI18n();
-  const [params, setParams] = useSearchParams();
-  const active = (params.get("cat") as Category | "all") ?? "all";
-  const [query, setQuery] = useState("");
-  const q = query.trim().toLowerCase();
-
-  const searchResults = useMemo(
-    () => (q ? PRODUCTS.filter((p) => (p.name + " " + p.blurb + " " + (p.meta ?? "")).toLowerCase().includes(q)) : []),
-    [q]
-  );
-  const shown = active === "all" ? CATEGORIES.map((c) => c.id) : [active];
+  const { sectionRef, trackRef } = useHorizontalScroll<HTMLElement, HTMLDivElement>();
 
   return (
-    <section className="bg-cream">
-      <div className="mx-auto max-w-[1400px] px-5 py-16 md:px-10 md:py-24">
-        <Reveal>
-          <div className="flex flex-col gap-4 border-b border-linen pb-6 lg:flex-row lg:items-center lg:justify-between">
-            <div role="tablist" aria-label="Filter products" className="flex flex-wrap gap-2">
-              {[{ id: "all", label: "All", tk: "common.all" }, ...CATEGORIES.map((c) => ({ id: c.id, label: c.label, tk: `cat.${c.id}.label` }))].map((c) => {
-                const on = active === c.id;
-                return (
-                  <button
-                    key={c.id}
-                    role="tab"
-                    aria-selected={on}
-                    onClick={() => setParams(c.id === "all" ? {} : { cat: c.id }, { replace: true })}
-                    className={`px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] transition-all duration-300 active:scale-[0.98] ${
-                      on ? "bg-ink text-cream" : "border border-linen text-clay hover:border-ink/40 hover:text-ink"
-                    }`}
-                  >
-                    {t(c.tk, c.label)}
-                  </button>
-                );
-              })}
-            </div>
-            <div className="relative w-full lg:w-72">
-              <MagnifyingGlass size={17} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-clay/60" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={t("prod.search.placeholder", "Search products...")}
-                aria-label="Search products"
-                className="w-full border border-linen bg-parchment py-2.5 pl-10 pr-9 font-mono text-[12px] tracking-wide text-ink placeholder:text-clay/50 focus:border-gold-deep focus:outline-none"
-              />
-              {query && (
-                <button onClick={() => setQuery("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 text-clay/60 hover:text-ink">
-                  <X size={15} />
-                </button>
-              )}
-            </div>
-          </div>
-        </Reveal>
-
-        {q ? (
-          <div className="mt-12">
-            <p className="mb-8 font-mono text-[11px] uppercase tracking-[0.18em] text-clay/70">
-              {searchResults.length} {t("prod.search.resultsFor", "results for")} &ldquo;{query}&rdquo;
+    <section ref={sectionRef} aria-label={t("prod.browse.aria", "Browse products by category")} className="relative hidden bg-ink lg:block">
+      <div className="lg:sticky lg:top-24 lg:h-[calc(100dvh-7.5rem)] lg:overflow-hidden">
+        <div
+          ref={trackRef}
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 py-8 md:gap-6 md:px-6 md:py-12 lg:h-full lg:snap-none lg:items-stretch lg:overflow-visible lg:py-0 lg:pl-[9vw] lg:pr-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {/* Intro panel */}
+          <div className="flex w-[80vw] shrink-0 snap-center flex-col justify-center py-10 sm:w-[56vw] lg:h-full lg:w-[30vw] lg:py-0 lg:pr-10">
+            <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold">{t("prod.browse.eyebrow", "The range")}</span>
+            <h2 className="display-2 mt-6 text-4xl !text-cream md:text-6xl">
+              <Accent text={t("prod.browse.title", "Four ranges, *one standard.*")} tone="dark" />
+            </h2>
+            <p className="mt-6 max-w-[40ch] text-[15px] leading-relaxed text-cream/70">
+              {t("prod.browse.body", "Flour, biscuits, wafers, and chips — pick a variety to see it up close.")}
             </p>
-            {searchResults.length ? (
-              <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-                {searchResults.map((p, i) => (
-                  <ProductCard key={p.slug} product={p} index={i} onOpen={onOpen} />
-                ))}
-              </div>
-            ) : (
-              <p className="text-clay">
-                {t("prod.search.noMatch", "No products match. Try another word, or browse the categories above.")}
-              </p>
-            )}
+            <div className="mt-10 hidden items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50 lg:flex">
+              {t("home.process.scrollHint", "Scroll to explore")}
+              <ArrowRight size={14} weight="bold" className="text-gold" />
+            </div>
           </div>
-        ) : (
-          shown.map((cat) => <CategorySection key={cat} cat={cat} onOpen={onOpen} />)
-        )}
+
+          {CATEGORIES.map((c) => (
+            <CategoryCard key={c.id} cat={c} />
+          ))}
+          {/* Trailing spacer so the last card comes to rest centred. A real element
+              is required: Chrome's scrollWidth ignores a container's trailing padding. */}
+          <div aria-hidden className="shrink-0 lg:w-[9vw]" />
+        </div>
       </div>
     </section>
   );
 }
 
-function CategorySection({ cat, onOpen }: { cat: Category; onOpen: (p: Product) => void }) {
+/* ---------------- Mobile: vertical, tabbed browser ----------------
+   Small screens get a natural top-to-bottom layout instead of the desktop
+   horizontal scroller: category tabs up top, then the selected category's
+   image, thumbnails, variety picker, details, and CTA — all full width. */
+function MobileCategoryBrowser() {
   const { t } = useI18n();
-  const info = CATEGORIES.find((c) => c.id === cat)!;
-  const items = useMemo(() => PRODUCTS.filter((p) => p.category === cat), [cat]);
+  const [catIdx, setCatIdx] = useState(0);
+  const cat = CATEGORIES[catIdx];
+  const products = useMemo(() => getProductsByCategory(cat.id), [cat.id]);
+  const [sel, setSel] = useState(0);
+  const [img, setImg] = useState(0);
+  const [lightbox, setLightbox] = useState(false);
+
+  // Reset the selected variety/image whenever the category tab changes.
+  useEffect(() => {
+    setSel(0);
+    setImg(0);
+  }, [catIdx]);
+
+  const product = products[Math.min(sel, products.length - 1)];
+  const images = useMemo(() => getProductImages(product), [product]);
+  const catLabel = t(`cat.${cat.id}.label`, cat.label);
+  const pick = (i: number) => {
+    setSel(i);
+    setImg(0);
+  };
+
   return (
-    <div className="mt-14 first:mt-12">
-      <Reveal>
-        <div className="flex items-baseline justify-between gap-4 border-b border-linen/70 pb-4">
-          <h2 className="display-2 text-3xl md:text-4xl">{t(`cat.${cat}.label`, info.label)}</h2>
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-clay/70">{t(`cat.${cat}.note`, info.note)}</span>
+    <section aria-label={t("prod.browse.aria", "Browse products by category")} className="bg-ink lg:hidden">
+      <div className="px-5 py-14 sm:px-8">
+        <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold">{t("prod.browse.eyebrow", "The range")}</span>
+        <h2 className="display-2 mt-4 text-4xl !text-cream">
+          <Accent text={t("prod.browse.title", "Four ranges, *one standard.*")} tone="dark" />
+        </h2>
+        <p className="mt-4 max-w-[42ch] text-[15px] leading-relaxed text-cream/70">
+          {t("prod.browse.body", "Flour, biscuits, wafers, and chips — pick a variety to see it up close.")}
+        </p>
+
+        {/* Category tabs */}
+        <div
+          role="tablist"
+          aria-label={t("prod.browse.aria", "Browse products by category")}
+          className="mt-8 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {CATEGORIES.map((c, i) => (
+            <button
+              key={c.id}
+              role="tab"
+              aria-selected={i === catIdx}
+              onClick={() => setCatIdx(i)}
+              className={`shrink-0 rounded-full border px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors ${
+                i === catIdx ? "border-transparent bg-gold text-ink" : "border-cream/20 text-cream/70 hover:text-cream"
+              }`}
+            >
+              {t(`cat.${c.id}.label`, c.label)}
+            </button>
+          ))}
         </div>
-      </Reveal>
-      <div className="mt-8 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-        {items.map((p, i) => (
-          <ProductCard key={p.slug} product={p} index={i} onOpen={onOpen} />
-        ))}
+
+        {/* Active category card */}
+        <div className="mt-6 overflow-hidden rounded-2xl bg-parchment">
+          {/* Image stage */}
+          <div className="flex flex-col items-center gap-3 p-5">
+            <button
+              type="button"
+              onClick={() => setLightbox(true)}
+              aria-label={t("prod.detail.view", "View full")}
+              className="group relative flex aspect-square w-full items-center justify-center"
+            >
+              <motion.img
+                key={product.slug + "-" + img}
+                src={images[img]}
+                alt={t(`prod.${product.slug}.name`, product.name)}
+                loading="lazy"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.35, ease: EASE }}
+                className="h-full w-full object-contain"
+              />
+              <span className="absolute bottom-1 right-1 inline-flex items-center gap-1.5 bg-ink/85 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-cream">
+                <MagnifyingGlassPlus size={13} weight="bold" /> {t("prod.detail.view", "View full")}
+              </span>
+            </button>
+
+            {images.length > 1 && (
+              <div className="flex flex-wrap justify-center gap-2">
+                {images.map((src, i) => (
+                  <button
+                    key={src + i}
+                    onClick={() => setImg(i)}
+                    aria-label={`${t(`prod.${product.slug}.name`, product.name)} image ${i + 1}`}
+                    aria-current={i === img}
+                    className={`h-14 w-14 overflow-hidden rounded-md border bg-white p-1 transition-colors ${
+                      i === img ? "border-gold-deep" : "border-linen hover:border-ink/40"
+                    }`}
+                  >
+                    <img src={src} alt="" loading="lazy" className="h-full w-full object-contain" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Info */}
+          <div className="border-t border-linen p-5">
+            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-gold-deep">{t(`cat.${cat.id}.note`, cat.note)}</span>
+            <h3 className="mt-2 font-display text-3xl font-semibold leading-none text-ink">{catLabel}</h3>
+
+            <div className="mt-4 space-y-2">
+              {products.map((p, i) => (
+                <VarietyButton key={p.slug} product={p} active={i === sel} onClick={() => pick(i)} />
+              ))}
+            </div>
+
+            <div className="mt-5 border-t border-linen pt-1">
+              <ProductInfo product={product} catLabel={catLabel} />
+            </div>
+            <div className="mt-4">
+              <Btn to="/contact" arrow className="w-full">
+                {t("cta.enquireOrder", "Enquire / order")}
+              </Btn>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <Lightbox
+        images={images}
+        open={lightbox}
+        initialIndex={img}
+        onClose={() => setLightbox(false)}
+        caption={t(`prod.${product.slug}.name`, product.name)}
+      />
+    </section>
+  );
+}
+
+/* ---------------- One category card ---------------- */
+function CategoryCard({ cat }: { cat: (typeof CATEGORIES)[number] }) {
+  const { t } = useI18n();
+  const products = useMemo(() => getProductsByCategory(cat.id), [cat.id]);
+  const [sel, setSel] = useState(0);
+  const [img, setImg] = useState(0);
+  const [lightbox, setLightbox] = useState(false);
+
+  const product = products[sel];
+  const images = useMemo(() => getProductImages(product), [product]);
+  const catLabel = t(`cat.${cat.id}.label`, cat.label);
+
+  const pick = (i: number) => {
+    setSel(i);
+    setImg(0);
+  };
+
+  // The variety list scrolls independently only when it's long (biscuits) AND on
+  // desktop. `data-lenis-prevent` there stops the wheel from reaching Lenis (which
+  // drives the horizontal scrub) — added via effect so it never blocks touch
+  // scrolling on mobile, where the list isn't a scroll area.
+  const varietyRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = varietyRef.current;
+    if (!el) return;
+    const apply = () => {
+      if (products.length > 5 && window.matchMedia("(min-width: 1024px)").matches) el.setAttribute("data-lenis-prevent", "");
+      else el.removeAttribute("data-lenis-prevent");
+    };
+    apply();
+    window.addEventListener("resize", apply);
+    return () => window.removeEventListener("resize", apply);
+  }, [products.length]);
+
+  return (
+    <article className="flex w-[86vw] shrink-0 snap-center overflow-hidden rounded-2xl bg-parchment sm:w-[62vw] lg:h-full lg:w-[82vw]">
+      <div className="flex w-full flex-col lg:grid lg:h-full lg:grid-cols-[minmax(300px,34%)_1fr]">
+        {/* Info column — content spans the full card height */}
+        <div className="order-2 flex flex-col border-t border-linen p-6 md:p-8 lg:order-1 lg:h-full lg:min-h-0 lg:border-r lg:border-t-0">
+          <div className="shrink-0">
+            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-gold-deep">{t(`cat.${cat.id}.note`, cat.note)}</span>
+            <h2 className="mt-2 font-display text-3xl font-semibold leading-none text-ink md:text-4xl">{catLabel}</h2>
+          </div>
+
+          {/* Variety selector — grows to fill, scrolls if long */}
+          <div ref={varietyRef} className="mt-5 space-y-2 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1 [scrollbar-width:thin]">
+            {products.map((p, i) => (
+              <VarietyButton key={p.slug} product={p} active={i === sel} onClick={() => pick(i)} />
+            ))}
+          </div>
+
+          {/* Expandable info + CTA pinned to the bottom of the card */}
+          <div className="mt-5 shrink-0 border-t border-linen pt-1">
+            <ProductInfo product={product} catLabel={catLabel} />
+          </div>
+          <div className="mt-4 shrink-0">
+            <Btn to="/contact" arrow className="w-full">{t("cta.enquireOrder", "Enquire / order")}</Btn>
+          </div>
+        </div>
+
+        {/* Image column — the product fills a large, uniform stage */}
+        <div className="order-1 flex min-h-[54vh] flex-col items-center justify-center gap-3 p-4 md:p-6 lg:order-2 lg:h-full lg:min-h-0">
+          <button
+            type="button"
+            onClick={() => setLightbox(true)}
+            aria-label={t("prod.detail.view", "View full")}
+            className="group relative mx-auto flex w-full min-h-0 flex-1 items-center justify-center lg:max-w-[640px]"
+          >
+            <motion.img
+              key={product.slug + "-" + img}
+              src={images[img]}
+              alt={t(`prod.${product.slug}.name`, product.name)}
+              loading="lazy"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className="h-full w-full object-contain"
+            />
+            <span className="absolute bottom-1 right-1 inline-flex items-center gap-1.5 bg-ink/85 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-cream opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <MagnifyingGlassPlus size={13} weight="bold" /> {t("prod.detail.view", "View full")}
+            </span>
+          </button>
+
+          {/* Per-product image thumbnails */}
+          {images.length > 1 && (
+            <div className="flex flex-wrap justify-center gap-2">
+              {images.map((src, i) => (
+                <button
+                  key={src + i}
+                  onClick={() => setImg(i)}
+                  aria-label={`${t(`prod.${product.slug}.name`, product.name)} image ${i + 1}`}
+                  aria-current={i === img}
+                  className={`h-14 w-14 overflow-hidden rounded-md border bg-white transition-colors ${
+                    i === img ? "border-gold-deep" : "border-linen hover:border-ink/40"
+                  } p-1`}
+                >
+                  <img src={src} alt="" loading="lazy" className="h-full w-full object-contain" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <Lightbox
+        images={images}
+        open={lightbox}
+        initialIndex={img}
+        onClose={() => setLightbox(false)}
+        caption={t(`prod.${product.slug}.name`, product.name)}
+      />
+    </article>
+  );
+}
+
+function VarietyButton({ product: p, active, onClick }: { product: Product; active: boolean; onClick: () => void }) {
+  const { t } = useI18n();
+  const pack = isPackImg(p.image);
+  return (
+    <button
+      onClick={onClick}
+      aria-pressed={active}
+      className={`flex w-full items-center gap-3 rounded-xl border p-2 pr-3 text-left transition-colors duration-200 ${
+        active ? "border-transparent bg-ink text-cream" : "border-linen bg-cream text-ink hover:border-ink/30"
+      }`}
+    >
+      <span className={`flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white ${pack ? "p-1" : ""}`}>
+        <img src={p.image} alt="" loading="lazy" className={`h-full w-full ${pack ? "object-contain" : "object-cover"}`} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate font-display text-[15px] font-semibold leading-tight">{t(`prod.${p.slug}.name`, p.name)}</span>
+        {p.meta && (
+          <span className={`block truncate font-mono text-[9px] uppercase tracking-[0.12em] ${active ? "text-cream/60" : "text-clay/70"}`}>
+            {t(`prod.${p.slug}.meta`, p.meta)}
+          </span>
+        )}
+      </span>
+      {active && <ArrowRight size={14} weight="bold" className="shrink-0 text-gold" />}
+    </button>
+  );
+}
+
+/* ---------------- Expandable per-product info ---------------- */
+function ProductInfo({ product: p, catLabel }: { product: Product; catLabel: string }) {
+  const { t } = useI18n();
+  const [open, setOpen] = useState<string | null>("about");
+
+  const qualityText =
+    p.category === "flour"
+      ? t("prod.acc.qualityFlour", "Milled and fortified up to Vitamin B12 in Adama, released only after laboratory testing. Our wheat flour carries the Institute of Ethiopian Standards mark.")
+      : t("prod.acc.qualitySnack", "Made in Adama on modern imported lines from selected raw materials, and checked in our own laboratory before every release.");
+
+  const sections = [
+    {
+      id: "about",
+      label: t("prod.acc.about", "Details"),
+      body: <p className="text-[13.5px] leading-relaxed text-clay/90">{t(`prod.${p.slug}.blurb`, p.blurb)}</p>,
+    },
+    {
+      id: "specs",
+      label: t("prod.acc.specs", "Specifications"),
+      body: (
+        <dl className="space-y-2 text-[13px]">
+          <Row k={t("prod.acc.brand", "Brand")} v={p.brand} />
+          <Row k={t("prod.acc.category", "Category")} v={catLabel} />
+          {p.meta && <Row k={p.category === "flour" ? t("prod.modal.packSizes", "Pack sizes") : t("prod.modal.type", "Type")} v={t(`prod.${p.slug}.meta`, p.meta)} />}
+        </dl>
+      ),
+    },
+    {
+      id: "quality",
+      label: t("prod.acc.quality", "Quality & sourcing"),
+      body: <p className="text-[13.5px] leading-relaxed text-clay/90">{qualityText}</p>,
+    },
+  ];
+
+  return (
+    <div className="divide-y divide-linen">
+      {sections.map((s) => {
+        const isOpen = open === s.id;
+        return (
+          <div key={s.id}>
+            <button
+              onClick={() => setOpen(isOpen ? null : s.id)}
+              aria-expanded={isOpen}
+              className="flex w-full items-center justify-between gap-3 py-3 text-left font-mono text-[11px] uppercase tracking-[0.14em] text-ink"
+            >
+              {s.label}
+              <span className={`flex h-6 w-6 items-center justify-center rounded-full bg-ink/5 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}>
+                <CaretDown size={13} weight="bold" />
+              </span>
+            </button>
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: EASE }}
+                  className="overflow-hidden"
+                >
+                  <div className="pb-4">{s.body}</div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-function ProductCard({ product: p, index, onOpen }: { product: Product; index: number; onOpen: (p: Product) => void }) {
-  const reduce = useReducedMotion();
-  const { t } = useI18n();
-  const isPack = isPackImg(p.image);
+function Row({ k, v }: { k: string; v: string }) {
   return (
-    <motion.button
-      type="button"
-      onClick={() => onOpen(p)}
-      initial={reduce ? false : { opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, delay: 0.04 * Math.min(index, 6), ease: EASE }}
-      className="group flex h-full flex-col overflow-hidden border border-linen bg-parchment text-left transition-colors duration-300 hover:border-gold/50"
-    >
-      <div className="relative aspect-square overflow-hidden bg-white">
-        <img
-          src={p.image}
-          alt={p.name}
-          loading="lazy"
-          className={`h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05] ${isPack ? "object-contain p-4" : "object-cover"}`}
-        />
-        {p.badge && (
-          <span className="absolute left-3 top-3 bg-gold px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-ink">{t(`badge.${p.badge}`, p.badge)}</span>
-        )}
-        <span className="absolute bottom-3 right-3 inline-flex translate-y-1 items-center gap-1.5 bg-ink/90 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-cream opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-          <Eye size={13} weight="bold" /> {t("cta.view", "View")}
-        </span>
-      </div>
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-display text-xl font-semibold leading-tight text-ink">{t(`prod.${p.slug}.name`, p.name)}</h3>
-        <p className="mt-2 flex-1 text-[13.5px] leading-relaxed text-clay/90 line-clamp-3">{t(`prod.${p.slug}.blurb`, p.blurb)}</p>
-        {p.meta && <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep">{t(`prod.${p.slug}.meta`, p.meta)}</p>}
-      </div>
-    </motion.button>
+    <div className="flex items-center justify-between gap-4">
+      <dt className="text-clay/70">{k}</dt>
+      <dd className="font-display font-semibold text-ink">{v}</dd>
+    </div>
   );
 }
 
-/* ---------------- Detail modal ---------------- */
-function ProductModal({ product: p, onClose }: { product: Product | null; onClose: () => void }) {
-  const reduce = useReducedMotion();
-  const { t } = useI18n();
-  useEffect(() => {
-    if (!p) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.documentElement.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.documentElement.style.overflow = "";
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [p, onClose]);
-
-  return (
-    <AnimatePresence>
-      {p && (
-        <motion.div
-          className="fixed inset-0 z-[70] flex items-end justify-center bg-ink/70 p-0 backdrop-blur-sm sm:items-center sm:p-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          role="dialog"
-          aria-modal="true"
-          aria-label={p.name}
-        >
-          <motion.div
-            onClick={(e) => e.stopPropagation()}
-            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 40, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={reduce ? { opacity: 0 } : { opacity: 0, y: 40, scale: 0.98 }}
-            transition={{ duration: 0.35, ease: EASE }}
-            className="relative grid max-h-[92dvh] w-full max-w-4xl overflow-y-auto bg-cream sm:grid-cols-2"
-          >
-            <button
-              onClick={onClose}
-              aria-label="Close"
-              className="absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center bg-cream/80 text-ink backdrop-blur transition-colors hover:bg-ink hover:text-cream"
-            >
-              <X size={18} />
-            </button>
-            <div className={`flex aspect-square items-center justify-center ${isPackImg(p.image) ? "bg-white p-6" : "bg-white"}`}>
-              <img src={p.image} alt={p.name} className={`h-full w-full ${isPackImg(p.image) ? "object-contain" : "object-cover"}`} />
-            </div>
-            <div className="flex flex-col p-7 md:p-9">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold-deep">
-                {p.brand} · {t(`cat.${p.category}.label`, CATEGORIES.find((c) => c.id === p.category)?.label ?? "")}
-              </span>
-              <h2 className="mt-3 font-display text-3xl font-semibold leading-tight text-ink">{t(`prod.${p.slug}.name`, p.name)}</h2>
-              <p className="mt-4 text-[15px] leading-relaxed text-clay/90">{t(`prod.${p.slug}.blurb`, p.blurb)}</p>
-              {p.meta && (
-                <div className="mt-6 border-t border-linen pt-5">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-clay/60">
-                    {p.category === "flour" ? t("prod.modal.packSizes", "Pack sizes") : t("prod.modal.type", "Type")}
-                  </div>
-                  <div className="mt-1 font-display text-lg font-semibold text-ink">{t(`prod.${p.slug}.meta`, p.meta)}</div>
-                </div>
-              )}
-              <div className="mt-auto flex flex-col gap-3 pt-8">
-                <Btn to="/contact" arrow className="w-full">
-                  {t("cta.enquireOrder", "Enquire / order")}
-                </Btn>
-                <Btn to={`/products?cat=${p.category}`} variant="outline-ink" className="w-full">
-                  {t("prod.modal.more", "More")} {t(`cat.${p.category}.label`, CATEGORIES.find((c) => c.id === p.category)?.label ?? "").toLowerCase()}
-                </Btn>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
+/* ---------------- FAQ ---------------- */
 function FAQ() {
   const { t } = useI18n();
   return (

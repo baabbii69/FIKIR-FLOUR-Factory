@@ -1,83 +1,68 @@
-import { useRef } from "react";
-import { Truck, MapPin, Package, CheckCircle, ArrowLeft, ArrowRight } from "@phosphor-icons/react";
+import { Truck, MapPin, Package, CheckCircle, ArrowUpRight } from "@phosphor-icons/react";
+import { Link } from "react-router-dom";
 import PageHero from "../components/PageHero";
 import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import { usePageMeta } from "../lib/usePageMeta";
-import { QUALITY_STEPS, IMAGES } from "../data/site";
+import { QUALITY_STEPS, IMAGES, FEATURE_VIDEO } from "../data/site";
+import { getGalleryTeaser } from "../content";
+import VideoBlock from "../components/VideoBlock";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 
-const GALLERY = [
-  { src: IMAGES.silos, tk: "fac.gal.silos", cap: "Grain storage silos" },
-  { src: IMAGES.building, tk: "fac.gal.building", cap: "Our headquarters, Adama" },
-  { src: IMAGES.fleetAlt, tk: "fac.gal.fleet", cap: "The delivery fleet" },
-  { src: IMAGES.warehouse, tk: "fac.gal.warehouse", cap: "Inside the warehouse" },
-  { src: IMAGES.stillMilk, tk: "fac.gal.biscuits", cap: "Unic biscuits" },
-  { src: IMAGES.lifeChipsHand, tk: "fac.gal.chips", cap: "Unic chips" },
-  { src: IMAGES.signageHero, tk: "fac.gal.gate", cap: "At the gate" },
-  { src: IMAGES.stillTea, tk: "fac.gal.tea", cap: "Made for tea time" },
-];
-
+/** Teaser bento: a few featured shots that lead into the full /gallery page. */
 function Gallery() {
   const { t } = useI18n();
-  const ref = useRef<HTMLDivElement>(null);
-  const nudge = (dir: number) => {
-    const el = ref.current;
-    if (el) el.scrollBy({ left: dir * Math.min(el.clientWidth * 0.85, 640), behavior: "smooth" });
-  };
+  const shots = getGalleryTeaser(5);
+  const [feature, ...rest] = shots;
+  if (!feature) return null;
+
   return (
-    <section className="overflow-hidden bg-parchment py-20 md:py-28">
-      <div className="mx-auto flex max-w-[1400px] items-end justify-between gap-6 px-5 md:px-10">
+    <section className="bg-parchment py-20 md:py-28">
+      <div className="mx-auto max-w-[1400px] px-5 md:px-10">
         <Reveal>
-          <span className="eyebrow">{t("fac.gallery.eyebrow", "Inside Fikir")}</span>
-          <h2 className="display-2 mt-5 text-4xl md:text-5xl">
-            <Accent text={t("fac.gallery.title", "A look *around.*")} />
-          </h2>
-        </Reveal>
-        <Reveal delay={0.08}>
-          <div className="hidden gap-2 md:flex">
-            {[[-1, ArrowLeft], [1, ArrowRight]].map(([d, Icon]) => {
-              const Ico = Icon as typeof ArrowLeft;
-              return (
-                <button
-                  key={d as number}
-                  onClick={() => nudge(d as number)}
-                  aria-label={d === -1 ? "Scroll left" : "Scroll right"}
-                  className="inline-flex h-12 w-12 items-center justify-center border border-ink/20 text-ink transition-colors hover:border-ink hover:bg-ink hover:text-cream"
-                >
-                  <Ico size={18} weight="bold" />
-                </button>
-              );
-            })}
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span className="eyebrow">{t("fac.gallery.eyebrow", "Inside Fikir")}</span>
+              <h2 className="display-2 mt-5 text-4xl md:text-5xl">
+                <Accent text={t("fac.gallery.title", "A look *around.*")} />
+              </h2>
+            </div>
+            <Link
+              to="/gallery"
+              className="group inline-flex items-center gap-2 self-start border border-ink/20 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.16em] text-ink transition-colors hover:border-ink hover:bg-ink hover:text-cream sm:self-auto"
+            >
+              {t("fac.gallery.viewAll", "View full gallery")}
+              <ArrowUpRight size={15} weight="bold" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
           </div>
         </Reveal>
-      </div>
 
-      <div
-        ref={ref}
-        className="mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 md:px-10 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {GALLERY.map((g, i) => (
-          <figure
-            key={g.tk}
-            className={`group relative h-[320px] shrink-0 snap-start overflow-hidden sm:h-[440px] ${
-              i % 3 === 0 ? "w-[82vw] sm:w-[540px]" : "w-[70vw] sm:w-[360px]"
-            }`}
-          >
-            <img
-              src={g.src}
-              alt={t(g.tk, g.cap)}
-              loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
-            <figcaption className="absolute inset-x-0 bottom-0 p-5 font-mono text-[10px] uppercase tracking-[0.2em] text-cream">
-              {t(g.tk, g.cap)}
-            </figcaption>
-          </figure>
-        ))}
-        <div className="w-px shrink-0" aria-hidden />
+        <Reveal delay={0.1}>
+          <div className="mt-12 grid grid-cols-2 gap-3 md:h-[480px] md:grid-cols-4 md:grid-rows-2">
+            {[feature, ...rest].map((g, i) => (
+              <Link
+                key={g.src}
+                to="/gallery"
+                aria-label={t("fac.gallery.viewAll", "View full gallery")}
+                className={`group relative overflow-hidden bg-linen ${
+                  i === 0 ? "col-span-2 aspect-square md:col-span-2 md:row-span-2 md:aspect-auto" : "aspect-square md:aspect-auto"
+                }`}
+              >
+                <img
+                  src={g.src}
+                  alt={g.caption}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
+                <figcaption className="absolute inset-x-0 bottom-0 p-4 font-mono text-[10px] uppercase tracking-[0.18em] text-cream md:p-5">
+                  {g.caption}
+                </figcaption>
+              </Link>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -136,12 +121,16 @@ export default function Facility() {
           </div>
           <div className="lg:col-span-6 lg:col-start-7">
             <Reveal delay={0.12}>
-              <img
-                src={IMAGES.warehouse}
-                alt="Fikir products stacked in the warehouse"
-                loading="lazy"
-                className="aspect-[4/3] w-full object-cover"
-              />
+              {FEATURE_VIDEO ? (
+                <VideoBlock source={{ ...FEATURE_VIDEO, poster: FEATURE_VIDEO.poster ?? IMAGES.facMill1 }} aspect="4/3" />
+              ) : (
+                <img
+                  src={IMAGES.facMill2}
+                  alt="The flour milling line at the Fikir plant"
+                  loading="lazy"
+                  className="aspect-[4/3] w-full object-cover"
+                />
+              )}
             </Reveal>
           </div>
         </div>
@@ -209,8 +198,8 @@ export default function Facility() {
             <div className="lg:col-span-6">
               <Reveal delay={0.12}>
                 <img
-                  src={IMAGES.fleetAlt}
-                  alt="Fikir Isuzu delivery trucks lined up at the plant"
+                  src={IMAGES.facTrucks}
+                  alt="Fikir branded delivery trucks at the plant"
                   loading="lazy"
                   className="aspect-[4/3] w-full object-cover"
                 />

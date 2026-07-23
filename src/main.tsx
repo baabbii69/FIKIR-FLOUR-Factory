@@ -20,6 +20,10 @@ import "@fontsource/noto-sans-ethiopic/400.css";
 import "@fontsource/noto-sans-ethiopic/500.css";
 import "./index.css";
 
+// Sets html[data-perf] from GPU capability before first paint so the CSS below
+// and SmoothScroll/Header pick the right (cheap vs. rich) effect path.
+import "./lib/perf";
+
 import App from "./App";
 import { I18nProvider } from "./i18n/I18nProvider";
 

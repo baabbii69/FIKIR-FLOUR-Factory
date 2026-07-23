@@ -1,0 +1,43 @@
+# ---- Fikir Food Processing — static SPA on Plesk / Apache ----
+# React Router resolves routes in the browser, so any deep link (/products,
+# /gallery, /about …) must be served index.html and let JS take over. Without
+# this, refreshing a sub-page on Apache returns 404. (Vercel does this on its
+# own; Plesk/Apache needs the rule.)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Serve real files and directories (assets, media, index.html) as-is.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else falls through to the SPA entry point.
+  RewriteRule ^ /index.html [L]
+</IfModule>
+
+# ---- Caching ----
+# index.html must always revalidate so a new deploy is picked up immediately;
+# the hashed asset filenames make it safe to cache JS/CSS/images for a long time.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 6 months"
+  ExpiresByType image/png "access plus 6 months"
+  ExpiresByType image/webp "access plus 6 months"
+  ExpiresByType image/svg+xml "access plus 6 months"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# ---- Compression ----
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>

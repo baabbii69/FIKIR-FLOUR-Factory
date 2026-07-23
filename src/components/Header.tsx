@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { List, X } from "@phosphor-icons/react";
 import { NAV, CONTACT } from "../data/site";
+import { LOW_POWER } from "../lib/perf";
 import { useI18n } from "../i18n/I18nProvider";
 import LangSwitcher from "../i18n/LangSwitcher";
 import Btn from "./Btn";
@@ -12,6 +13,7 @@ const NAV_KEY: Record<string, string> = {
   "/products": "nav.products",
   "/about": "nav.about",
   "/facility": "nav.facility",
+  "/gallery": "nav.gallery",
   "/careers": "nav.careers",
   "/contact": "nav.contact",
 };
@@ -78,7 +80,9 @@ export default function Header() {
       <header
         className={`fixed inset-x-0 top-0 z-40 transition-all duration-500 ${
           solid
-            ? "border-b border-linen bg-cream/92 shadow-[0_8px_40px_rgba(28,19,8,0.06)] backdrop-blur-md"
+            ? `border-b border-linen shadow-[0_8px_40px_rgba(28,19,8,0.06)] ${
+                LOW_POWER ? "bg-cream" : "bg-cream/92 backdrop-blur-md"
+              }`
             : "border-b border-cream/10 bg-transparent"
         }`}
       >

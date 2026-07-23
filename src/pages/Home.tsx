@@ -5,7 +5,8 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, SealCheck } from "@phosphor-icons/react";
 import { usePageMeta } from "../lib/usePageMeta";
-import { STATS, CATEGORIES, CERTIFICATE, PRODUCTS, IMAGES, COMPANY } from "../data/site";
+import { useHorizontalScroll } from "../lib/useHorizontalScroll";
+import { STATS, CATEGORIES, CERTIFICATE, PRODUCTS, PROCESS, IMAGES, COMPANY } from "../data/site";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 import Btn from "../components/Btn";
@@ -172,6 +173,61 @@ function WhoWeAre() {
             <Reveal key={s.label} delay={i * 0.07}>
               <Stat {...s} label={t(`stats.${i}`, s.label)} />
             </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- How Fikir is made (sticky horizontal scroll) ---------------- */
+function ProcessJourney() {
+  const { t } = useI18n();
+  const { sectionRef, trackRef } = useHorizontalScroll<HTMLElement, HTMLDivElement>();
+
+  return (
+    <section ref={sectionRef} aria-label={t("home.process.eyebrow", "How Fikir is made")} className="relative bg-ink text-cream">
+      <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden">
+        <div
+          ref={trackRef}
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 py-16 md:gap-6 md:px-10 lg:h-screen lg:snap-none lg:items-stretch lg:overflow-visible lg:py-0 lg:pr-[6vw] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {/* Intro panel */}
+          <div className="flex w-[82vw] shrink-0 snap-center flex-col justify-center sm:w-[60vw] lg:h-screen lg:w-[36vw] lg:justify-center lg:pr-10">
+            <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold">
+              {t("home.process.eyebrow", "How Fikir is made")}
+            </span>
+            <h2 className="display-2 mt-6 text-4xl !text-cream md:text-6xl">
+              <Accent text={t("home.process.title", "From grain to *your table.*")} tone="dark" />
+            </h2>
+            <p className="mt-6 max-w-[42ch] text-[15px] leading-relaxed text-cream/70">
+              {t("home.process.body", "Six steps, one standard — inside the Adama plant, from the first grain to the truck at your door.")}
+            </p>
+            <div className="mt-10 hidden items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50 lg:flex">
+              {t("home.process.scrollHint", "Scroll to explore")}
+              <ArrowRight size={14} weight="bold" className="text-gold" />
+            </div>
+          </div>
+
+          {/* Step panels */}
+          {PROCESS.map((s, i) => (
+            <article
+              key={s.n}
+              className="relative flex h-[62vh] w-[82vw] shrink-0 snap-center flex-col justify-end overflow-hidden sm:h-[70vh] sm:w-[58vw] lg:h-screen lg:w-[40vw]"
+            >
+              <img
+                src={s.img}
+                alt={t(`proc.${i}.title`, s.title)}
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/10" />
+              <div className="relative p-7 md:p-10 lg:p-12">
+                <span className="font-display text-6xl font-semibold text-gold/50 md:text-7xl">{s.n}</span>
+                <h3 className="mt-3 font-display text-2xl font-semibold text-cream md:text-3xl">{t(`proc.${i}.title`, s.title)}</h3>
+                <p className="mt-3 max-w-[40ch] text-[14px] leading-relaxed text-cream/75 md:text-[15px]">{t(`proc.${i}.text`, s.text)}</p>
+              </div>
+            </article>
           ))}
         </div>
       </div>
@@ -436,6 +492,7 @@ export default function Home() {
       <Hero />
       <MarqueeBand />
       <WhoWeAre />
+      <ProcessJourney />
       <PackMarquee />
       <RangeIndex />
       <Quality />
