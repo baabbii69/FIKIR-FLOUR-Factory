@@ -3,6 +3,7 @@ import PageHero from "../components/PageHero";
 import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import Btn from "../components/Btn";
+import Img from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
 import { VALUES, WHY_US, CERTIFICATE, IMAGES } from "../data/site";
 import { useI18n } from "../i18n/I18nProvider";
@@ -62,7 +63,7 @@ export default function About() {
 
           <div className="relative lg:col-span-6">
             <Reveal className="relative z-0 lg:pl-8">
-              <img
+              <Img
                 src={IMAGES.lifeBiscuit}
                 alt="A customer enjoying a Unic biscuit"
                 loading="lazy"

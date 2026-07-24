@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "motion/react";
+import Img from "./Img";
 import { useI18n } from "../i18n/I18nProvider";
 
 /** Interior page hero: full-bleed image, bottom-left aligned title. */
@@ -21,7 +22,7 @@ export default function PageHero({
   return (
     <section className="relative flex min-h-[52vh] items-end overflow-hidden bg-ink pt-24">
       <div className="absolute inset-0">
-        <img src={image} alt={alt} className="kenburns h-full w-full object-cover" />
+        <Img src={image} alt={alt} className="kenburns h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/25" />
       </div>
       <div className="relative mx-auto w-full max-w-[1400px] px-5 pb-14 md:px-10 md:pb-20">

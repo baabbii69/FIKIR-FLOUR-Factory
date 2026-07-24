@@ -1,5 +1,6 @@
 import Reveal from "./Reveal";
 import Btn from "./Btn";
+import Img from "./Img";
 
 /** Photographic closing CTA. One per page, centered by design (manifesto moment). */
 export default function CTABanner({
@@ -25,7 +26,7 @@ export default function CTABanner({
 }) {
   return (
     <section className="relative flex min-h-[520px] items-center overflow-hidden bg-ink">
-      <img
+      <Img
         src={image}
         alt={alt}
         loading="lazy"

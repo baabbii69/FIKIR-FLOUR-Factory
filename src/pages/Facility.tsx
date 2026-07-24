@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import PageHero from "../components/PageHero";
 import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
+import Img from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
 import { QUALITY_STEPS, IMAGES, FEATURE_VIDEO } from "../data/site";
 import { getGalleryTeaser } from "../content";
@@ -49,7 +50,7 @@ function Gallery() {
                   i === 0 ? "col-span-2 aspect-square md:col-span-2 md:row-span-2 md:aspect-auto" : "aspect-square md:aspect-auto"
                 }`}
               >
-                <img
+                <Img
                   src={g.src}
                   alt={g.caption}
                   loading="lazy"
@@ -124,7 +125,7 @@ export default function Facility() {
               {FEATURE_VIDEO ? (
                 <VideoBlock source={{ ...FEATURE_VIDEO, poster: FEATURE_VIDEO.poster ?? IMAGES.facMill1 }} aspect="4/3" />
               ) : (
-                <img
+                <Img
                   src={IMAGES.facMill2}
                   alt="The flour milling line at the Fikir plant"
                   loading="lazy"
@@ -197,7 +198,7 @@ export default function Facility() {
             </div>
             <div className="lg:col-span-6">
               <Reveal delay={0.12}>
-                <img
+                <Img
                   src={IMAGES.facTrucks}
                   alt="Fikir branded delivery trucks at the plant"
                   loading="lazy"

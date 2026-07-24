@@ -5,6 +5,7 @@ import PageHero from "../components/PageHero";
 import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import Lightbox from "../components/Lightbox";
+import Img from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
 import { IMAGES } from "../data/site";
 import type { GalleryGroup } from "../data/site";
@@ -82,7 +83,7 @@ export default function Gallery() {
                   g.span === "tall" ? "row-span-2" : ""
                 }`}
               >
-                <img
+                <Img
                   src={g.src}
                   alt={g.caption}
                   loading="lazy"

@@ -7,6 +7,7 @@ import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import Btn from "../components/Btn";
 import Lightbox from "../components/Lightbox";
+import Img, { toWebp } from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
 import { useHorizontalScroll } from "../lib/useHorizontalScroll";
 import { CATEGORIES, FAQS, IMAGES } from "../data/site";
@@ -159,16 +160,19 @@ function MobileCategoryBrowser() {
               aria-label={t("prod.detail.view", "View full")}
               className="group relative flex aspect-square w-full items-center justify-center"
             >
-              <motion.img
-                key={product.slug + "-" + img}
-                src={images[img]}
-                alt={t(`prod.${product.slug}.name`, product.name)}
-                loading="lazy"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.35, ease: EASE }}
-                className="h-full w-full object-contain"
-              />
+              <picture className="contents">
+                {toWebp(images[img]) && <source srcSet={toWebp(images[img])!} type="image/webp" />}
+                <motion.img
+                  key={product.slug + "-" + img}
+                  src={images[img]}
+                  alt={t(`prod.${product.slug}.name`, product.name)}
+                  loading="lazy"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.35, ease: EASE }}
+                  className="h-full w-full object-contain"
+                />
+              </picture>
               <span className="absolute bottom-1 right-1 inline-flex items-center gap-1.5 bg-ink/85 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-cream">
                 <MagnifyingGlassPlus size={13} weight="bold" /> {t("prod.detail.view", "View full")}
               </span>
@@ -186,7 +190,7 @@ function MobileCategoryBrowser() {
                       i === img ? "border-gold-deep" : "border-linen hover:border-ink/40"
                     }`}
                   >
-                    <img src={src} alt="" loading="lazy" className="h-full w-full object-contain" />
+                    <Img src={src} alt="" loading="lazy" className="h-full w-full object-contain" />
                   </button>
                 ))}
               </div>
@@ -295,16 +299,19 @@ function CategoryCard({ cat }: { cat: (typeof CATEGORIES)[number] }) {
             aria-label={t("prod.detail.view", "View full")}
             className="group relative mx-auto flex w-full min-h-0 flex-1 items-center justify-center lg:max-w-[640px]"
           >
-            <motion.img
-              key={product.slug + "-" + img}
-              src={images[img]}
-              alt={t(`prod.${product.slug}.name`, product.name)}
-              loading="lazy"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.35, ease: EASE }}
-              className="h-full w-full object-contain"
-            />
+            <picture className="contents">
+              {toWebp(images[img]) && <source srcSet={toWebp(images[img])!} type="image/webp" />}
+              <motion.img
+                key={product.slug + "-" + img}
+                src={images[img]}
+                alt={t(`prod.${product.slug}.name`, product.name)}
+                loading="lazy"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.35, ease: EASE }}
+                className="h-full w-full object-contain"
+              />
+            </picture>
             <span className="absolute bottom-1 right-1 inline-flex items-center gap-1.5 bg-ink/85 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-cream opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               <MagnifyingGlassPlus size={13} weight="bold" /> {t("prod.detail.view", "View full")}
             </span>
@@ -354,7 +361,7 @@ function VarietyButton({ product: p, active, onClick }: { product: Product; acti
       }`}
     >
       <span className={`flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white ${pack ? "p-1" : ""}`}>
-        <img src={p.image} alt="" loading="lazy" className={`h-full w-full ${pack ? "object-contain" : "object-cover"}`} />
+        <Img src={p.image} alt="" loading="lazy" className={`h-full w-full ${pack ? "object-contain" : "object-cover"}`} />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block truncate font-display text-[15px] font-semibold leading-tight">{t(`prod.${p.slug}.name`, p.name)}</span>

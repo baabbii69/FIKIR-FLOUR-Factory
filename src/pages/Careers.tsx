@@ -3,6 +3,7 @@ import PageHero from "../components/PageHero";
 import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import Btn from "../components/Btn";
+import Img from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
 import { OPENINGS, VALUES, CONTACT, IMAGES } from "../data/site";
 import { useI18n } from "../i18n/I18nProvider";
@@ -46,7 +47,7 @@ export default function Careers() {
           </div>
           <div className="lg:col-span-6">
             <Reveal delay={0.12}>
-              <img src={IMAGES.lifeBiscuit} alt="A member of the Fikir community" loading="lazy" className="aspect-[4/3] w-full object-cover" />
+              <Img src={IMAGES.lifeBiscuit} alt="A member of the Fikir community" loading="lazy" className="aspect-[4/3] w-full object-cover" />
             </Reveal>
           </div>
         </div>

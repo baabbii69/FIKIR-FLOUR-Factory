@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
 import { LOW_POWER } from "../lib/perf";
+import { toWebp } from "./Img";
 
 type Caption = string | ((i: number) => string);
 
@@ -115,7 +116,12 @@ export default function Lightbox({
             <AnimatePresence mode="wait" initial={false}>
               <motion.img
                 key={index}
-                src={images[index]}
+                src={toWebp(images[index]) ?? images[index]}
+                onError={(e) => {
+                  // Fall back to the original if a .webp is somehow missing or
+                  // the browser can't decode it.
+                  if (e.currentTarget.src !== images[index]) e.currentTarget.src = images[index];
+                }}
                 alt={cap ?? "Fikir"}
                 onClick={(e) => e.stopPropagation()}
                 initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}

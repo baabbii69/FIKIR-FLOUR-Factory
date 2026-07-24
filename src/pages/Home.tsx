@@ -10,6 +10,7 @@ import { STATS, CATEGORIES, CERTIFICATE, PRODUCTS, PROCESS, IMAGES, COMPANY } fr
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 import Btn from "../components/Btn";
+import Img from "../components/Img";
 import Reveal from "../components/Reveal";
 import Stat from "../components/Stat";
 import FlourDust from "../components/FlourDust";
@@ -31,7 +32,7 @@ function Hero() {
   return (
     <section className="relative flex min-h-[100dvh] items-center overflow-hidden bg-ink">
       <div className="absolute inset-0">
-        <img
+        <Img
           src={IMAGES.hero}
           alt="The Fikir Food Processing plant, fleet, and products at sunset"
           className="kenburns h-full w-full object-cover"
@@ -215,7 +216,7 @@ function ProcessJourney() {
               key={s.n}
               className="relative flex h-[62vh] w-[82vw] shrink-0 snap-center flex-col justify-end overflow-hidden sm:h-[70vh] sm:w-[58vw] lg:h-screen lg:w-[40vw]"
             >
-              <img
+              <Img
                 src={s.img}
                 alt={t(`proc.${i}.title`, s.title)}
                 loading="lazy"
@@ -252,7 +253,7 @@ function PackMarquee() {
     <ul aria-hidden={h || undefined} className="flex shrink-0 items-center gap-10 pr-10 md:gap-16 md:pr-16" style={{ animation: "marquee 40s linear infinite" }}>
       {PACKS.map((p) => (
         <li key={p} className="shrink-0">
-          <img src={`/media/products/${p}.png`} alt="" className="h-28 w-auto object-contain md:h-36" loading="lazy" />
+          <Img src={`/media/products/${p}.png`} alt="" className="h-28 w-auto object-contain md:h-36" loading="lazy" />
         </li>
       ))}
     </ul>
@@ -311,7 +312,7 @@ function RangeIndex() {
                 className="group flex items-center gap-5 border-t border-linen py-6 md:gap-8 md:py-8"
               >
                 <span className="w-7 shrink-0 font-mono text-[11px] tabular-nums text-clay/60">0{i + 1}</span>
-                <img src={p.image} alt="" loading="lazy" className="h-14 w-20 shrink-0 object-contain lg:hidden" />
+                <Img src={p.image} alt="" loading="lazy" className="h-14 w-20 shrink-0 object-contain lg:hidden" />
                 <h3 className="font-display text-2xl font-semibold leading-tight text-ink transition-[transform,color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2 group-hover:text-gold-deep md:text-4xl">
                   {p.name}
                 </h3>
@@ -330,7 +331,7 @@ function RangeIndex() {
                 className="flex h-[240px] w-[320px] items-center justify-center overflow-hidden bg-white shadow-2xl shadow-ink/30"
               >
                 {items.map((p, i) => (
-                  <img
+                  <Img
                     key={p.slug}
                     src={p.image}
                     alt=""
@@ -348,7 +349,7 @@ function RangeIndex() {
           {CATEGORIES.map((c, i) => (
             <Reveal key={c.id} delay={0.05 * i} className="h-full">
               <Link to={`/products?cat=${c.id}`} className="group relative block h-full min-h-[240px] overflow-hidden bg-ink">
-                <img
+                <Img
                   src={CAT_IMAGES[c.id]}
                   alt={c.label}
                   loading="lazy"
@@ -436,7 +437,7 @@ function Trusted() {
           </div>
           <div className="lg:col-span-5">
             <Reveal delay={0.1}>
-              <img
+              <Img
                 src={IMAGES.lifeChipsGirl}
                 alt="A customer enjoying Unic chips"
                 loading="lazy"
@@ -466,7 +467,7 @@ function Lifestyle() {
           {imgs.map((src, i) => (
             <Reveal key={src} delay={0.05 * i} className={i === 0 ? "col-span-2 row-span-2" : ""}>
               <div className="h-full overflow-hidden">
-                <img
+                <Img
                   src={src}
                   alt="Fikir Food Processing"
                   loading="lazy"

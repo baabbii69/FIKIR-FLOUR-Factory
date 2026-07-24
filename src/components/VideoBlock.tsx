@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Play } from "@phosphor-icons/react";
+import Img from "./Img";
 import type { VideoSource } from "../data/site";
 
 /**
@@ -33,7 +34,7 @@ export default function VideoBlock({
           className="group absolute inset-0 h-full w-full"
         >
           {source.poster ? (
-            <img src={source.poster} alt={title} className="h-full w-full object-cover" />
+            <Img src={source.poster} alt={title} className="h-full w-full object-cover" />
           ) : (
             <div className="h-full w-full bg-ink" />
           )}
