@@ -81,11 +81,13 @@ export type Product = {
   ingredients?: string;
 };
 
-export const CATEGORIES: { id: Category; label: string; note: string }[] = [
+// `hidden` keeps a category (and its products) in the data but out of the UI —
+// chips is paused for now and can be brought back by flipping this flag.
+export const CATEGORIES: { id: Category; label: string; note: string; hidden?: boolean }[] = [
   { id: "flour", label: "Flour", note: "Fortified wheat & corn flour" },
   { id: "biscuits", label: "Biscuits", note: "Unic sweet & energy biscuits" },
   { id: "wafers", label: "Wafers", note: "Unic cream wafers" },
-  { id: "chips", label: "Chips", note: "Unic potato chips" },
+  { id: "chips", label: "Chips", note: "Unic potato chips", hidden: true },
 ];
 
 const M = "/media";
@@ -98,8 +100,8 @@ export const PRODUCTS: Product[] = [
     name: "Special Flour",
     category: "flour",
     brand: "Fikir",
-    image: `${M}/flour-special.jpg`,
-    gallery: [`${M}/pack-flour-special-1.jpg`, `${M}/pack-flour-special-2.jpg`, `${M}/pack-flour-special-3.jpg`],
+    image: `${M}/pack-flour-special-3.jpg`,
+    gallery: [`${M}/pack-flour-special-2.jpg`, `${M}/pack-flour-special-1.jpg`, `${M}/flour-special.jpg`],
     blurb:
       "Our export-grade wheat flour, milled to a fine, consistent standard and fortified up to Vitamin B12. The choice for bakeries that need reliable results at scale.",
     meta: "5 · 10 · 25 · 50 kg",
@@ -110,8 +112,8 @@ export const PRODUCTS: Product[] = [
     name: "3F Flour",
     category: "flour",
     brand: "Fikir",
-    image: `${M}/flour-3f.jpg`,
-    gallery: [`${M}/pack-flour-3f-1.jpg`],
+    image: `${M}/pack-flour-3f-1.jpg`,
+    gallery: [`${M}/flour-3f.jpg`],
     blurb:
       "A dependable all-purpose wheat flour for everyday baking and injera, fortified to national standards and trusted across Ethiopian kitchens.",
     meta: "25 · 50 kg",

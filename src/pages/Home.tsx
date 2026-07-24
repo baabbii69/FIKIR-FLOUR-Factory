@@ -6,7 +6,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, SealCheck } from "@phosphor-icons/react";
 import { usePageMeta } from "../lib/usePageMeta";
 import { useHorizontalScroll } from "../lib/useHorizontalScroll";
-import { STATS, CATEGORIES, CERTIFICATE, PRODUCTS, PROCESS, IMAGES, COMPANY } from "../data/site";
+import { STATS, CERTIFICATE, PRODUCTS, PROCESS, IMAGES, COMPANY } from "../data/site";
+import { getCategories } from "../content";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 import Btn from "../components/Btn";
@@ -236,24 +237,27 @@ function ProcessJourney() {
   );
 }
 
-/* ---------------- Product pack marquee ---------------- */
+/* ---------------- Product pack marquee ----------------
+   Real studio product shots with the background removed (mq-*.png), ordered to
+   alternate tall sacks with wide wafers so the strip reads evenly. */
 const PACKS = [
-  "b-high-energy",
-  "w-chocolate",
-  "b-cappuccino",
-  "w-vanilla",
-  "b-apple-vanilla",
-  "w-orange",
-  "b-banana",
-  "b-glucose",
-  "b-vanilla-sandwich",
+  "mq-wafer-chocolate",
+  "mq-flour-special",
+  "mq-crackers",
+  "mq-high-energy",
+  "mq-wafer-mango",
+  "mq-flour-3f",
+  "mq-apple-vanilla",
+  "mq-abounded",
+  "mq-wafer-vanilla",
+  "mq-vanilla-sandwich",
 ];
 function PackMarquee() {
   const strip = (h: boolean) => (
     <ul aria-hidden={h || undefined} className="flex shrink-0 items-center gap-10 pr-10 md:gap-16 md:pr-16" style={{ animation: "marquee 40s linear infinite" }}>
       {PACKS.map((p) => (
-        <li key={p} className="shrink-0">
-          <Img src={`/media/products/${p}.png`} alt="" className="h-28 w-auto object-contain md:h-36" loading="lazy" />
+        <li key={p} className="flex h-28 w-auto shrink-0 items-center md:h-36">
+          <Img src={`/media/${p}.png`} alt="" className="max-h-full w-auto max-w-[200px] object-contain md:max-w-[240px]" loading="lazy" />
         </li>
       ))}
     </ul>
@@ -269,7 +273,7 @@ function PackMarquee() {
 }
 
 /* ---------------- Interactive range (hover-preview) ---------------- */
-const FEATURED = ["high-energy", "wafer-chocolate", "chips-tomato", "special", "cappuccino", "wafer-orange"];
+const FEATURED = ["high-energy", "wafer-chocolate", "abounded", "special", "wafer-vanilla", "crackers"];
 function RangeIndex() {
   const { t } = useI18n();
   const items = FEATURED.map((s) => PRODUCTS.find((p) => p.slug === s)!).filter(Boolean);
@@ -293,7 +297,7 @@ function RangeIndex() {
           <Reveal>
             <span className="eyebrow">{t("home.range.eyebrow", "What we make")}</span>
             <h2 className="display-2 mt-5 max-w-xl text-4xl md:text-6xl">
-              <Accent text={t("home.range.title", "Four ranges, one *standard.*")} />
+              <Accent text={t("home.range.title", "Our ranges, one *standard.*")} />
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
@@ -328,7 +332,7 @@ function RangeIndex() {
               <motion.div
                 animate={{ opacity: active !== null ? 1 : 0, scale: active !== null ? 1 : 0.9 }}
                 transition={{ duration: 0.3, ease: EASE }}
-                className="flex h-[240px] w-[320px] items-center justify-center overflow-hidden bg-white shadow-2xl shadow-ink/30"
+                className="flex h-[240px] w-[320px] items-center justify-center overflow-hidden"
               >
                 {items.map((p, i) => (
                   <Img
@@ -346,7 +350,7 @@ function RangeIndex() {
 
         {/* Category cards */}
         <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {CATEGORIES.map((c, i) => (
+          {getCategories().map((c, i) => (
             <Reveal key={c.id} delay={0.05 * i} className="h-full">
               <Link to={`/products?cat=${c.id}`} className="group relative block h-full min-h-[240px] overflow-hidden bg-ink">
                 <Img

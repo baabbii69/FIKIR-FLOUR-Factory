@@ -7,13 +7,24 @@
  *
  * Keep the return *shapes* here identical to what a CMS query would yield.
  */
-import { PRODUCTS, GALLERY } from "./data/site";
+import { PRODUCTS, GALLERY, CATEGORIES } from "./data/site";
 import type { Product, Category, GalleryItem, GalleryGroup } from "./data/site";
+
+/* ----------------------------- Categories --------------------------- */
+
+const HIDDEN_CATEGORIES = new Set(CATEGORIES.filter((c) => c.hidden).map((c) => c.id));
+
+/** Categories shown in the UI (hidden ones — e.g. chips — are filtered out). */
+export function getCategories() {
+  return CATEGORIES.filter((c) => !c.hidden);
+}
+
+const isVisible = (p: Product) => !HIDDEN_CATEGORIES.has(p.category);
 
 /* ----------------------------- Products ----------------------------- */
 
 export function getProducts(): Product[] {
-  return PRODUCTS;
+  return PRODUCTS.filter(isVisible);
 }
 
 export function getProductBySlug(slug: string): Product | undefined {
@@ -21,12 +32,12 @@ export function getProductBySlug(slug: string): Product | undefined {
 }
 
 export function getProductsByCategory(cat: Category): Product[] {
-  return PRODUCTS.filter((p) => p.category === cat);
+  return PRODUCTS.filter((p) => p.category === cat && isVisible(p));
 }
 
 /** Products in the same category, excluding the given one (for "related"). */
 export function getRelatedProducts(p: Product, limit = 4): Product[] {
-  return PRODUCTS.filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, limit);
+  return PRODUCTS.filter((x) => x.category === p.category && x.slug !== p.slug && isVisible(x)).slice(0, limit);
 }
 
 /** Full image set for a product's detail gallery: primary first, then extras. */

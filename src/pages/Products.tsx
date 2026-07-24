@@ -12,12 +12,26 @@ import { usePageMeta } from "../lib/usePageMeta";
 import { useHorizontalScroll } from "../lib/useHorizontalScroll";
 import { CATEGORIES, FAQS, IMAGES } from "../data/site";
 import type { Product } from "../data/site";
-import { getProductsByCategory, getProductImages } from "../content";
+import { getProductsByCategory, getProductImages, getCategories } from "../content";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const isPackImg = (src: string) => src.endsWith(".png");
+// Categories shown in the UI (chips is currently hidden — see data/site.ts).
+const VISIBLE_CATEGORIES = getCategories();
+
+/** Auto-advance a product's image index every few seconds when it has more
+ *  than one photo, so galleries cycle on their own. Resets when the set/product
+ *  changes. Returns nothing — it just drives the passed setter. */
+function useAutoRotate(count: number, key: string, setIndex: (fn: (i: number) => number) => void) {
+  useEffect(() => {
+    if (count <= 1) return;
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % count), 3400);
+    return () => window.clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [count, key]);
+}
 
 export default function Products() {
   usePageMeta(
@@ -68,10 +82,10 @@ function CategoryScroller() {
           <div className="flex w-[80vw] shrink-0 snap-center flex-col justify-center py-10 sm:w-[56vw] lg:h-full lg:w-[30vw] lg:py-0 lg:pr-10">
             <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold">{t("prod.browse.eyebrow", "The range")}</span>
             <h2 className="display-2 mt-6 text-4xl !text-cream md:text-6xl">
-              <Accent text={t("prod.browse.title", "Four ranges, *one standard.*")} tone="dark" />
+              <Accent text={t("prod.browse.title", "Our ranges, *one standard.*")} tone="dark" />
             </h2>
             <p className="mt-6 max-w-[40ch] text-[15px] leading-relaxed text-cream/70">
-              {t("prod.browse.body", "Flour, biscuits, wafers, and chips — pick a variety to see it up close.")}
+              {t("prod.browse.body", "Flour, biscuits, and wafers — pick a variety to see it up close.")}
             </p>
             <div className="mt-10 hidden items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50 lg:flex">
               {t("home.process.scrollHint", "Scroll to explore")}
@@ -79,7 +93,7 @@ function CategoryScroller() {
             </div>
           </div>
 
-          {CATEGORIES.map((c) => (
+          {VISIBLE_CATEGORIES.map((c) => (
             <CategoryCard key={c.id} cat={c} />
           ))}
           {/* Trailing spacer so the last card comes to rest centred. A real element
@@ -98,7 +112,7 @@ function CategoryScroller() {
 function MobileCategoryBrowser() {
   const { t } = useI18n();
   const [catIdx, setCatIdx] = useState(0);
-  const cat = CATEGORIES[catIdx];
+  const cat = VISIBLE_CATEGORIES[catIdx];
   const products = useMemo(() => getProductsByCategory(cat.id), [cat.id]);
   const [sel, setSel] = useState(0);
   const [img, setImg] = useState(0);
@@ -113,6 +127,7 @@ function MobileCategoryBrowser() {
   const product = products[Math.min(sel, products.length - 1)];
   const images = useMemo(() => getProductImages(product), [product]);
   const catLabel = t(`cat.${cat.id}.label`, cat.label);
+  useAutoRotate(images.length, product.slug, setImg);
   const pick = (i: number) => {
     setSel(i);
     setImg(0);
@@ -123,10 +138,10 @@ function MobileCategoryBrowser() {
       <div className="px-5 py-14 sm:px-8">
         <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold">{t("prod.browse.eyebrow", "The range")}</span>
         <h2 className="display-2 mt-4 text-4xl !text-cream">
-          <Accent text={t("prod.browse.title", "Four ranges, *one standard.*")} tone="dark" />
+          <Accent text={t("prod.browse.title", "Our ranges, *one standard.*")} tone="dark" />
         </h2>
         <p className="mt-4 max-w-[42ch] text-[15px] leading-relaxed text-cream/70">
-          {t("prod.browse.body", "Flour, biscuits, wafers, and chips — pick a variety to see it up close.")}
+          {t("prod.browse.body", "Flour, biscuits, and wafers — pick a variety to see it up close.")}
         </p>
 
         {/* Category tabs */}
@@ -135,7 +150,7 @@ function MobileCategoryBrowser() {
           aria-label={t("prod.browse.aria", "Browse products by category")}
           className="mt-8 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {CATEGORIES.map((c, i) => (
+          {VISIBLE_CATEGORIES.map((c, i) => (
             <button
               key={c.id}
               role="tab"
@@ -242,6 +257,7 @@ function CategoryCard({ cat }: { cat: (typeof CATEGORIES)[number] }) {
   const product = products[sel];
   const images = useMemo(() => getProductImages(product), [product]);
   const catLabel = t(`cat.${cat.id}.label`, cat.label);
+  useAutoRotate(images.length, product.slug, setImg);
 
   const pick = (i: number) => {
     setSel(i);
