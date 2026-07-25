@@ -71,7 +71,7 @@ export const OM: Record<string, string> = {
 
   // Home — range
   "home.range.eyebrow": "Waan oomishnu",
-  "home.range.title": "Sarara afur, sadarkaa tokko.",
+  "home.range.title": "Sararoota keenya, *sadarkaa tokko.*",
 
   // Home — quality
   "home.quality.eyebrow": "Qulqullina mirkanaa'e",
@@ -374,4 +374,57 @@ export const OM: Record<string, string> = {
   "nf.title": "Fuulli kun *addaan bahe.*",
   "nf.body": "Teessoon ati hordofte hin jiru yookaan jijjiirame. Wanti nu oomishnu hundi ammallee asuma jira.",
   "nf.home": "Gara Fuula Duraatti deebi'i",
+
+  // Previously untranslated in Oromo
+  "brand.sub": "Qophii Nyaataa",
+  "footer.badge1": "Hamma B12'tti cimsame",
+  "footer.badge2": "Mallattoo Istaandaardii Itoophiyaa",
+  "header.quote": "Gatii Gaafadhu",
+
+  // Gallery, product-page & process (added with those features)
+  "nav.gallery": "Gaalarii",
+  "gal.hero.title": "Ilaalcha",
+  "gal.hero.accent": "naannoo.",
+  "gal.cta.title": "Dhufii ijaan",
+  "gal.cta.accent": "ilaali.",
+  "gal.cta.text": "Raabsitoonnii fi michoonni yeroo hunda simatamoo dha. Daawwannaa qindeessuuf yookaan ajaja kennuuf nu qunnamaa.",
+  "fac.gallery.viewAll": "Gaalarii guutuu ilaali",
+  "home.process.eyebrow": "Fikir akkamitti akka hojjetamu",
+  "home.process.title": "Midhaan irraa hamma *maaddii keessanitti.*",
+  "home.process.body": "Tarkaanfii jaha, sadarkaa tokko — warshaa Adaamaa keessatti, midhaan jalqabaa irraa hamma konkolaataa balbala keessaniitti.",
+  "home.process.scrollHint": "Sakatta'uuf gad dhiibi",
+  "prod.browse.eyebrow": "Tarree keenya",
+  "prod.browse.title": "Sararoota keenya, *sadarkaa tokko.*",
+  "prod.browse.body": "Daakuu, biskuutii fi waafarii — dhi'ootti ilaaluuf gosa filadhu.",
+  "prod.browse.aria": "Oomishaalee gosaan sakatta'i",
+  "prod.detail.view": "Guutuu ilaali",
+  "prod.acc.about": "Bal'ina",
+  "prod.acc.specs": "Ibsa addaa",
+  "prod.acc.quality": "Qulqullinaa fi madda",
+  "prod.acc.brand": "Braandii",
+  "prod.acc.category": "Gosa",
+  "prod.acc.qualityFlour": "Adaamaa keessatti daakamee hamma Vitaaminii B12'tti cimsame, qorannoo laabraatoorii booda qofa gadi lakkifama. Daakuun qamadii keenya mallattoo Dhaabbata Istaandaardii Itoophiyaa qaba.",
+  "prod.acc.qualitySnack": "Adaamaa keessatti meeshaa dheedhii filatamaa irraa sararoota ammayyaa alaa galfaman irratti hojjetame, gadi-lakkisuu hunda dura laabraatoorii keenya keessatti sakatta'ame.",
+
+  // How Fikir is made — process steps
+  "proc.0.title": "Galtee midhaanii",
+  "proc.0.text": "Qamadiin qulqulluu fi sadarkaa ol'aanaa qabu utuu gara oomishaatti hin galin dura filatamee sakatta'ama.",
+  "proc.1.title": "Daakuu fi cimsuu",
+  "proc.1.text": "Daakduun ammayyaa alaa galfaman qamadii gara daakuu qulqulluu fi wal-fakkaatuutti jijjiiru, sadarkaa biyyaalessaatiin hamma Vitaaminii B12'tti cimsamee.",
+  "proc.2.title": "Waaduu",
+  "proc.2.text": "Sararoota addaa irratti biskuutii fi waafarii Unic yeroo hojii hunda haaraa waadna.",
+  "proc.3.title": "Qorannoo laabraatoorii",
+  "proc.3.text": "Laabraatooriin keenya inni keessaa oomisha hunda utuu hin gadi-lakkifamin dura galma qulqullinaa fi cimsuu wajjin madaala.",
+  "proc.4.title": "Paakii gochuu",
+  "proc.4.text": "Oomishaaleen cufamanii, saanduqaan hidhamanii, mankuusaa keessatti tuulamanii ergamuuf qophaa'u.",
+  "proc.5.title": "Geejjibaa biyyoolessaa",
+  "proc.5.text": "Konkolaattonni keenya maqaa keenya qaban Fikir gara bakka bu'ootaa, daldaltoota gurguddaa fi suuqiiwwan naannoolee Itoophiyaa hundaatti geessu.",
+
+  // New products
+  "prod.crackers.name": "Unic Kraakersii",
+  "prod.crackers.blurb": "Kraakersii salphaa fi cabsaa, kophaatti yookaan waliin nyaachuuf tolu.",
+  "prod.crackers.meta": "Biskuutii soogiddaa",
+  "prod.wafer-mango.name": "Unic Waafarii Maangoo",
+  "prod.wafer-mango.blurb": "Waafarii cabsaa kiriimii maangoo mi'aawaa qabu.",
+  "prod.wafer-mango.meta": "Waafarii kiriimii",
 };

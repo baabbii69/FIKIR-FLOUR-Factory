@@ -73,7 +73,7 @@ export const AM: Record<string, string> = {
 
   // Home range
   "home.range.eyebrow": "የምናመርተው",
-  "home.range.title": "አራት ዓይነት፣ *አንድ ደረጃ።*",
+  "home.range.title": "የእኛ ዓይነቶች፣ አንድ *ደረጃ።*",
 
   // Home quality
   "home.quality.eyebrow": "የተረጋገጠ ጥራት",
@@ -459,4 +459,51 @@ export const AM: Record<string, string> = {
   "nf.title": "ይህ ገጽ በ*ወንፊቱ ውስጥ አልፏል።*",
   "nf.body": "የተከተሉት አድራሻ የለም ወይም ተዛውሯል። የምንሠራው ሁሉ አሁንም እዚህ አለ።",
   "nf.home": "ወደ መነሻ ተመለስ",
+
+  // Gallery, product-page & process (added with those features)
+  "nav.gallery": "ጋለሪ",
+  "gal.hero.title": "የውስጥ",
+  "gal.hero.accent": "እይታ።",
+  "gal.cta.title": "በአካል መጥተው",
+  "gal.cta.accent": "ይመልከቱ።",
+  "gal.cta.text": "አከፋፋዮች እና አጋሮች ሁልጊዜ የተከበሩ ናቸው። ጉብኝት ለማዘጋጀት ወይም ትዕዛዝ ለመስጠት ያግኙን።",
+  "fac.gallery.viewAll": "ሙሉ ጋለሪ ይመልከቱ",
+  "home.process.eyebrow": "ፍቅር እንዴት እንደሚሠራ",
+  "home.process.title": "ከእህል እስከ *ማዕድዎ።*",
+  "home.process.body": "ስድስት ደረጃዎች፣ አንድ መስፈርት — በአዳማ ፋብሪካ ውስጥ፣ ከመጀመሪያው እህል እስከ በርዎ ድረስ ከሚደርሰው መኪና።",
+  "home.process.scrollHint": "ለማሰስ ይሸብልሉ",
+  "prod.browse.eyebrow": "ስብስባችን",
+  "prod.browse.title": "የእኛ ስብስቦች፣ *አንድ ደረጃ።*",
+  "prod.browse.body": "ዱቄት፣ ብስኩት እና ዌፈር — በቅርበት ለማየት ዓይነት ይምረጡ።",
+  "prod.browse.aria": "ምርቶችን በምድብ ያስሱ",
+  "prod.detail.view": "ሙሉ ይመልከቱ",
+  "prod.acc.about": "ዝርዝሮች",
+  "prod.acc.specs": "ዝርዝር መግለጫ",
+  "prod.acc.quality": "ጥራት እና ምንጭ",
+  "prod.acc.brand": "ብራንድ",
+  "prod.acc.category": "ምድብ",
+  "prod.acc.qualityFlour": "በአዳማ ተፈጭቶ እስከ ቫይታሚን B12 የተጠናከረ፣ ከላቦራቶሪ ምርመራ በኋላ ብቻ የሚለቀቅ። የስንዴ ዱቄታችን የኢትዮጵያ ደረጃዎች ተቋም ምልክት ይዟል።",
+  "prod.acc.qualitySnack": "በአዳማ ውስጥ ከተመረጡ ጥሬ ዕቃዎች በዘመናዊ ከውጭ በመጡ መስመሮች የተሠራ፣ እና ከእያንዳንዱ ልቀት በፊት በራሳችን ላቦራቶሪ የተመረመረ።",
+
+  // How Fikir is made — process steps
+  "proc.0.title": "የእህል ግብዓት",
+  "proc.0.text": "ንጹህ፣ ከፍተኛ ደረጃ ያለው ስንዴ ወደ ምርት ከመግባቱ በፊት ተመርጦ ይመረመራል።",
+  "proc.1.title": "ማፍጨትና ማጠናከር",
+  "proc.1.text": "ዘመናዊ ከውጭ የመጡ ወፍጮዎች ስንዴን ወደ ጥሩና ወጥ ዱቄት ይለውጣሉ፣ እስከ ቫይታሚን B12 በብሔራዊ መስፈርት ተጠናክሮ።",
+  "proc.2.title": "መጋገር",
+  "proc.2.text": "በተለዩ መስመሮች ላይ የUnic ብስኩቶችንና ዌፈሮችን በየፈረቃው ትኩስ እንጋግራለን።",
+  "proc.3.title": "የላቦራቶሪ ምርመራ",
+  "proc.3.text": "የውስጥ ላቦራቶሪያችን እያንዳንዱን ምርት ከጥራትና ከማጠናከሪያ ግቦች አንጻር ከመለቀቁ በፊት ይመረምራል።",
+  "proc.4.title": "ማሸግ",
+  "proc.4.text": "ምርቶች ታሽገው፣ በሳጥን ተደርገው፣ በመጋዘን ውስጥ ተከምረው ለመላክ ዝግጁ ይሆናሉ።",
+  "proc.5.title": "በአገር አቀፍ ማድረስ",
+  "proc.5.text": "የራሳችን ብራንድ ያላቸው መኪኖቻችን ፍቅርን ወደ ወኪሎች፣ ጅምላ ሻጮችና ሱቆች በኢትዮጵያ ሁሉም ክልሎች ያደርሳሉ።",
+
+  // New products
+  "prod.crackers.name": "Unic ክራከርስ",
+  "prod.crackers.blurb": "ቀላል፣ ጥርት ያሉ ጨዋማ ክራከሮች፣ ብቻቸውን ወይም ከቅብ ጋር ለመቅመስ የተዘጋጁ።",
+  "prod.crackers.meta": "ጨዋማ ብስኩት",
+  "prod.wafer-mango.name": "Unic ዌፈር ማንጎ",
+  "prod.wafer-mango.blurb": "በጣፋጭ የማንጎ ክሬም የተነባበሩ ጥርት ያሉ ዌፈሮች።",
+  "prod.wafer-mango.meta": "የቅቤ ዌፈር",
 };
