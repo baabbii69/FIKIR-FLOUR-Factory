@@ -22,8 +22,8 @@ export const COMPANY = {
 
 export const NAV = [
   { to: "/", label: "Home" },
-  { to: "/products", label: "Products" },
   { to: "/about", label: "About Us" },
+  { to: "/products", label: "Products" },
   { to: "/facility", label: "Facility" },
   { to: "/gallery", label: "Gallery" },
   { to: "/careers", label: "Careers" },
@@ -468,6 +468,17 @@ export const IMAGES = {
   facPacking1: `${M}/fac-packing-1.jpg`,
   facPacking2: `${M}/fac-packing-2.jpg`,
   facProductionHall: `${M}/fac-production-hall.jpg`,
+  // Video stills 04 (extracted from the company film)
+  ceo: `${M}/ceo.jpg`,
+  ceoMeeting: `${M}/ceo-meeting.jpg`,
+  distribution1: `${M}/distribution-1.jpg`,
+  distribution2: `${M}/distribution-2.jpg`,
+  factoryAerial: `${M}/factory-aerial.jpg`,
+  grainIntake: `${M}/grain-intake.jpg`,
+  certificates: `${M}/certificates.jpg`,
+  teamGroup: `${M}/team-group.jpg`,
+  wheatFarming: `${M}/wheat-farming.jpg`,
+  biscuitLine: `${M}/biscuit-line.jpg`,
 };
 
 /* --------------------------------------------------------------------------
@@ -504,27 +515,32 @@ export const FEATURE_VIDEO: VideoSource | null = null;
 export type ProcessStep = { n: string; title: string; text: string; img: string };
 
 export const PROCESS: ProcessStep[] = [
-  { n: "01", title: "Grain intake", text: "Clean, high-grade wheat and potatoes are selected and checked before anything enters production.", img: IMAGES.facFlourBags },
+  { n: "01", title: "Grain intake", text: "Clean, high-grade wheat is selected and checked before anything enters production.", img: IMAGES.grainIntake },
   { n: "02", title: "Milling & fortification", text: "Modern imported mills turn wheat into fine, consistent flour, fortified up to Vitamin B12 to national standard.", img: IMAGES.facMill1 },
-  { n: "03", title: "Baking & frying", text: "On dedicated lines we bake the Unic biscuits and wafers and fry the chips, fresh every shift.", img: IMAGES.facProductionHall },
+  { n: "03", title: "Baking", text: "On dedicated lines we bake the Unic biscuits and wafers, fresh every shift.", img: IMAGES.biscuitLine },
   { n: "04", title: "Laboratory testing", text: "Our in-house lab tests every batch against quality and fortification targets before it is released.", img: IMAGES.facQcLab },
   { n: "05", title: "Packing", text: "Products are sealed, boxed, and stacked in the warehouse, ready to ship.", img: IMAGES.facPacking1 },
-  { n: "06", title: "Nationwide delivery", text: "Our own branded fleet carries Fikir to agents, wholesalers, and shops across every region of Ethiopia.", img: IMAGES.facTrucks },
+  { n: "06", title: "Nationwide delivery", text: "Our own branded fleet carries Fikir to agents, wholesalers, and shops across every region of Ethiopia.", img: IMAGES.distribution1 },
 ];
 
 export const GALLERY: GalleryItem[] = [
   // Facility
+  { src: IMAGES.factoryAerial, group: "facility", caption: "The plant from above, Adama", span: "wide", featured: true },
   { src: IMAGES.facExterior, group: "facility", caption: "The plant, Adama", span: "tall", featured: true },
-  { src: IMAGES.facSilos1, group: "facility", caption: "Grain storage silos", featured: true },
+  { src: IMAGES.facSilos1, group: "facility", caption: "Grain storage silos" },
   { src: IMAGES.facReception, group: "facility", caption: "Reception" },
+  { src: IMAGES.certificates, group: "facility", caption: "Certifications & awards" },
   { src: IMAGES.facOffice1, group: "facility", caption: "Our offices" },
   { src: IMAGES.facLounge, group: "facility", caption: "Executive lounge" },
   { src: IMAGES.facTrucks, group: "facility", caption: "Our own delivery fleet", span: "wide", featured: true },
+  { src: IMAGES.distribution2, group: "facility", caption: "Distributing nationwide" },
   { src: IMAGES.facSecurity1, group: "facility", caption: "Round-the-clock monitoring" },
   // Production
   { src: IMAGES.facMill1, group: "production", caption: "The flour mill", span: "wide", featured: true },
   { src: IMAGES.facMill3, group: "production", caption: "Milling line" },
+  { src: IMAGES.wheatFarming, group: "production", caption: "Wheat harvest", span: "wide" },
   { src: IMAGES.facQcLab, group: "production", caption: "Quality-control laboratory", featured: true },
+  { src: IMAGES.biscuitLine, group: "production", caption: "The biscuit line" },
   { src: IMAGES.facPacking1, group: "production", caption: "Packing the Unic lines" },
   { src: IMAGES.facBiscuitWarehouse, group: "production", caption: "Finished biscuits, ready to ship", span: "tall" },
   { src: IMAGES.facProductionHall, group: "production", caption: "Production hall", span: "wide" },
@@ -534,10 +550,12 @@ export const GALLERY: GalleryItem[] = [
   { src: `${M}/pack-abounded-1.jpg`, group: "products", caption: "Abounded sandwich biscuits", span: "tall" },
   { src: IMAGES.proCrackers, group: "products", caption: "Unic Crackers" },
   { src: `${M}/pack-wafer-vanilla-2.jpg`, group: "products", caption: "Unic wafer, vanilla" },
-  { src: IMAGES.chipsTomato, group: "products", caption: "Unic chips, tomato" },
-  { src: IMAGES.chipsPaprika, group: "products", caption: "Unic chips, paprika" },
+  { src: `${M}/pack-high-energy-1.jpg`, group: "products", caption: "Unic High Energy biscuits" },
+  { src: `${M}/pack-wafer-mango-1.jpg`, group: "products", caption: "Unic Wafer Mango" },
   // People / lifestyle
-  { src: IMAGES.proWaferFace, group: "people", caption: "Made for tea time", span: "tall", featured: true },
+  { src: IMAGES.teamGroup, group: "people", caption: "The Fikir team", span: "wide", featured: true },
+  { src: IMAGES.ceoMeeting, group: "people", caption: "Leadership at work" },
+  { src: IMAGES.proWaferFace, group: "people", caption: "Made for tea time", span: "tall" },
   { src: IMAGES.proBiscuitBite, group: "people", caption: "An everyday treat" },
   { src: IMAGES.lifeMarket, group: "people", caption: "On shelves nationwide" },
   { src: IMAGES.stillTea, group: "people", caption: "Better with a cup" },

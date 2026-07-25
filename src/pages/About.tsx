@@ -64,10 +64,10 @@ export default function About() {
           <div className="relative lg:col-span-6">
             <Reveal className="relative z-0 lg:pl-8">
               <Img
-                src={IMAGES.lifeBiscuit}
-                alt="A customer enjoying a Unic biscuit"
+                src={IMAGES.ceo}
+                alt="The CEO of Fikir Food Processing"
                 loading="lazy"
-                className="aspect-[4/5] w-full object-cover"
+                className="aspect-[4/3] w-full object-cover"
               />
             </Reveal>
             <Reveal delay={0.14} className="relative z-10">
@@ -170,6 +170,14 @@ export default function About() {
                 <Accent text={t("about.cert.title", "The National Fortified Food mark, *earned.*")} />
               </h2>
               <p className="mt-6 max-w-[54ch] text-base leading-relaxed">{t("cert.note", CERTIFICATE.note)}</p>
+            </Reveal>
+            <Reveal delay={0.12}>
+              <Img
+                src={IMAGES.certificates}
+                alt="Fikir's certifications, standards, and awards on display"
+                loading="lazy"
+                className="mt-8 aspect-[16/10] w-full object-cover"
+              />
             </Reveal>
           </div>
           <div className="lg:col-span-6 lg:col-start-7">

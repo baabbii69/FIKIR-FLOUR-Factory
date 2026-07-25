@@ -442,8 +442,8 @@ function Trusted() {
           <div className="lg:col-span-5">
             <Reveal delay={0.1}>
               <Img
-                src={IMAGES.lifeChipsGirl}
-                alt="A customer enjoying Unic chips"
+                src={IMAGES.proBiscuitBite}
+                alt="A customer enjoying a Unic biscuit"
                 loading="lazy"
                 className="aspect-[4/5] w-full object-cover"
               />

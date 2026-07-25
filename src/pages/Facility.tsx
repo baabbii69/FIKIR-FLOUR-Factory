@@ -230,8 +230,8 @@ export default function Facility() {
       </section>
 
       <CTABanner
-        image={IMAGES.lifeChipsHand}
-        alt="A hand sharing Unic chips"
+        image={IMAGES.factoryAerial}
+        alt="Aerial view of the Fikir Food Processing plant in Adama"
         title={t("fac.cta.title", "Let's put Fikir on")}
         titleAccent={t("fac.cta.accent", "your shelf.")}
         text={t("fac.cta.text", "Reach out to become a distributor, place an order, or just ask a question.")}
