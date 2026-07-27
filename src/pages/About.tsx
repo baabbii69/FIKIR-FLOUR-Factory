@@ -1,15 +1,26 @@
-import { SealCheck, Handshake, Smiley, Flask, Leaf } from "@phosphor-icons/react";
+import { SealCheck, Handshake, Smiley, Flask, Leaf, TrendUp, UsersThree } from "@phosphor-icons/react";
+import { motion, useReducedMotion } from "motion/react";
 import PageHero from "../components/PageHero";
 import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import Btn from "../components/Btn";
 import Img from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
-import { VALUES, WHY_US, CERTIFICATE, IMAGES } from "../data/site";
+import { VALUES, WHY_US, CERTIFICATE, COMPANY, IMAGES } from "../data/site";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 
-const VALUE_ICONS = { seal: SealCheck, handshake: Handshake, smiley: Smiley, flask: Flask, leaf: Leaf } as const;
+const VALUE_ICONS = {
+  seal: SealCheck,
+  handshake: Handshake,
+  smiley: Smiley,
+  flask: Flask,
+  leaf: Leaf,
+  trend: TrendUp,
+  users: UsersThree,
+} as const;
+
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function About() {
   usePageMeta(
@@ -42,13 +53,13 @@ export default function About() {
               <p className="mt-8 max-w-[62ch] text-base leading-relaxed">
                 {t(
                   "about.who.p1",
-                  "Fikir Food Processing was established in 2004 (Ethiopian calendar) in Adama, in the Gara Lugo / Railway Station area. We are a legally registered Ethiopian manufacturer producing the highest-quality wheat flour in several grades, more than twelve kinds of sweet biscuits, cream wafers, and potato chips, all to national and international quality standards."
+                  "Fikir Food Processing was founded in 2011 in Adama, taking its name from the Amharic word for love. From our base on the Adama corridor we entered the wheat flour market at a time when demand for reliable, locally made staples was accelerating, and we have been building on that ever since."
                 )}
               </p>
               <p className="mt-5 max-w-[62ch] text-base leading-relaxed">
                 {t(
                   "about.who.p2",
-                  "Built on honesty, quality, and innovation, we've grown into a trusted name in the Ethiopian food industry, creating jobs for more than 600 people and delivering to every region of the country."
+                  "Today we are a legally registered Ethiopian manufacturer producing three grades of wheat flour, more than a dozen kinds of sweet biscuit, and a range of cream wafers, all to national and international quality standards, with a workforce of 1,026 people."
                 )}
               </p>
             </Reveal>
@@ -63,18 +74,23 @@ export default function About() {
 
           <div className="relative lg:col-span-6">
             <Reveal className="relative z-0 lg:pl-8">
-              <Img
-                src={IMAGES.ceo}
-                alt="The CEO of Fikir Food Processing"
-                loading="lazy"
-                className="aspect-[4/3] w-full object-cover"
-              />
+              <figure>
+                <Img
+                  src={IMAGES.ceo}
+                  alt={`${COMPANY.ceo}, Chief Executive Officer of Fikir Food Processing`}
+                  loading="lazy"
+                  className="aspect-[4/3] w-full object-cover"
+                />
+                <figcaption className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-clay/70 lg:pl-8">
+                  {COMPANY.ceo} · {t("about.ceoRole", "Chief Executive Officer")}
+                </figcaption>
+              </figure>
             </Reveal>
             <Reveal delay={0.14} className="relative z-10">
-              <div className="ml-auto -mt-16 w-fit max-w-[280px] bg-ink p-8 shadow-2xl shadow-ink/30 lg:-mt-24 lg:mr-8">
-                <div className="font-display text-6xl font-semibold text-gold">600+</div>
+              <div className="ml-auto -mt-12 w-fit max-w-[280px] bg-ink p-8 shadow-2xl shadow-ink/30 lg:-mt-20 lg:mr-8">
+                <div className="font-display text-6xl font-semibold text-gold">1,026</div>
                 <div className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-cream/60">
-                  {t("about.stat600", "Ethiopians employed")}
+                  {t("about.statEmployed", "Ethiopians employed")}
                 </div>
               </div>
             </Reveal>
@@ -89,7 +105,10 @@ export default function About() {
             <div className="h-full border-l-2 border-gold/60 pl-8">
               <span className="eyebrow">{t("about.vision.label", "Vision")}</span>
               <p className="mt-5 font-display text-2xl font-medium leading-snug text-cream md:text-3xl">
-                {t("about.vision.text", "To be a leading food manufacturer in Ethiopia and Africa in quality and taste.")}
+                {t(
+                  "about.vision.text",
+                  "To be the leading food manufacturer in Ethiopia and Africa, renowned for exceptional quality and taste."
+                )}
               </p>
             </div>
           </Reveal>
@@ -97,68 +116,19 @@ export default function About() {
             <div className="h-full border-l-2 border-gold/60 pl-8">
               <span className="eyebrow">{t("about.mission.label", "Mission")}</span>
               <p className="mt-5 font-display text-2xl font-medium leading-snug text-cream md:text-3xl">
-                {t("about.mission.text", "To give our customers superior quality at affordable prices, using modern technology.")}
+                {t(
+                  "about.mission.text",
+                  "To supply high-quality food products using modern technology, delivering superior quality at affordable prices."
+                )}
               </p>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* Values */}
-      <section className="bg-parchment">
-        <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
-          <Reveal>
-            <h2 className="display-2 max-w-2xl text-4xl md:text-5xl">{t("about.values.title", "The values behind every batch")}</h2>
-          </Reveal>
-          <div className="mt-14 grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
-            {VALUES.map((v, i) => {
-              const Icon = VALUE_ICONS[v.icon as keyof typeof VALUE_ICONS];
-              return (
-                <Reveal key={v.title} delay={0.05 * i}>
-                  <div className="border-t border-linen pt-8">
-                    <span className="flex h-12 w-12 items-center justify-center bg-gold/15 text-gold-deep">
-                      <Icon size={24} weight="duotone" />
-                    </span>
-                    <h3 className="mt-5 font-display text-2xl font-semibold text-ink">{t(`value.${i}.title`, v.title)}</h3>
-                    <p className="mt-3 max-w-[46ch] text-[15px] leading-relaxed">{t(`value.${i}.text`, v.text)}</p>
-                  </div>
-                </Reveal>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Why us */}
-      <section className="bg-cream">
-        <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
-          <div className="grid gap-12 lg:grid-cols-12">
-            <div className="lg:col-span-4">
-              <Reveal>
-                <span className="eyebrow">{t("about.why.eyebrow", "Why choose us")}</span>
-                <h2 className="display-2 mt-5 text-4xl md:text-5xl">
-                  <Accent text={t("about.why.title", "Reasons customers *stay with us.*")} />
-                </h2>
-              </Reveal>
-            </div>
-            <div className="lg:col-span-7 lg:col-start-6">
-              <div className="grid gap-px border border-linen bg-linen sm:grid-cols-2">
-                {WHY_US.map((w, i) => (
-                  <Reveal key={w.title} delay={0.05 * i} className="h-full">
-                    <div className="flex h-full min-h-[180px] flex-col justify-between bg-cream p-7">
-                      <span className="font-display text-4xl font-semibold text-gold/50">0{i + 1}</span>
-                      <div>
-                        <h3 className="font-display text-xl font-semibold text-ink">{t(`why.${i}.title`, w.title)}</h3>
-                        <p className="mt-2 text-sm leading-relaxed text-clay/90">{t(`why.${i}.text`, w.text)}</p>
-                      </div>
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Values />
+      <People />
+      <WhyUs />
 
       {/* Certificate */}
       <section className="bg-parchment">
@@ -218,5 +188,245 @@ export default function About() {
         secondaryTo="/products"
       />
     </>
+  );
+}
+
+/* ---------------- Values (animated) ---------------- */
+
+function Values() {
+  const { t } = useI18n();
+  const reduce = useReducedMotion();
+
+  return (
+    <section className="bg-parchment">
+      <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
+        <Reveal>
+          <h2 className="display-2 max-w-2xl text-4xl md:text-5xl">
+            {t("about.values.title", "The values behind every batch")}
+          </h2>
+        </Reveal>
+
+        <div className="mt-14 grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+          {VALUES.map((v, i) => {
+            const Icon = VALUE_ICONS[v.icon as keyof typeof VALUE_ICONS];
+            const d = i * 0.09;
+            return (
+              <motion.div
+                key={v.title}
+                className="group relative"
+                initial={reduce ? false : { opacity: 0, y: 34 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.75, delay: d, ease: EASE }}
+              >
+                {/* Static hairline with a gold rule that draws across it on entry */}
+                <div className="relative h-px w-full bg-linen">
+                  <motion.div
+                    className="absolute inset-y-0 left-0 w-full origin-left bg-gold"
+                    initial={reduce ? false : { scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 1, delay: d + 0.15, ease: EASE }}
+                  />
+                </div>
+
+                <div className="pt-8 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1.5">
+                  <div className="flex items-center gap-4">
+                    <motion.span
+                      className="flex h-12 w-12 items-center justify-center bg-gold/15 text-gold-deep transition-colors duration-500 group-hover:bg-gold group-hover:text-ink"
+                      initial={reduce ? false : { scale: 0.4, opacity: 0, rotate: -12 }}
+                      whileInView={{ scale: 1, opacity: 1, rotate: 0 }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{ type: "spring", stiffness: 240, damping: 16, delay: d + 0.22 }}
+                    >
+                      <Icon size={24} weight="duotone" />
+                    </motion.span>
+                    <span className="font-mono text-[11px] tabular-nums text-clay/45 transition-colors duration-500 group-hover:text-gold-deep">
+                      0{i + 1}
+                    </span>
+                  </div>
+
+                  <h3 className="mt-5 font-display text-2xl font-semibold text-ink">
+                    {t(`value.${i}.title`, v.title)}
+                  </h3>
+                  <p className="mt-3 max-w-[46ch] text-[15px] leading-relaxed">{t(`value.${i}.text`, v.text)}</p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- People: the workforce behind the product ---------------- */
+
+function People() {
+  const { t } = useI18n();
+  const reduce = useReducedMotion();
+
+  return (
+    <section className="overflow-hidden bg-ink">
+      <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-5">
+            <Reveal>
+              <h2 className="display-2 text-4xl !text-cream md:text-5xl">
+                <Accent text={t("about.people.title", "A thousand people make *every batch.*")} tone="dark" />
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="mt-6 max-w-[52ch] text-base leading-relaxed text-cream/70">
+                {t(
+                  "about.people.body",
+                  "Our social footprint starts with employment: 1,026 jobs in Adama, with a large share of our factory floor roles held by women. Formal, steady income in a region where that still matters enormously."
+                )}
+              </p>
+            </Reveal>
+          </div>
+
+          <div className="lg:col-span-6 lg:col-start-7">
+            <div className="grid grid-cols-2 gap-6 sm:gap-10">
+              {[
+                { v: "1,026", l: t("about.people.stat1", "People employed") },
+                { v: "2011", l: t("about.people.stat2", "Building this team since") },
+              ].map((s, i) => (
+                <Reveal key={s.l} delay={0.14 + i * 0.08}>
+                  <div className="border-t border-cream/15 pt-5">
+                    <div className="font-display text-4xl font-semibold text-gold md:text-5xl">{s.v}</div>
+                    <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/55">{s.l}</div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* The whole workforce, from above */}
+        <motion.figure
+          className="group relative mt-14 overflow-hidden"
+          initial={reduce ? false : { opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.9, ease: EASE }}
+        >
+          <Img
+            src={IMAGES.teamGroup}
+            alt="The Fikir Food Processing workforce assembled outside the Adama plant"
+            loading="lazy"
+            className="aspect-[16/9] w-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+          />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/85 to-transparent" />
+          <figcaption className="absolute inset-x-0 bottom-0 p-6 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/80 md:p-8">
+            {t("about.people.capTeam", "The team outside the Adama plant")}
+          </figcaption>
+        </motion.figure>
+
+        {/* Leadership at the table */}
+        <div className="mt-6 grid gap-6 lg:grid-cols-12">
+          <motion.figure
+            className="group relative overflow-hidden lg:col-span-7"
+            initial={reduce ? false : { opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.9, delay: 0.08, ease: EASE }}
+          >
+            <Img
+              src={IMAGES.ceoMeeting}
+              alt="The management committee meeting with the CEO at the Adama head office"
+              loading="lazy"
+              className="aspect-[16/10] w-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+            />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/85 to-transparent" />
+            <figcaption className="absolute inset-x-0 bottom-0 p-6 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/80 md:p-8">
+              {t("about.people.capMeeting", "The management committee, with the CEO")}
+            </figcaption>
+          </motion.figure>
+
+          <motion.div
+            className="flex flex-col justify-center border-l-2 border-gold/60 pl-8 lg:col-span-5"
+            initial={reduce ? false : { opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.8, delay: 0.16, ease: EASE }}
+          >
+            <p className="font-display text-2xl font-medium leading-snug text-cream md:text-3xl">
+              {t(
+                "about.people.quote",
+                "Every decision that reaches the production floor is argued out in this room first."
+              )}
+            </p>
+            <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50">
+              {COMPANY.ceo} · {t("about.ceoRole", "Chief Executive Officer")}
+            </p>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Why us (animated) ---------------- */
+
+function WhyUs() {
+  const { t } = useI18n();
+  const reduce = useReducedMotion();
+
+  return (
+    <section className="bg-cream">
+      <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
+        <div className="grid gap-12 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <div className="lg:sticky lg:top-28">
+              <Reveal>
+                <span className="eyebrow">{t("about.why.eyebrow", "Why choose us")}</span>
+                <h2 className="display-2 mt-5 text-4xl md:text-5xl">
+                  <Accent text={t("about.why.title", "Reasons customers *stay with us.*")} />
+                </h2>
+              </Reveal>
+            </div>
+          </div>
+
+          <div className="lg:col-span-8 lg:col-start-5">
+            <div className="grid gap-px border border-linen bg-linen sm:grid-cols-2">
+              {WHY_US.map((w, i) => (
+                <motion.div
+                  key={w.title}
+                  className="group relative isolate flex h-full min-h-[210px] flex-col justify-between overflow-hidden bg-cream p-7"
+                  initial={reduce ? false : { opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 0.7, delay: i * 0.07, ease: EASE }}
+                >
+                  {/* Ink panel sweeps up on hover; text inverts to cream */}
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 -z-10 translate-y-full bg-ink transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
+                  />
+                  <motion.span
+                    className="font-display text-4xl font-semibold text-gold/50 transition-colors duration-500 group-hover:text-gold"
+                    initial={reduce ? false : { opacity: 0, x: -12 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.6, delay: i * 0.07 + 0.12, ease: EASE }}
+                  >
+                    0{i + 1}
+                  </motion.span>
+                  <div>
+                    <h3 className="font-display text-xl font-semibold text-ink transition-colors duration-500 group-hover:text-cream">
+                      {t(`why.${i}.title`, w.title)}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-clay/90 transition-colors duration-500 group-hover:text-cream/75">
+                      {t(`why.${i}.text`, w.text)}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

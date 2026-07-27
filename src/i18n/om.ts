@@ -60,7 +60,7 @@ export const OM: Record<string, string> = {
   "home.mq.1": "Bara 2004 A.L.I. irraa jalqabee",
   "home.mq.2": "Adaamaa, Itoophiyaa",
   "home.mq.3": "Hanga Vitaamii B12'tti cimfame",
-  "home.mq.4": "Miseensota garee 600+",
+  "home.mq.4": "Miseensota garee 1,026",
   "home.mq.5": "Guutuu biyyaatti geeffame",
   "home.mq.6": "Qulqullina oomishna, amanamummaa dhiheessina",
 
@@ -106,27 +106,33 @@ export const OM: Record<string, string> = {
   "cat.chips.label": "Chiipsii",
   "cat.chips.note": "Chiipsii dinnicha Unic",
 
-  // Values
-  "value.0.title": "Qulqullina",
-  "value.0.text": "Oomishni hundi meeshaa filatamaa irraa hojjetamee, qorannoo mana qorannoo cimaa booda qofa gadi lakkifama.",
+  // Values (gatiiwwan ja'an, akka piroofaayilii dhaabbataatti)
+  "value.0.title": "Qulqullina Dursa",
+  "value.0.text": "Gabaa baay'inaa fi gatiin wal dorgomu keessattillee qulqullinni waliigaltee hin qabu. Oomishni hundi qorannoo mana qorannoo cimaa booda qofa gadi lakkifama.",
   "value.1.title": "Amanamummaa",
-  "value.1.text": "Maamiltootaa fi hidhattoota waliin haqaan hojjechuun amantaa yeroo dheeraa ijaarra.",
-  "value.2.title": "Quufa Maamilaa",
-  "value.2.text": "Suuqii gandaa irraa hanga raabsaa guddaatti, maamila hundaaf kunuunsa wal fakkaataa kennina.",
-  "value.3.title": "Kalaqa",
-  "value.3.text": "Maashinoonni ammayyaa fi nyaanni haaraan oomishaalee namoonni jaallatan akka dhiheessinu nu gargaaru.",
-  "value.4.title": "Itti Gaafatamummaa Hawaasummaa",
-  "value.4.text": "Itoophiyaanota 600 oliif hojii uumnee guddina hawaasaa fi biyya keenyaatiif gumaacha goona.",
+  "value.1.text": "Saffisa argachuuf jecha qulqullina meeshaa dheedhii keenyaa yookaan oomisha xumurame hin miidhnu.",
+  "value.2.title": "Fooyya'iinsa Itti Fufaa",
+  "value.2.text": "Balleessaa hir'isuun, dandeettii guddisuun fi adeemsa keenya ammayyeessuun waggaa waggaan ni fooyyofna.",
+  "value.3.title": "Xiyyeeffannoo Maamilaa",
+  "value.3.text": "Mi'aa wal fakkaataa fi sadarkaa wal fakkaataa tuuta hundaan dhiheessuun amanamummaa maamiltootaa arganna.",
+  "value.4.title": "Badhaadhina Waloo",
+  "value.4.text": "Karaa hojii uumu, dubartoota jajjabeessuu fi nageenya nyaataa Itoophiyaa cimsuun ni guddanna.",
+  "value.5.title": "Kalaqa",
+  "value.5.text": "Mi'aa maamiltootaa jijjiiramaa jiru dursuuf oomishaalee, mi'aa fi adeemsa irratti ni kalaqna.",
 
   // Why us
-  "why.0.title": "Muuxannoo waggaa 15 ol",
-  "why.0.text": "Bara 2004 A.L.I. irraa jalqabee bal'inaan kan oomishu oomishaa Itoophiyaa amanamaa.",
-  "why.1.title": "Qulqullina olaanaa, mirkanaa'e",
-  "why.1.text": "Daakuu cimfame mallattoo Istaandaardii Itoophiyaa qabu, tuuta hundaan qoratame.",
-  "why.2.title": "Filannoo bal'aa",
-  "why.2.text": "Daakuu, biskuutii, waafarii fi chiipsii — hunduu maqaa amanamaa tokko jalatti.",
-  "why.3.title": "Geejjiba saffisaa, guutuu biyyaa",
-  "why.3.text": "Konkolaattonni keenya guutuu Itoophiyaatti bakka bu'oota, raabsitootaa fi gurgurtoota bira ga'u.",
+  "why.0.title": "Maqaa Itoophiyaanonni duraanuu amanan",
+  "why.0.text": "Unic waggaa kudhan oliif tokkoon tokkoon paakeejiin beekamtii saanqaa argateera. Amantaa kana namni haaraan kamiyyuu hin hiikkatu.",
+  "why.1.title": "Gabaa gatiin wal dorgomu keessatti qulqullinaan durra deemna",
+  "why.1.text": "Dorgomtoonni hedduun gatiidhaan gadi yeroo dorgoman, nuti meeshaa dheedhii fi oomisha xumurame irratti sadarkaa keenya eegna.",
+  "why.2.title": "Daakuu ittiin tolchinu ofii keenyaa daakna",
+  "why.2.text": "Sararri biskuutii keenyaa daakuu ofii keenyaatiin hojjeta; kanaaf qulqullinaa fi baasii keessaan to'anna.",
+  "why.3.title": "Cimfamee fi mirkanaa'ee",
+  "why.3.text": "Daakuun qamadii keenyaa hanga Vitaaminii B12 cimfamee mallattoo Dhaabbata Istaandaardii Itoophiyaa qaba, tuuta hundaan mirkanaa'a.",
+  "why.4.title": "Geejjiba saffisaa, guutuu biyyaa",
+  "why.4.text": "Konkolaattonni keenya guutuu Itoophiyaatti bakka bu'oota, raabsitootaa fi gurgurtoota bira ga'u.",
+  "why.5.title": "Isin waliin guddachuuf bakka qabna",
+  "why.5.text": "Sarara oomishaa itti aanuuf lafti warshaa cinaa jiru qophaa'eera; kanaaf fedhiin guddachaa jiru dandeettii keenya hin caalu.",
 
   // Quality steps
   "qc.0.title": "Meeshaa filatame",
@@ -192,15 +198,36 @@ export const OM: Record<string, string> = {
   "prod.cta.accent": "barbaadduu?",
   "prod.cta.text": "Maal akka gurgurtanii fi eessa akka jirtan nutti himaa. Gara dhiheessaa dhihoo isin qunnamsiifna yookaan raabsaa taasifnee isin qopheessina.",
 
+  // Home — film section
+  "film.eyebrow": "Fiilmii",
+  "film.title": "Warshaa paakeejii duuba jiru, *daqiiqaa saddeetiin.*",
+  "film.body": "Midhaan yeroo galu, daakuun yeroo naanna'u, bukoon yeroo bukamu, tuutni hundi yeroo qoratamu, konkolaattonni keenyas utuu lafti hin bari'in yeroo ba'an. Kun Adaamaa keessatti guyyaa idilee ti.",
+  "film.ring": "Fiilmii ilaali · Fiilmii ilaali · ",
+  "film.silent": "Sagalee hin qabu",
+  "film.close": "Cufi",
+  "film.aria": "Fiilmii dhaabbata Fikir",
+  "film.playerLabel": "Fikir Food Processing keessatti",
+
   // About page
   "about.hero.title": "Qulqullinaan ijaarame,",
   "about.hero.accent": "amanamummaan hojjeta.",
   "about.who.title": "Fikir jaalala jechuu dha. Akkaataa nyaata ittiin *hojjennus.*",
   "about.who.p1":
-    "Fikir Food Processing bara 2004 (A.L.I.) Adaamaatti, naannoo Gaara Luugoo / Buufata Baaburaatti hundeeffame. Oomishaa Itoophiyaa seeraan galmaa'e yoo ta'u, daakuu qamadii sadarkaa olaanaa gosa garaa garaa, biskuutii mi'aawaa gosa kudha lamaa ol, waafarii kiriimii fi chiipsii dinnichaa, ulaagaa qulqullina biyyaalessaa fi addunyaatti oomishna.",
+    "Fikir Food Processing bara 2011 Adaamaatti hundeeffame, maqaa isaas jecha Amaaraa «fikir» jedhu, jaalala jechuu irraa fudhate. Yeroo fedhiin oomishaalee bu'uuraa amanamoo fi biyya keessatti oomishaman dabalaa ture gabaa daakuu qamadii seennee, achii kaasnee ijaaraa jirra.",
   "about.who.p2":
-    "Amanamummaa, qulqullinaa fi kalaqa irratti hundaa'uun industirii nyaata Itoophiyaa keessatti maqaa amanamaa taane, namoota 600 oliif hojii uumnee gara golee biyyaa hundaatti geessina.",
-  "about.stat600": "Itoophiyaanonni qacaraman",
+    "Har'a oomishaa Itoophiyaa seeraan galmaa'e yoo taanu, daakuu qamadii sadarkaa sadii, biskuutii mi'aawaa gosa kudha lamaa ol, akkasumas waafarii kiriimii ulaagaa qulqullina biyyaalessaa fi addunyaatiin oomishna; baay'inni hojjettoota keenyaas 1,026 ga'eera.",
+  "about.statEmployed": "Itoophiyaanonni qacaraman",
+  "about.ceoRole": "Hoji Gaggeessaa Olaanaa",
+
+  // About — namoota keenya
+  "about.people.title": "Tuuta hundaa *namoonni kuma tokko hojjetu.*",
+  "about.people.body":
+    "Miidhaginni hawaasummaa keenyaa hojii irraa jalqaba: Adaamaa keessatti hojii 1,026, hojiiwwan waltajjii warshaa keessaas qooda guddaa dubartootatu qabata. Kun naannoo amma illee baay'ee barbaachisaa ta'e keessatti galii sirrii fi itti fufaa jechuu dha.",
+  "about.people.stat1": "Hojjettoota qacaraman",
+  "about.people.stat2": "Garee kana ijaaraa kan jirru bara",
+  "about.people.capTeam": "Gareen warshaa Adaamaa duratti",
+  "about.people.capMeeting": "Koreen hooggansaa, Hoji Gaggeessaa Olaanaa waliin",
+  "about.people.quote": "Murtiin waltajjii oomishaa bira ga'u hundi dursee kutaa kana keessatti mari'atama.",
   "about.vision.label": "Mul'ata",
   "about.vision.text": "Itoophiyaa fi Afrikaa keessatti qulqullinaa fi mi'aan oomishaa nyaataa dursaa ta'uu.",
   "about.mission.label": "Ergama",
@@ -220,7 +247,7 @@ export const OM: Record<string, string> = {
   "fac.overview.eyebrow": "Warshaa",
   "fac.overview.title": "Maashinii ammayyaa, *namoota dhugaa.*",
   "fac.overview.p1":
-    "Warshaan keenya Adaamaa maashinoota ammayyaa sadarkaa addunyaa alaa galan fayyadama — daakuu wixineessuu fi cimsuu irraa hanga tolchuu, waaduu fi qopheessuutti. Duuba isaanii Itoophiyaanonni ogeeyyii 600 ol shiftii hundaan qulqullina fidu.",
+    "Warshaan keenya Adaamaa maashinoota ammayyaa sadarkaa addunyaa alaa galan fayyadama — daakuu wixineessuu fi cimsuu irraa hanga tolchuu, waaduu fi qopheessuutti. Duuba isaanii Itoophiyaanonni ogeeyyii 1,026 shiftii hundaan qulqullina fidu.",
   "fac.overview.p2":
     "Makaan teeknoolojii fi ogummaa kun daakuu, biskuutii, waafarii fi chiipsii irratti sadarkaa tokko akka qabaannu nu dandeessisa.",
   "fac.qc.eyebrow": "To'annoo qulqullinaa",
@@ -259,7 +286,7 @@ export const OM: Record<string, string> = {
   "car.intro.eyebrow": "Jireenya Fikir keessatti",
   "car.intro.title": "Qacartoota gurguddoo Adaamaa keessaa tokko biratti *ogummaa ijaari.*",
   "car.intro.body":
-    "Fikir Food Processing Itoophiyaanota 600 ol oomisha, qulqullina, gurgurtaa fi loojistiksii keessatti qacara. Meeshaa ammayyaa, itti gaafatamummaa dhugaa fi carraa guddinaatiin namoota keenya keessa investii goona — kunis hunduu oomishaalee maatiin amanan hojjechaa.",
+    "Fikir Food Processing Itoophiyaanota 1,026 oomisha, qulqullina, gurgurtaa fi loojistiksii keessatti qacara. Meeshaa ammayyaa, itti gaafatamummaa dhugaa fi carraa guddinaatiin namoota keenya keessa investii goona — kunis hunduu oomishaalee maatiin amanan hojjechaa.",
   "car.openings.title": "Bakkeewwan hojii banaa",
   "car.openings.count": "banaa",
   "car.empty.text":

@@ -17,8 +17,25 @@ export const CONTACT = {
 export const COMPANY = {
   name: "Fikir Food Processing",
   tagline: "We produce quality; we deliver trust.",
+  // Second line used in the company profile; kept for pages that want variety.
+  taglineAlt: "Quality you can taste. Consistency you can trust.",
   city: "Adama, Ethiopia",
+  established: "2011",
+  ceo: "Fikru Gardew",
+  // Registration details as recorded in the company profile.
+  registration: "ORO/ADM/K03/1/0000278/2006",
+  tin: "0003227892",
+  website: "www.fikirfoods.et",
 };
+
+/* Milestones from the company profile. Kept short — the profile flags the
+ * founding narrative as still to be supplied by the company. */
+export const MILESTONES = [
+  { year: "2011", title: "Founded in Adama", text: "Fikir Food Processing is established on the Adama corridor and enters the wheat flour market." },
+  { year: "2019", title: "Unic biscuits launched", text: "The Unic brand launches and grows into our flagship consumer product, expanding from plain to apple-vanilla." },
+  { year: "2020", title: "Wafers join the range", text: "Our cream wafer line launches, adding a second branded snack category alongside the biscuits." },
+  { year: "Today", title: "Consolidating and building", text: "We hold our place in flour, biscuits, and wafers while preparing the next production line on land already secured." },
+];
 
 export const NAV = [
   { to: "/", label: "Home" },
@@ -55,7 +72,8 @@ export const OPENINGS = [
 
 export const STATS = [
   { value: 15, suffix: "+", label: "Years of production" },
-  { value: 600, suffix: "+", label: "Team members" },
+  // Workforce figure per the company profile (1,026 employees).
+  { value: 1026, suffix: "", label: "Team members" },
   { value: 12, suffix: "+", label: "Biscuit flavors" },
   { value: 4, suffix: "", label: "Flour grades" },
 ];
@@ -299,39 +317,67 @@ export const PRODUCTS: Product[] = [
   },
 ];
 
+/* The six core values as set out in the company profile. */
 export const VALUES = [
   {
     icon: "seal",
-    title: "Quality",
-    text: "Every batch is made from selected raw materials and released only after strict laboratory testing.",
+    title: "Quality first",
+    text: "Quality is non-negotiable, even in a market that competes on volume and cost. Every batch is released only after strict laboratory testing.",
   },
   {
     icon: "handshake",
-    title: "Honesty",
-    text: "We build long-term trust with customers and partners through fair dealing and consistent products.",
+    title: "Integrity",
+    text: "We do not compromise the integrity of our ingredients or the finished product in pursuit of efficiency.",
+  },
+  {
+    icon: "trend",
+    title: "Continuous improvement",
+    text: "We improve continuously, reducing waste, upgrading skills, and modernising our processes year after year.",
   },
   {
     icon: "smiley",
-    title: "Customer satisfaction",
-    text: "From village shops to wholesalers, we serve every customer with the same care and reliability.",
+    title: "Customer focus",
+    text: "We earn loyalty by delivering the same taste and the same standard, batch after batch.",
+  },
+  {
+    icon: "users",
+    title: "Shared prosperity",
+    text: "We grow in ways that create jobs, empower women, and strengthen Ethiopia's food security.",
   },
   {
     icon: "flask",
     title: "Innovation",
-    text: "Modern imported machinery and new recipes let us keep introducing products people love.",
-  },
-  {
-    icon: "leaf",
-    title: "Social responsibility",
-    text: "We create jobs for 600+ Ethiopians and contribute to our community and country's development.",
+    text: "We innovate in products, flavours, and processes to stay ahead of changing tastes.",
   },
 ];
 
+/* Why customers stay — drawn from the profile's competitive advantages,
+ * framed for the customer rather than the investor. */
 export const WHY_US = [
-  { title: "Over 15 years of experience", text: "A trusted Ethiopian manufacturer producing at scale since 2004 E.C." },
-  { title: "High, certified quality", text: "Fortified flour carrying the Ethiopian Standards Mark, tested every batch." },
-  { title: "A wide range", text: "Flour, biscuits, wafers, and chips, all under one trusted name." },
-  { title: "Fast, nationwide delivery", text: "Our own fleet reaches agents, wholesalers, and retailers across Ethiopia." },
+  {
+    title: "A brand Ethiopians already trust",
+    text: "Unic has earned its shelf recognition pack by pack over more than a decade. That trust is the hardest thing for any newcomer to copy.",
+  },
+  {
+    title: "Quality-led in a cost-led market",
+    text: "Where most competitors race to the bottom on price, we hold the standard on ingredients and finished product.",
+  },
+  {
+    title: "We mill the flour we bake with",
+    text: "Our biscuit lines run on our own flour, so we control quality and cost from the inside instead of hoping a supplier delivers.",
+  },
+  {
+    title: "Fortified and certified",
+    text: "Our wheat flour is fortified up to Vitamin B12 and carries the Institute of Ethiopian Standards mark, verified batch by batch.",
+  },
+  {
+    title: "Fast, nationwide delivery",
+    text: "Our own branded fleet reaches agents, wholesalers, and retailers in every region of the country.",
+  },
+  {
+    title: "Room to grow with you",
+    text: "Land next to the plant is already secured for our next production line, so rising demand does not outrun our capacity.",
+  },
 ];
 
 // The real fortification certificate (Institute of Ethiopian Standards).
@@ -509,7 +555,25 @@ export type VideoSource =
   | { type: "vimeo"; id: string; poster?: string; title?: string }
   | { type: "file"; src: string; poster?: string; title?: string };
 
-export const FEATURE_VIDEO: VideoSource | null = null;
+/* The company film. Encoded for web from the original 494 MB master and shipped
+ * MUTED on purpose: the original narration is being replaced with a music bed.
+ * Drop a licensed track in and re-mux to restore audio. */
+export const FEATURE_VIDEO: VideoSource | null = {
+  type: "file",
+  src: `${M}/company-film-muted.mp4`,
+  poster: `${M}/factory-aerial.jpg`,
+  title: "Inside Fikir Food Processing",
+};
+
+/* A 24-second silent montage cut from the film, used as the ambient background
+ * of the homepage film section. Deliberately tiny (~2.7 MB) because it
+ * autoplays for every visitor — the full 70 MB film only loads on click. */
+export const FILM_LOOP = {
+  src: `${M}/company-loop.mp4`,
+  poster: `${M}/factory-aerial.jpg`,
+  /** Runtime of the full film, shown as a badge. */
+  fullDuration: "7:56",
+};
 
 /* How Fikir is made — the pinned horizontal journey on the homepage. */
 export type ProcessStep = { n: string; title: string; text: string; img: string };

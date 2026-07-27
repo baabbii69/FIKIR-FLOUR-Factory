@@ -12,7 +12,7 @@ import { Accent } from "../i18n/Accent";
 export default function Careers() {
   usePageMeta(
     "Careers | FIKIR FOOD PROCESSING",
-    "Join Fikir Food Processing in Adama. Explore open positions and grow with a trusted Ethiopian manufacturer of over 600 people."
+    "Join Fikir Food Processing in Adama. Explore open positions and grow with a trusted Ethiopian manufacturer of 1,026 people."
   );
   const { t } = useI18n();
 
@@ -40,7 +40,7 @@ export default function Careers() {
               <p className="mt-8 max-w-[58ch] text-base leading-relaxed">
                 {t(
                   "car.intro.body",
-                  "Fikir Food Processing employs more than 600 Ethiopians across production, quality, sales, and logistics. We invest in our people with modern equipment, real responsibility, and room to grow, all while making products families trust."
+                  "Fikir Food Processing employs 1,026 Ethiopians across production, quality, sales, and logistics. We invest in our people with modern equipment, real responsibility, and room to grow, all while making products families trust."
                 )}
               </p>
             </Reveal>

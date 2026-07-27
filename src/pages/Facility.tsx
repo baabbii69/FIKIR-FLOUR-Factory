@@ -112,7 +112,7 @@ export default function Facility() {
               <p className="mt-8 max-w-[58ch] text-base leading-relaxed">
                 {t(
                   "fac.overview.p1",
-                  "Our Adama plant runs on modern, imported machinery that meets world standards, from milling and fortification to baking, frying, and packing. Behind it stand more than 600 skilled Ethiopians who make quality happen every shift."
+                  "Our Adama plant runs on modern, imported machinery that meets world standards, from milling and fortification to baking, frying, and packing. Behind it stand 1,026 skilled Ethiopians who make quality happen every shift."
                 )}
               </p>
               <p className="mt-5 max-w-[58ch] text-base leading-relaxed">
@@ -123,7 +123,7 @@ export default function Facility() {
           <div className="lg:col-span-6 lg:col-start-7">
             <Reveal delay={0.12}>
               {FEATURE_VIDEO ? (
-                <VideoBlock source={{ ...FEATURE_VIDEO, poster: FEATURE_VIDEO.poster ?? IMAGES.facMill1 }} aspect="4/3" />
+                <VideoBlock source={{ ...FEATURE_VIDEO, poster: FEATURE_VIDEO.poster ?? IMAGES.facMill1 }} aspect="16/9" />
               ) : (
                 <Img
                   src={IMAGES.facMill2}

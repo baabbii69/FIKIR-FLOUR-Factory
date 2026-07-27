@@ -157,6 +157,19 @@
   }
 }
 
+/* Rotating caption ring on the homepage film dial. Owns its own keyframes so it
+   never depends on Tailwind emitting `spin` for some unrelated spinner. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-perf="full"] .ring-spin {
+    animation: ring-spin 20s linear infinite;
+  }
+  @keyframes ring-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
 /* Slow Ken Burns drift for hero imagery */
 @media (prefers-reduced-motion: no-preference) {
   .kenburns {

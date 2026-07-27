@@ -16,6 +16,7 @@ import Reveal from "../components/Reveal";
 import Stat from "../components/Stat";
 import FlourDust from "../components/FlourDust";
 import TestimonialRotator from "../components/TestimonialRotator";
+import FilmSection from "../components/FilmSection";
 import CTABanner from "../components/CTABanner";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -74,7 +75,7 @@ const MARQUEE = [
   { k: "home.mq.1", en: "Since 2004 E.C." },
   { k: "home.mq.2", en: "Adama, Ethiopia" },
   { k: "home.mq.3", en: "Fortified up to Vitamin B12" },
-  { k: "home.mq.4", en: "600+ team members" },
+  { k: "home.mq.4", en: "1,026 team members" },
   { k: "home.mq.5", en: "Delivered nationwide" },
   { k: "home.mq.6", en: "We produce quality, we deliver trust" },
 ];
@@ -490,7 +491,7 @@ export default function Home() {
   const { t } = useI18n();
   usePageMeta(
     "FIKIR FOOD PROCESSING | Flour, Biscuits, Wafers & Chips, Ethiopia",
-    "Fikir Food Processing makes fortified flour, Unic biscuits, wafers, and chips in Adama, Ethiopia. Over 15 years, 600+ employees, delivered nationwide."
+    "Fikir Food Processing makes fortified flour, Unic biscuits, wafers, and chips in Adama, Ethiopia. Over 15 years, 1,026 employees, delivered nationwide."
   );
   return (
     <>
@@ -501,6 +502,7 @@ export default function Home() {
       <PackMarquee />
       <RangeIndex />
       <Quality />
+      <FilmSection />
       <Trusted />
       <Lifestyle />
       <CTABanner
