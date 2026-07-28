@@ -290,6 +290,20 @@ export const AM: Record<string, string> = {
   "film.aria": "የFikir የኩባንያ ፊልም",
   "film.playerLabel": "በFikir Food Processing ውስጥ",
 
+  // About — founder + growth arc
+  "about.plantCaption": "የአዳማው ፋብሪካ፣ ከላይ ሲታይ",
+  "about.founder.title": "ጉዞአቸውን የጀመሩት *ከመሪው ጀርባ ነው።*",
+  "about.founder.p1": "አቶ ፍቅሩ ጋርደው ሥራቸውን የጀመሩት ከጠረጴዛ ጀርባ አልነበረም። ሾፌር ሆነው፣ ቀን ከሌት በመንገድ ላይ ሠርተው፣ ንግዱን አንድ በአንድ በማድረስና ደንበኛ በደንበኛ ተማሩ።",
+  "about.founder.p2": "የገነቡት ኩባንያ የተጀመረው በአንድ ምርት ብቻ ነው፦ የስንዴ ዱቄት። ዛሬ ያው በአዳማ ያለው ፋብሪካ ከአሥራ ሁለት በላይ የUnic ብስኩቶችንና ሙሉ የቅቤ ዌፈር ዓይነቶችን አብሮ ያመርታል፤ ሁሉንም የጀመረው ዱቄትም አሁንም የብስኩት መስመሮችን ይመግባል።",
+  "ms.0.year": "2011",
+  "ms.0.title": "በአዳማ ተቋቋመ",
+  "ms.1.year": "2019",
+  "ms.1.title": "የUnic ብስኩት ተጀመረ",
+  "ms.2.year": "2020",
+  "ms.2.title": "ዌፈር ተጨመረ",
+  "ms.3.year": "ዛሬ",
+  "ms.3.title": "ቀጣዩን መስመር በማዘጋጀት ላይ",
+
   // About page
   "about.hero.title": "በጥራት የተገነባ፣",
   "about.hero.accent": "በእምነት የሚሠራ።",

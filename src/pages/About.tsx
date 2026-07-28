@@ -6,7 +6,7 @@ import Reveal from "../components/Reveal";
 import Btn from "../components/Btn";
 import Img from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
-import { VALUES, WHY_US, CERTIFICATE, COMPANY, IMAGES } from "../data/site";
+import { VALUES, WHY_US, CERTIFICATE, COMPANY, MILESTONES, IMAGES } from "../data/site";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 
@@ -32,8 +32,8 @@ export default function About() {
   return (
     <>
       <PageHero
-        image={IMAGES.building}
-        alt="The Fikir Food Processing headquarters in Adama"
+        image={IMAGES.wheatFarming}
+        alt="Combine harvesters bringing in the wheat harvest"
         crumb={t("nav.about", "About Us")}
         title={t("about.hero.title", "Built on quality,")}
         titleAccent={t("about.hero.accent", "run on trust.")}
@@ -76,13 +76,13 @@ export default function About() {
             <Reveal className="relative z-0 lg:pl-8">
               <figure>
                 <Img
-                  src={IMAGES.ceo}
-                  alt={`${COMPANY.ceo}, Chief Executive Officer of Fikir Food Processing`}
+                  src={IMAGES.factoryAerial}
+                  alt="The Fikir Food Processing plant, silos and warehouses seen from the air"
                   loading="lazy"
                   className="aspect-[4/3] w-full object-cover"
                 />
                 <figcaption className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-clay/70 lg:pl-8">
-                  {COMPANY.ceo} · {t("about.ceoRole", "Chief Executive Officer")}
+                  {t("about.plantCaption", "The plant in Adama, from above")}
                 </figcaption>
               </figure>
             </Reveal>
@@ -126,6 +126,7 @@ export default function About() {
         </div>
       </section>
 
+      <Founder />
       <Values />
       <People />
       <WhyUs />
@@ -177,8 +178,8 @@ export default function About() {
       </section>
 
       <CTABanner
-        image={IMAGES.lifeMarket}
-        alt="Hands holding a variety of Fikir products"
+        image={IMAGES.proRange}
+        alt="The full range of Unic biscuits and wafers held in both hands"
         title={t("about.cta.title", "Grow with")}
         titleAccent={t("about.cta.accent", "Fikir.")}
         text={t("about.cta.text", "Partner with a trusted Ethiopian manufacturer for reliable products and nationwide reach.")}
@@ -188,6 +189,95 @@ export default function About() {
         secondaryTo="/products"
       />
     </>
+  );
+}
+
+/* ---------------- Founder ---------------- */
+
+function Founder() {
+  const { t } = useI18n();
+  const reduce = useReducedMotion();
+
+  return (
+    <section className="bg-cream">
+      <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          {/* Portrait */}
+          <motion.figure
+            className="lg:col-span-5"
+            initial={reduce ? false : { opacity: 0, y: 36 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.85, ease: EASE }}
+          >
+            <div className="group relative overflow-hidden">
+              <Img
+                src={IMAGES.ceo}
+                alt={`${COMPANY.ceo}, founder and Chief Executive Officer of Fikir Food Processing`}
+                loading="lazy"
+                /* The source is 16:9 interview framing with him at ~61% of the
+                   width, so a centred crop pushes him off to the right. Square
+                   keeps a substantial portrait while balancing the text column,
+                   and 75% horizontal focus lands him dead centre. */
+                style={{ objectPosition: "75% center" }}
+                className="aspect-square w-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+              />
+            </div>
+            <figcaption className="mt-4 flex items-baseline gap-3">
+              <span className="h-px w-8 shrink-0 bg-gold" aria-hidden />
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-clay/70">
+                {COMPANY.ceo} · {t("about.ceoRole", "Chief Executive Officer")}
+              </span>
+            </figcaption>
+          </motion.figure>
+
+          {/* Story */}
+          <div className="flex flex-col justify-center lg:col-span-7">
+            <Reveal>
+              <h2 className="display-2 text-4xl md:text-5xl">
+                <Accent
+                  text={t("about.founder.title", "He started out *behind the wheel.*")}
+                />
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="mt-8 max-w-[60ch] text-base leading-relaxed">
+                {t(
+                  "about.founder.p1",
+                  "Ato Fikru Gardew did not begin at a desk. He began as a driver, working day and night on the road, learning the trade one delivery and one customer at a time."
+                )}
+              </p>
+              <p className="mt-5 max-w-[60ch] text-base leading-relaxed">
+                {t(
+                  "about.founder.p2",
+                  "The company he built started with a single product: wheat flour. Today the same plant in Adama turns out more than a dozen Unic biscuits and a full range of cream wafers alongside it, and the flour that started everything still feeds the biscuit lines."
+                )}
+              </p>
+            </Reveal>
+
+            {/* Growth arc */}
+            <Reveal delay={0.16}>
+              <ol className="mt-12 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-linen pt-8 lg:grid-cols-4">
+                {MILESTONES.map((m, i) => (
+                  <li key={m.year} className="group relative">
+                    <span
+                      aria-hidden
+                      className="absolute -top-8 left-0 h-[3px] w-0 bg-gold transition-[width] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-full"
+                    />
+                    <div className="font-display text-3xl font-semibold text-ink">
+                      {t(`ms.${i}.year`, m.year)}
+                    </div>
+                    <div className="mt-2 font-mono text-[10px] uppercase leading-relaxed tracking-[0.16em] text-clay/75">
+                      {t(`ms.${i}.title`, m.title)}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </Reveal>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 

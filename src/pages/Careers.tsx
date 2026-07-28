@@ -19,8 +19,8 @@ export default function Careers() {
   return (
     <>
       <PageHero
-        image={IMAGES.warehouse}
-        alt="The Fikir team at work"
+        image={IMAGES.facPacking2}
+        alt="Fikir staff packing Unic biscuits on the line at the Adama plant"
         crumb={t("nav.careers", "Careers")}
         title={t("car.hero.title", "Grow your career")}
         titleAccent={t("car.hero.accent", "with us.")}
@@ -129,8 +129,8 @@ export default function Careers() {
       </section>
 
       <CTABanner
-        image={IMAGES.fleetAlt}
-        alt="The Fikir team and fleet"
+        image={IMAGES.teamGroup}
+        alt="The Fikir workforce assembled outside the Adama plant"
         title={t("car.cta.title", "Don't see the right")}
         titleAccent={t("car.cta.accent", "role?")}
         text={t("car.cta.text", "We're growing fast. Send your CV and tell us what you do best, we'll keep you in mind.")}

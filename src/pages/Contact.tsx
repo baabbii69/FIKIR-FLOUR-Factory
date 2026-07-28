@@ -26,8 +26,8 @@ export default function Contact() {
   return (
     <>
       <PageHero
-        image={IMAGES.fleet}
-        alt="The Fikir delivery fleet at the plant in Adama"
+        image={IMAGES.facReception}
+        alt="The reception area at the Fikir Food Processing head office in Adama"
         crumb={t("nav.contact", "Contact")}
         title={t("con.hero.title", "Let's")}
         titleAccent={t("con.hero.accent", "talk.")}

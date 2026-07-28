@@ -54,8 +54,8 @@ export default function Products() {
       <MobileCategoryBrowser />
       <FAQ />
       <CTABanner
-        image={IMAGES.warehouse}
-        alt="Fikir products stacked in the warehouse"
+        image={IMAGES.facBiscuitWarehouse}
+        alt="Pallets of finished Unic biscuits stacked ready to ship"
         title={t("prod.cta.title", "Want to stock")}
         titleAccent={t("prod.cta.accent", "Fikir?")}
         text={t("prod.cta.text", "Tell us what you sell and where you are. We'll connect you with the nearest supplier or set you up as a distributor.")}

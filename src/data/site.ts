@@ -21,7 +21,7 @@ export const COMPANY = {
   taglineAlt: "Quality you can taste. Consistency you can trust.",
   city: "Adama, Ethiopia",
   established: "2011",
-  ceo: "Fikru Gardew",
+  ceo: "Ato Fikru Gardew",
   // Registration details as recorded in the company profile.
   registration: "ORO/ADM/K03/1/0000278/2006",
   tin: "0003227892",

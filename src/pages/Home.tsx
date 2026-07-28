@@ -506,8 +506,8 @@ export default function Home() {
       <Trusted />
       <Lifestyle />
       <CTABanner
-        image={IMAGES.fleet}
-        alt="The Fikir delivery fleet"
+        image={IMAGES.distribution1}
+        alt="The Fikir delivery fleet on the road out of Adama"
         title={t("home.cta.titleLead", "Stock Fikir, or")}
         titleAccent={t("home.cta.titleAccent", "just say hello.")}
         text={t("home.cta.text", "Whether you're a shop, a wholesaler, or a family with a question, we'd love to hear from you.")}

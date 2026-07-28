@@ -208,6 +208,20 @@ export const OM: Record<string, string> = {
   "film.aria": "Fiilmii dhaabbata Fikir",
   "film.playerLabel": "Fikir Food Processing keessatti",
 
+  // About — hundeessaa + guddina
+  "about.plantCaption": "Warshaa Adaamaa, gubbaadhaa ilaalamee",
+  "about.founder.title": "Inni jalqabe *konkolaachisaa ta'ee.*",
+  "about.founder.p1": "Obbo Fikru Gardew minjaala duubaa hin jalqabne. Konkolaachisaa ta'anii, halkanii guyyaa karaa irratti hojjetanii, daldala sana geejjiba tokkoon tokkoon fi maamila tokkoon tokkoon baratan.",
+  "about.founder.p2": "Dhaabbanni isaan ijaaran oomisha tokkoon jalqabe: daakuu qamadii. Har'a warshaan Adaamaa sanuma biskuutii Unic kudha lamaa ol fi waafarii kiriimii gosa hunda cinaatti oomisha; daakuun waan hunda jalqabes ammallee sarara biskuutii sooreessa.",
+  "ms.0.year": "2011",
+  "ms.0.title": "Adaamaatti hundeeffame",
+  "ms.1.year": "2019",
+  "ms.1.title": "Biskuutii Unic jalqabame",
+  "ms.2.year": "2020",
+  "ms.2.title": "Waafarii itti dabalame",
+  "ms.3.year": "Har'a",
+  "ms.3.title": "Sarara itti aanu qopheessaa",
+
   // About page
   "about.hero.title": "Qulqullinaan ijaarame,",
   "about.hero.accent": "amanamummaan hojjeta.",
