@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { CaretDown, MagnifyingGlassPlus, ArrowRight } from "@phosphor-icons/react";
 import PageHero from "../components/PageHero";
@@ -20,6 +20,14 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 const isPackImg = (src: string) => src.endsWith(".png");
 // Categories shown in the UI (chips is currently hidden — see data/site.ts).
 const VISIBLE_CATEGORIES = getCategories();
+
+/** Index of the category named by `?cat=`, or -1. Hidden categories never
+ *  match, so a stale link to a paused range simply lands on the page. */
+function useCategoryParam() {
+  const [params] = useSearchParams();
+  const wanted = params.get("cat");
+  return VISIBLE_CATEGORIES.findIndex((c) => c.id === wanted);
+}
 
 /** Auto-advance a product's image index every few seconds when it has more
  *  than one photo, so galleries cycle on their own. Resets when the set/product
@@ -70,6 +78,29 @@ export default function Products() {
 function CategoryScroller() {
   const { t } = useI18n();
   const { sectionRef, trackRef } = useHorizontalScroll<HTMLElement, HTMLDivElement>();
+  const wanted = useCategoryParam();
+
+  // The track slides horizontally as the page scrolls vertically, so we cannot
+  // scrollIntoView here. Instead convert the target card's offset into the
+  // matching vertical position. Bails out quietly on small screens or if the
+  // layout is not ready — landing at the top of the section is the old
+  // behaviour, so nothing regresses.
+  useEffect(() => {
+    if (wanted < 0) return;
+    const id = requestAnimationFrame(() => {
+      const section = sectionRef.current;
+      const track = trackRef.current;
+      if (!section || !track) return;
+      if (!window.matchMedia("(min-width: 1024px)").matches) return;
+      const card = track.querySelector<HTMLElement>(`[data-cat="${VISIBLE_CATEGORIES[wanted].id}"]`);
+      const distance = Math.max(0, track.scrollWidth - window.innerWidth);
+      if (!card || distance === 0) return;
+      const progress = Math.min(1, Math.max(0, card.offsetLeft / distance));
+      const top = section.offsetTop + progress * distance;
+      window.scrollTo({ top, behavior: "auto" });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [wanted, sectionRef, trackRef]);
 
   return (
     <section ref={sectionRef} aria-label={t("prod.browse.aria", "Browse products by category")} className="relative hidden bg-ink lg:block">
@@ -111,7 +142,8 @@ function CategoryScroller() {
    image, thumbnails, variety picker, details, and CTA — all full width. */
 function MobileCategoryBrowser() {
   const { t } = useI18n();
-  const [catIdx, setCatIdx] = useState(0);
+  const wanted = useCategoryParam();
+  const [catIdx, setCatIdx] = useState(wanted >= 0 ? wanted : 0);
   const cat = VISIBLE_CATEGORIES[catIdx];
   const products = useMemo(() => getProductsByCategory(cat.id), [cat.id]);
   const [sel, setSel] = useState(0);
@@ -282,7 +314,10 @@ function CategoryCard({ cat }: { cat: (typeof CATEGORIES)[number] }) {
   }, [products.length]);
 
   return (
-    <article className="flex w-[86vw] shrink-0 snap-center overflow-hidden rounded-2xl bg-parchment sm:w-[62vw] lg:h-full lg:w-[82vw]">
+    <article
+      data-cat={cat.id}
+      className="flex w-[86vw] shrink-0 snap-center overflow-hidden rounded-2xl bg-parchment sm:w-[62vw] lg:h-full lg:w-[82vw]"
+    >
       <div className="flex w-full flex-col lg:grid lg:h-full lg:grid-cols-[minmax(300px,34%)_1fr]">
         {/* Info column — content spans the full card height */}
         <div className="order-2 flex flex-col border-t border-linen p-6 md:p-8 lg:order-1 lg:h-full lg:min-h-0 lg:border-r lg:border-t-0">

@@ -1,0 +1,19 @@
+{
+  "name": "fikir-studio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Sanity Studio for Fikir Food Processing. Deployed separately from the website; its React version is independent of the site's.",
+  "scripts": {
+    "dev": "sanity dev --port 3333",
+    "build": "sanity build",
+    "deploy": "sanity deploy"
+  },
+  "dependencies": {
+    "@sanity/vision": "^4",
+    "react": "^19",
+    "react-dom": "^19",
+    "sanity": "^4",
+    "styled-components": "^6.1.15"
+  }
+}

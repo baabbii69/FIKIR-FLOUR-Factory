@@ -5,8 +5,10 @@ import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import Btn from "../components/Btn";
 import Img from "../components/Img";
+import CertRotator from "../components/CertRotator";
 import { usePageMeta } from "../lib/usePageMeta";
-import { VALUES, WHY_US, CERTIFICATE, COMPANY, MILESTONES, IMAGES } from "../data/site";
+import { VALUES, WHY_US, CERTIFICATE, COMPANY, MILESTONES, AWARDS, STAFF_TRAINING, IMAGES } from "../data/site";
+import type { AwardGroup } from "../data/site";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 
@@ -127,6 +129,7 @@ export default function About() {
       </section>
 
       <Founder />
+      <Recognition />
       <Values />
       <People />
       <WhyUs />
@@ -236,7 +239,7 @@ function Founder() {
             <Reveal>
               <h2 className="display-2 text-4xl md:text-5xl">
                 <Accent
-                  text={t("about.founder.title", "He started out *behind the wheel.*")}
+                  text={t("about.founder.title", "A work ethic he *inherited, not learned.*")}
                 />
               </h2>
             </Reveal>
@@ -244,13 +247,13 @@ function Founder() {
               <p className="mt-8 max-w-[60ch] text-base leading-relaxed">
                 {t(
                   "about.founder.p1",
-                  "Ato Fikru Gardew did not begin at a desk. He began as a driver, working day and night on the road, learning the trade one delivery and one customer at a time."
+                  "Ato Fikru Garedew left school after grade twelve. What he carried instead was the working discipline he grew up with, learned from his father, and it is the thing he still credits for everything that followed."
                 )}
               </p>
               <p className="mt-5 max-w-[60ch] text-base leading-relaxed">
                 {t(
                   "about.founder.p2",
-                  "The company he built started with a single product: wheat flour. Today the same plant in Adama turns out more than a dozen Unic biscuits and a full range of cream wafers alongside it, and the flour that started everything still feeds the biscuit lines."
+                  "He began on a small plot in Adama milling 420 quintals of flour a day. That figure is now 1,920, and the same plant turns out more than a dozen Unic biscuits and a full range of cream wafers alongside it. The flour that started everything still feeds the biscuit lines."
                 )}
               </p>
             </Reveal>
@@ -273,6 +276,99 @@ function Founder() {
                   </li>
                 ))}
               </ol>
+            </Reveal>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Recognition ---------------- */
+
+const AWARD_GROUPS: { id: AwardGroup; label: string; en: string }[] = [
+  { id: "tax", label: "about.awards.g1", en: "Public recognition" },
+  { id: "partners", label: "about.awards.g2", en: "Partners & community" },
+  { id: "press", label: "about.awards.g3", en: "In the press" },
+];
+
+function Recognition() {
+  const { t } = useI18n();
+  const reduce = useReducedMotion();
+
+  return (
+    <section className="bg-ink">
+      <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          {/* Heading + trophy shelf */}
+          <div className="lg:col-span-5">
+            <Reveal>
+              <h2 className="display-2 text-4xl !text-cream md:text-5xl">
+                <Accent
+                  text={t("about.awards.title", "Recognised by *those we work with.*")}
+                  tone="dark"
+                />
+              </h2>
+              <p className="mt-6 max-w-[48ch] text-base leading-relaxed text-cream/70">
+                {t(
+                  "about.awards.body",
+                  "Licences, certificates and awards gathered over the years from the city of Adama, the standards institute, and the institutions we work alongside. The awards were received by our founder on the company's behalf."
+                )}
+              </p>
+            </Reveal>
+            <motion.div
+              className="mt-10"
+              initial={reduce ? false : { opacity: 0, y: 34 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.85, ease: EASE }}
+            >
+              <CertRotator />
+            </motion.div>
+          </div>
+
+          {/* Grouped list */}
+          <div className="lg:col-span-7">
+            {AWARD_GROUPS.map((g, gi) => {
+              const items = AWARDS.filter((a) => a.group === g.id);
+              if (items.length === 0) return null;
+              return (
+                <div key={g.id} className={gi > 0 ? "mt-12" : ""}>
+                  <Reveal>
+                    <h3 className="font-mono text-[10px] uppercase tracking-[0.22em] text-gold">
+                      {t(g.label, g.en)}
+                    </h3>
+                  </Reveal>
+                  <ul className="mt-5 border-t border-cream/15">
+                    {items.map((a, i) => {
+                      const idx = AWARDS.indexOf(a);
+                      return (
+                        <Reveal key={a.issuer + a.year} delay={0.05 * Math.min(i, 3)}>
+                          <li className="grid gap-2 border-b border-cream/10 py-6 md:grid-cols-12 md:gap-6">
+                            <span className="font-mono text-[11px] tabular-nums text-gold/80 md:col-span-3">
+                              {t(`award.${idx}.year`, a.year)}
+                            </span>
+                            <div className="md:col-span-9">
+                              <h4 className="font-display text-xl font-semibold text-cream">
+                                {t(`award.${idx}.issuer`, a.issuer)}
+                              </h4>
+                              <p className="mt-2 max-w-[58ch] text-[15px] leading-relaxed text-cream/65">
+                                {t(`award.${idx}.text`, a.text)}
+                              </p>
+                            </div>
+                          </li>
+                        </Reveal>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
+
+            <Reveal delay={0.1}>
+              <p className="mt-10 max-w-[60ch] text-sm leading-relaxed text-cream/45">
+                {t("about.awards.training", STAFF_TRAINING)}
+              </p>
             </Reveal>
           </div>
         </div>

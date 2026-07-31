@@ -5,7 +5,7 @@
 export const CONTACT = {
   phone: "+251911491816",
   phones: ["+251911491816", "+251911491815", "+251930171717"],
-  email: "Info@fikirfoods.et",
+  email: "contact@fikirfoods.et",
   addressLines: ["Garalugo, Railway Station Area", "Adama, Oromia", "Ethiopia"],
   hours: [
     { days: "Monday to Friday", time: "08:00 - 17:30" },
@@ -21,7 +21,7 @@ export const COMPANY = {
   taglineAlt: "Quality you can taste. Consistency you can trust.",
   city: "Adama, Ethiopia",
   established: "2011",
-  ceo: "Ato Fikru Gardew",
+  ceo: "Ato Fikru Garedew",
   // Registration details as recorded in the company profile.
   registration: "ORO/ADM/K03/1/0000278/2006",
   tin: "0003227892",
@@ -381,14 +381,114 @@ export const WHY_US = [
 ];
 
 // The real fortification certificate (Institute of Ethiopian Standards).
+// Verified against the licence document: renewed annually, current term runs
+// 4 June 2026 to 3 June 2027 — `validUntil` needs updating on each renewal.
 export const CERTIFICATE = {
   authority: "Institute of Ethiopian Standards (IES)",
   title: "Ethiopian Standards Mark License",
   product: "Fortified Wheat Flour",
   standard: "CES 309:2024",
   license: "IES-CSMA/ESM51/2018R",
+  validUntil: "3 June 2027",
   note: "Fortified up to Vitamin B12, verified and licensed under the National Fortified Food scheme.",
 };
+
+// Second, independent conformity certificate for the same product.
+export const CERTIFICATE_2 = {
+  authority: "Bless Agrifood Laboratory Services",
+  title: "Mark of Conformity",
+  product: "Fortified Wheat Flour",
+  standard: "CES 309:2024",
+  license: "BPCU10215",
+  validUntil: "13 April 2028",
+  note: "Independently certified in collaboration with the Institute of Ethiopian Standards.",
+};
+
+/* --------------------------------------------------------------------------
+ * Awards & recognition.
+ *
+ * Every entry below is transcribed from a physical certificate or trophy held
+ * by the company. The awards are addressed to the founder in his capacity as
+ * the company's representative, so the section is framed that way.
+ *
+ * Deliberately excluded, and why:
+ *  - A 50,000 birr administrative tax penalty notice (Addis Ababa Revenues
+ *    Bureau) — a confidential legal document, and the opposite of a credential.
+ *  - Two staff training certificates — they name a private employee and prove
+ *    an individual's training, not the company's compliance. The capability is
+ *    stated as `STAFF_TRAINING` below instead, without naming anyone.
+ *  - The EFDA Certificate of Competence — lapsed 18 June 2026; must not be
+ *    advertised until the renewal is in hand.
+ *  - Minor local acknowledgements (electric utility, police, sub-city offices,
+ *    an insurer's loyalty award, a broadcaster's cooperation note) — listing
+ *    them would dilute the genuinely strong entries.
+ * ------------------------------------------------------------------------ */
+export type AwardGroup = "tax" | "partners" | "press";
+
+export type Award = {
+  group: AwardGroup;
+  year: string;
+  issuer: string;
+  text: string;
+};
+
+export const AWARDS: Award[] = [
+  {
+    group: "tax",
+    year: "2017 E.C.",
+    issuer: "Adama City Administration, Office of the Mayor",
+    text: "For paying 30,636,554.86 birr in government revenue on time, and for the part the company played in the city's development that year.",
+  },
+  {
+    group: "tax",
+    year: "2017 E.C.",
+    issuer: "Oromia Revenue Bureau",
+    text: "Gold tier for tax performance in the budget year.",
+  },
+  {
+    group: "tax",
+    year: "2014 E.C.",
+    issuer: "Adama City Revenue Office",
+    text: "Named among the leading taxpayers in Adama for the budget year.",
+  },
+  {
+    group: "partners",
+    year: "Ongoing",
+    issuer: "Cooperative Bank of Oromia · Bank of Abyssinia",
+    text: "Both banks have given us a certificate of recognition for a long working relationship.",
+  },
+  {
+    group: "partners",
+    year: "Ongoing",
+    issuer: "Ethiopian Red Cross Society",
+    text: "A corporate member, supporting the Society's work in Oromia.",
+  },
+  {
+    group: "press",
+    year: "2015 E.C.",
+    issuer: "Addis Zemen",
+    text: "The national daily ran a full-page feature on our founder, titled 'A successful business life, built on a work ethic inherited from his father'.",
+  },
+];
+
+/** Stated as a capability, without publishing an employee's personal certificate. */
+export const STAFF_TRAINING =
+  "Our milling and quality staff also hold external training certificates in fortification efficiency and in workplace health and safety.";
+
+/* The documents themselves, shown in the rotating frame on the About page.
+ * Scans are portrait and vary in shape, so the UI renders them contained
+ * rather than cropped. Excluded for the reasons listed above AWARDS. */
+export type CertShot = { src: string; caption: string };
+
+export const CERT_SHOTS: CertShot[] = [
+  { src: `${M}/cert-ies.jpg`, caption: "Ethiopian Standards Mark licence for fortified wheat flour" },
+  { src: `${M}/cert-bless.jpg`, caption: "Mark of Conformity, Bless Agrifood Laboratory Services" },
+  { src: `${M}/cert-adama-mayor.jpg`, caption: "Certificate of recognition, Adama City Administration" },
+  { src: `${M}/cert-adama-revenue.jpg`, caption: "Leading taxpayer certificate, Adama City Revenue Office" },
+  { src: `${M}/cert-oromia-revenue.jpg`, caption: "Tax performance certificate, Oromia Revenue Bureau" },
+  { src: `${M}/cert-coopbank.jpg`, caption: "Certificate of recognition, Cooperative Bank of Oromia" },
+  { src: `${M}/awards-trophies.jpg`, caption: "Trophies and plaques at the Adama head office" },
+];
 
 export const QUALITY_STEPS = [
   {
@@ -461,7 +561,7 @@ export const TESTIMONIALS = [
 
 export const IMAGES = {
   // Brand / hero
-  hero: `${M}/hero-banner.jpg`,
+  hero: `${M}/hero-banner-v2.jpg`,
   building: `${M}/building.jpg`,
   silos: `${M}/silos.jpg`,
   flourPoster: `${M}/flour-poster.jpg`,
@@ -522,6 +622,7 @@ export const IMAGES = {
   factoryAerial: `${M}/factory-aerial.jpg`,
   grainIntake: `${M}/grain-intake.jpg`,
   certificates: `${M}/certificates.jpg`,
+  awards: `${M}/awards-trophies.jpg`,
   teamGroup: `${M}/team-group.jpg`,
   wheatFarming: `${M}/wheat-farming.jpg`,
   biscuitLine: `${M}/biscuit-line.jpg`,

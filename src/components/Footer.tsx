@@ -6,16 +6,19 @@ import { useI18n } from "../i18n/I18nProvider";
 const COMPANY_LINKS = [
   { to: "/about", label: "About Us", k: "footer.aboutUs" },
   { to: "/facility", label: "Facility & Quality", k: "footer.facilityQuality" },
+  { to: "/gallery", label: "Gallery", k: "footer.gallery" },
   { to: "/careers", label: "Careers", k: "footer.careers" },
   { to: "/contact", label: "Become a Distributor", k: "footer.becomeDistributor" },
   { to: "/contact", label: "Contact", k: "footer.contactLink" },
 ];
 
+// `?cat=` is read by the Products page to open on that range. Chips is
+// deliberately absent: the category is hidden in data/site.ts, so a link to it
+// would resolve to nothing.
 const PRODUCT_LINKS = [
   { to: "/products?cat=flour", label: "Flour", k: "footer.linkFlour" },
   { to: "/products?cat=biscuits", label: "Unic Biscuits", k: "footer.linkBiscuits" },
   { to: "/products?cat=wafers", label: "Unic Wafers", k: "footer.linkWafers" },
-  { to: "/products?cat=chips", label: "Unic Chips", k: "footer.linkChips" },
   { to: "/products", label: "All Products", k: "footer.linkAll" },
 ];
 
@@ -117,11 +120,22 @@ export default function Footer() {
         </div>
 
         <div className="mt-16 flex flex-col items-center justify-between gap-6 border-t border-cream/10 pt-8 md:flex-row">
-          <p className="text-center text-[13px] text-cream/50">
+          <p className="text-center text-[13px] text-cream/50 md:text-left">
             © {new Date().getFullYear()} FIKIR FOOD PROCESSING. {t("footer.rights", "All rights reserved.")}
           </p>
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-cream/40">
+          <p className="order-first font-mono text-[11px] uppercase tracking-[0.18em] text-cream/40 md:order-none">
             {t("footer.tagline", "We produce quality; we deliver trust")}
+          </p>
+          <p className="text-center text-[13px] text-cream/50 md:text-right">
+            {t("footer.devBy", "Developed by")}{" "}
+            <a
+              href="https://hawisoftware.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cream/70 underline decoration-cream/25 underline-offset-4 transition-colors hover:text-gold hover:decoration-gold/50"
+            >
+              Hawi Software Solutions
+            </a>
           </p>
         </div>
       </div>

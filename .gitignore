@@ -1,10 +1,20 @@
 node_modules
 dist
 *.local
+# Secrets — never commit. .env.local is already covered by *.local, but these
+# make it explicit so a plain .env can't slip in.
+.env
+.env.*
+!.env.example
 .DS_Store
 .agents/
 .claude/
 prototype
 assets/
 *.tsbuildinfo
+marquee-picks/
+
+# Raw source material from the client (scans, awards, certificates). Contains a
+# tax penalty notice and an employee ID photo — must never be committed.
+New/
 marquee-picks/

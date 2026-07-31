@@ -19,8 +19,8 @@ export default function Careers() {
   return (
     <>
       <PageHero
-        image={IMAGES.facPacking2}
-        alt="Fikir staff packing Unic biscuits on the line at the Adama plant"
+        image={IMAGES.facPacking1}
+        alt="Fikir staff in uniform packing Unic biscuits on the line at the Adama plant"
         crumb={t("nav.careers", "Careers")}
         title={t("car.hero.title", "Grow your career")}
         titleAccent={t("car.hero.accent", "with us.")}
@@ -29,7 +29,7 @@ export default function Careers() {
       {/* Intro */}
       <section className="bg-cream">
         <div className="mx-auto grid max-w-[1400px] gap-14 px-5 py-20 md:px-10 md:py-28 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-6">
+          <div className="lg:col-span-6 lg:self-center">
             <Reveal>
               <span className="eyebrow">{t("car.intro.eyebrow", "Life at Fikir")}</span>
               <h2 className="display-2 mt-5 text-4xl md:text-5xl">
@@ -47,7 +47,15 @@ export default function Careers() {
           </div>
           <div className="lg:col-span-6">
             <Reveal delay={0.12}>
-              <Img src={IMAGES.lifeBiscuit} alt="A member of the Fikir community" loading="lazy" className="aspect-[4/3] w-full object-cover" />
+              {/* Real staff at work, not a studio model — and 3:2 is the file's
+                  native ratio, so nothing is cropped and the image sits at a
+                  height that balances the short intro copy beside it. */}
+              <Img
+                src={IMAGES.facOffice1}
+                alt="Fikir staff at work in the administration office in Adama"
+                loading="lazy"
+                className="aspect-[3/2] w-full object-cover"
+              />
             </Reveal>
           </div>
         </div>
