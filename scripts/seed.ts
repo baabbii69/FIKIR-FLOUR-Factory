@@ -54,6 +54,11 @@ const locText = (key: string, fallback?: string) => {
 /** A plain value with no i18n key behind it. */
 const en = (s: string) => ({ _type: "localeString", en: s });
 
+/** Stamps a _key onto each item of an array of objects. Sanity requires one,
+ *  and without it the Studio shows "Missing keys" and blocks editing. */
+const keyed = <T>(items: T[], prefix: string) =>
+  items.filter(Boolean).map((v, i) => ({ ...(v as object), _key: `${prefix}${i}` }));
+
 /** Splits "Lead *highlighted.*" into the two fields the schema uses, so editors
  *  never have to place an asterisk. */
 function heading(key: string, fallback?: string) {
@@ -169,6 +174,17 @@ async function uploadVideos() {
 
 /* -------------------------------- documents ------------------------------ */
 
+/**
+ * Document ids use a hyphen, never a dot.
+ *
+ * Sanity treats a "." in an _id as a private namespace, so `product.special`
+ * is invisible to unauthenticated readers — which is exactly how the public
+ * website reads content. Dotted ids silently returned zero products to anyone
+ * without a token.
+ */
+const id = (type: string, key: string | number) => `${type}-${key}`;
+
+
 const docs: Record<string, unknown>[] = [];
 const clean = <T extends Record<string, unknown>>(o: T) =>
   Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as T;
@@ -177,7 +193,7 @@ function buildCollections() {
   S.CATEGORIES.forEach((c, i) =>
     docs.push(
       clean({
-        _id: `category.${c.id}`,
+        _id: id("category", c.id),
         _type: "category",
         key: c.id,
         label: loc(`cat.${c.id}.label`, c.label),
@@ -191,16 +207,17 @@ function buildCollections() {
   S.PRODUCTS.forEach((p, i) =>
     docs.push(
       clean({
-        _id: `product.${p.slug}`,
+        _id: id("product", p.slug),
         _type: "product",
         name: loc(`prod.${p.slug}.name`, p.name),
         slug: { _type: "slug", current: p.slug },
-        category: { _type: "reference", _ref: `category.${p.category}` },
+        category: { _type: "reference", _ref: id("category", p.category) },
         brand: p.brand,
         image: img(p.image, `${p.name} pack shot`),
-        gallery: (p.gallery ?? [])
-          .map((g) => img(g, `${p.name} product photo`))
-          .filter(Boolean),
+        gallery: keyed(
+          (p.gallery ?? []).map((g) => img(g, `${p.name} product photo`)),
+          "g"
+        ),
         blurb: locText(`prod.${p.slug}.blurb`, p.blurb),
         meta: p.meta ? loc(`prod.${p.slug}.meta`, p.meta) : undefined,
         badge: p.badge ? loc(`badge.${p.badge}`, p.badge) : undefined,
@@ -212,7 +229,7 @@ function buildCollections() {
   S.GALLERY.forEach((g, i) =>
     docs.push(
       clean({
-        _id: `galleryItem.${i}`,
+        _id: id("galleryItem", i),
         _type: "galleryItem",
         image: img(g.src, g.caption),
         caption: loc(`gal.cap.${i}`, g.caption),
@@ -227,7 +244,7 @@ function buildCollections() {
   S.VALUES.forEach((v, i) =>
     docs.push(
       clean({
-        _id: `companyValue.${i}`,
+        _id: id("companyValue", i),
         _type: "companyValue",
         icon: v.icon,
         title: loc(`value.${i}.title`, v.title),
@@ -240,7 +257,7 @@ function buildCollections() {
   S.TESTIMONIALS.forEach((t, i) =>
     docs.push(
       clean({
-        _id: `testimonial.${i}`,
+        _id: id("testimonial", i),
         _type: "testimonial",
         quote: locText(`tst.${i}.quote`, t.quote),
         name: loc(`tst.${i}.name`, t.name),
@@ -253,7 +270,7 @@ function buildCollections() {
   S.OPENINGS.forEach((o, i) =>
     docs.push(
       clean({
-        _id: `jobOpening.${i}`,
+        _id: id("jobOpening", i),
         _type: "jobOpening",
         title: loc(`open.${i}.title`, o.title),
         employmentType: loc(`open.${i}.type`, o.type),
@@ -268,7 +285,7 @@ function buildCollections() {
   S.AWARDS.forEach((a, i) =>
     docs.push(
       clean({
-        _id: `award.${i}`,
+        _id: id("award", i),
         _type: "award",
         group: a.group,
         year: loc(`award.${i}.year`, a.year),
@@ -282,7 +299,7 @@ function buildCollections() {
   S.CERT_SHOTS.forEach((c, i) =>
     docs.push(
       clean({
-        _id: `credentialScan.${i}`,
+        _id: id("credentialScan", i),
         _type: "credentialScan",
         image: img(c.src, c.caption),
         caption: loc(`cert.shot.${i}`, c.caption),
@@ -306,7 +323,7 @@ function buildSingletons() {
       ceoRole: loc("about.ceoRole", "Chief Executive Officer"),
       phones: S.CONTACT.phones,
       email: S.CONTACT.email,
-      addressLines: S.CONTACT.addressLines.map((l) => en(l)),
+      addressLines: keyed(S.CONTACT.addressLines.map((l) => en(l)), "addr"),
       hours: S.CONTACT.hours.map((h, i) => ({
         _key: `h${i}`,
         days: loc(`con.hours.${i}.days`, h.days),
@@ -339,12 +356,24 @@ function buildSingletons() {
       _id: "homePage",
       _type: "homePage",
       heroImage: img(S.IMAGES.hero, "The Fikir plant, fleet and products at sunset"),
-      heroEyebrow: loc("home.hero.eyebrow"),
+      heroEyebrow: loc("home.hero.eyebrow", `Adama, Ethiopia · ${S.COMPANY.name}`),
       heroHeading: heading("home.hero.title"),
       heroSub: locText("home.hero.sub"),
-      marquee: [1, 2, 3, 4, 5, 6].map((n) => loc(`home.mq.${n}`)).filter(Boolean),
+      // English for these lives in a MARQUEE array in Home.tsx, not inline in
+      // a t() call, so the extractor cannot see it.
+      marquee: keyed([
+        "Since 2004 E.C.",
+        "Adama, Ethiopia",
+        "Fortified up to Vitamin B12",
+        "1,026 team members",
+        "Delivered nationwide",
+        "We produce quality, we deliver trust",
+      ].map((fallback, i) => loc(`home.mq.${i + 1}`, fallback)), "mq"),
       whoWeAreEyebrow: loc("home.who.eyebrow"),
-      whoWeAreBody: locText("home.who.body"),
+      whoWeAreBody: locText(
+        "home.who.body",
+        "A legally registered Ethiopian food manufacturer in Adama, making the highest-quality wheat flour, more than twelve kinds of biscuits, cream wafers, and potato chips, for *families across the country.*"
+      ),
       process: S.PROCESS.map((p, i) => ({
         _key: `p${i}`,
         step: p.n,
@@ -387,7 +416,7 @@ function buildSingletons() {
         heading: heading2("about.hero.title", "about.hero.accent"),
       },
       whoWeAreHeading: heading("about.who.title"),
-      whoWeAreBody: [locText("about.who.p1"), locText("about.who.p2")].filter(Boolean),
+      whoWeAreBody: keyed([locText("about.who.p1"), locText("about.who.p2")], "p"),
       plantImage: img(S.IMAGES.factoryAerial, "The Fikir plant and silos seen from the air"),
       plantCaption: loc("about.plantCaption", "The plant in Adama, from above"),
       employedCount: "1,026",
@@ -397,7 +426,7 @@ function buildSingletons() {
       founder: {
         portrait: img(S.IMAGES.ceo, `${S.COMPANY.ceo}, founder and Chief Executive Officer`),
         heading: heading("about.founder.title"),
-        body: [locText("about.founder.p1"), locText("about.founder.p2")].filter(Boolean),
+        body: keyed([locText("about.founder.p1"), locText("about.founder.p2")], "p"),
       },
       milestones: S.MILESTONES.map((m, i) => ({
         _key: `m${i}`,
@@ -480,7 +509,7 @@ function buildSingletons() {
         heading: heading2("fac.hero.title", "fac.hero.accent"),
       },
       overviewHeading: heading("fac.overview.title"),
-      overviewBody: [locText("fac.overview.p1"), locText("fac.overview.p2")].filter(Boolean),
+      overviewBody: keyed([locText("fac.overview.p1"), locText("fac.overview.p2")], "p"),
       qualitySteps: S.QUALITY_STEPS.map((q, i) => ({
         _key: `q${i}`,
         step: q.step,
@@ -561,14 +590,9 @@ function buildSingletons() {
         heading: heading2("con.hero.title", "con.hero.accent"),
       },
       formHeading: loc("con.form.title"),
-      formIntro: locText("con.form.body"),
+      formIntro: locText("con.form.sub"),
       mapEmbedUrl:
         "https://www.openstreetmap.org/export/embed.html?bbox=39.2189%2C8.4914%2C39.3189%2C8.5914&layer=mapnik&marker=8.5414%2C39.2689",
-      cta: {
-        image: img(S.IMAGES.fleet, "The Fikir delivery fleet"),
-        heading: heading2("con.cta.title", "con.cta.accent"),
-        text: locText("con.cta.text"),
-      },
       seo: {
         title: en("Contact | FIKIR FOOD PROCESSING"),
         description: {

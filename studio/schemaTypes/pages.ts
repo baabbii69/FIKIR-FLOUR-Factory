@@ -171,7 +171,7 @@ export const siteSettings = defineType({
 
 /* --------------------------------- pages ---------------------------------- */
 
-const page = (name: string, title: string, extra: any[] = []) =>
+const page = (name: string, title: string, extra: any[] = [], withCta = true) =>
   defineType({
     name,
     title,
@@ -183,7 +183,9 @@ const page = (name: string, title: string, extra: any[] = []) =>
     fields: [
       defineField({ name: "hero", title: "Top of the page", type: "pageHero", group: "content" }),
       ...extra.map((f) => ({ ...f, group: f.group ?? "content" })),
-      defineField({ name: "cta", title: "Closing call to action", type: "ctaBlock", group: "content" }),
+      ...(withCta
+        ? [defineField({ name: "cta", title: "Closing call to action", type: "ctaBlock", group: "content" })]
+        : []),
       defineField({ name: "seo", title: "Search listing", type: "seo", group: "seo" }),
     ],
     preview: { prepare: () => ({ title }) },
@@ -417,4 +419,6 @@ export const contactPage = page("contactPage", "Contact page", [
     description: "The OpenStreetMap or Google Maps embed link for the factory.",
     type: "string",
   }),
-]);
+// The contact page ends with the map and the form, not a call-to-action band,
+// so no cta field — an empty box wired to nothing is worse than no box.
+], false);

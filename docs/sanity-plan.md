@@ -211,10 +211,10 @@ current Vercel review link keeps working while the CMS is built.
 
 Seeding is done, so these are now measured numbers rather than estimates.
 
-**The entire site's content is 15 KB gzipped** (46.8 KB raw) — every page, every
-product, all three languages. That is smaller than one product photo. Text
-content is effectively free, and no amount of CMS wiring will make the site feel
-slow because of it.
+**The entire site's content is 28 KB gzipped** (109 KB raw) — every page, every
+product, all three languages, measured anonymously exactly as the browser will
+fetch it. That is smaller than one product photo. Text content is effectively
+free, and no amount of CMS wiring will make the site feel slow because of it.
 
 The rules that keep it that way:
 
@@ -260,6 +260,24 @@ Adama, not from here.
 - Route-level code splitting stays.
 - The video is now served from Sanity's file CDN, so a Plesk deploy no longer
   has to carry ~70 MB of media.
+
+## Two traps that were hit during seeding
+
+Both were silent, and both would have broken Phase 3 rather than showing an
+error. `scripts/checkKeys.ts` and `scripts/audit.ts` now catch them.
+
+1. **Never put a `.` in a document `_id`.** Sanity treats a dot as a private
+   namespace, so `product.special` was invisible to unauthenticated readers —
+   which is exactly how the public site reads content. An anonymous query
+   returned 0 products while an authenticated one returned 20. Ids now use
+   hyphens: `product-special`.
+2. **Every item in an array of objects needs a `_key`.** Without it the Studio
+   refuses to edit the list ("Missing keys") even though the data is fine.
+   Arrays of plain strings are exempt, which is why it was easy to miss on the
+   localised-text arrays.
+
+A third, smaller one: a GROQ query without an explicit slice caps its result
+set, so `*[...]` quietly returned a partial list. Always slice when counting.
 
 ## Open decisions and risks
 
