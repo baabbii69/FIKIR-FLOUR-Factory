@@ -32,6 +32,10 @@ export default function Gallery() {
   const [filter, setFilter] = useState<GalleryGroup | "all">("all");
   const [lightbox, setLightbox] = useState<number | null>(null);
 
+  // Caption keys are indexed against the full, unfiltered gallery order, so
+  // resolve each item's position in `all` rather than in the filtered view.
+  const cap = (g: (typeof all)[number]) => t(`gal.cap.${all.indexOf(g)}`, g.caption);
+
   const items = useMemo(() => (filter === "all" ? all : all.filter((g) => g.group === filter)), [all, filter]);
   const srcs = useMemo(() => items.map((g) => g.src), [items]);
 
@@ -85,7 +89,7 @@ export default function Gallery() {
               >
                 <Img
                   src={g.src}
-                  alt={g.caption}
+                  alt={cap(g)}
                   loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
                 />
@@ -94,7 +98,7 @@ export default function Gallery() {
                   <MagnifyingGlassPlus size={15} weight="bold" />
                 </span>
                 <figcaption className="absolute inset-x-0 bottom-0 translate-y-2 p-4 font-mono text-[10px] uppercase tracking-[0.16em] text-cream opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                  {g.caption}
+                  {cap(g)}
                 </figcaption>
               </motion.button>
             ))}
@@ -117,7 +121,7 @@ export default function Gallery() {
         open={lightbox !== null}
         initialIndex={lightbox ?? 0}
         onClose={() => setLightbox(null)}
-        caption={(i) => items[i]?.caption ?? ""}
+        caption={(i) => (items[i] ? cap(items[i]) : "")}
       />
     </>
   );

@@ -207,6 +207,60 @@ Estimates are rough and assume the content model does not change mid-flight.
 Phases 1 and 2 can be done without touching the live site at all, so the
 current Vercel review link keeps working while the CMS is built.
 
+## Phase 3 architecture: keeping the site fast
+
+Seeding is done, so these are now measured numbers rather than estimates.
+
+**The entire site's content is 15 KB gzipped** (46.8 KB raw) — every page, every
+product, all three languages. That is smaller than one product photo. Text
+content is effectively free, and no amount of CMS wiring will make the site feel
+slow because of it.
+
+The rules that keep it that way:
+
+1. **Bundle a build-time snapshot.** `npm run build` writes the full content
+   query to a JSON file that ships in the bundle. First paint renders from it
+   with zero network dependency, so the site is never blank waiting on Sanity,
+   and it keeps working if Sanity is unreachable.
+2. **Refresh at runtime, never block on it.** One request to
+   `apicdn.sanity.io` (`useCdn: true`, edge-cached) fetches the same 15 KB after
+   paint and swaps it in. Client edits go live in seconds with no rebuild. The
+   fetch must never gate rendering, and the swap must be a plain state update —
+   no loading spinner, no layout shift.
+3. **Cache in `localStorage` as a third tier**, so a repeat visitor paints from
+   the last known content even before the bundle parses.
+
+### Images: the one real decision
+
+Text is free; images are 95% of the bytes. Two options:
+
+- **Sanity CDN** (`?w=800&auto=format`) — the editor can swap photos, and Sanity
+  serves correctly sized WebP/AVIF per breakpoint. Today the site ships a
+  1600px file into a 400px slot in several places, so *right-sizing alone is
+  likely a net win* even after paying one extra DNS + TLS handshake.
+- **Local files** — same origin, no extra handshake, but the client cannot
+  change a photo without a developer, which defeats the CMS.
+
+Recommendation: **Sanity CDN, with `<link rel="preconnect" href="https://cdn.sanity.io" crossorigin>`**
+in `index.html` so the connection is warm before the first image is requested,
+plus explicit `w`/`q` and `srcSet`.
+
+Caveat worth measuring rather than assuming: the production host is Plesk inside
+Ethiopia, which is physically close to the audience. If Sanity's nearest edge
+turns out to be far, local files could win on latency. The escape hatch is a
+**build-time image bake** — pull the assets from Sanity during `npm run build`
+and write them into `dist/media`, so editors still manage images in the CMS but
+visitors are served them locally. Decide this with a real measurement from
+Adama, not from here.
+
+### What must not regress
+
+- `LOW_POWER` detection and the `prefers-reduced-motion` paths stay exactly as
+  they are; the CMS work must not touch them.
+- Route-level code splitting stays.
+- The video is now served from Sanity's file CDN, so a Plesk deploy no longer
+  has to carry ~70 MB of media.
+
 ## Open decisions and risks
 
 1. **Who owns the Sanity project and billing?** It should end up on the

@@ -18,3 +18,7 @@ marquee-picks/
 # tax penalty notice and an employee ID photo — must never be committed.
 New/
 marquee-picks/
+
+# Seed artifacts (local caches, not content)
+scripts/.asset-cache.json
+scripts/.translation-gaps.json
