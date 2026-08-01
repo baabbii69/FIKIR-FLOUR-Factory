@@ -10,23 +10,23 @@ import Lightbox from "../components/Lightbox";
 import Img, { toWebp } from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
 import { useHorizontalScroll } from "../lib/useHorizontalScroll";
-import { CATEGORIES, FAQS, IMAGES } from "../data/site";
-import type { Product } from "../data/site";
-import { getProductsByCategory, getProductImages, getCategories } from "../content";
+import { IMAGES } from "../data/site";
+import type { Product, Category } from "../data/site";
+import { useProductsByCategory, getProductImages, useCategories, useFaqs, usePageImage } from "../content";
+import { useCms } from "../lib/cms/CmsProvider";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const isPackImg = (src: string) => src.endsWith(".png");
-// Categories shown in the UI (chips is currently hidden — see data/site.ts).
-const VISIBLE_CATEGORIES = getCategories();
+type Cat = { id: Category; label: string; note: string };
 
 /** Index of the category named by `?cat=`, or -1. Hidden categories never
  *  match, so a stale link to a paused range simply lands on the page. */
-function useCategoryParam() {
+function useCategoryParam(categories: Cat[]) {
   const [params] = useSearchParams();
   const wanted = params.get("cat");
-  return VISIBLE_CATEGORIES.findIndex((c) => c.id === wanted);
+  return categories.findIndex((c) => c.id === wanted);
 }
 
 /** Auto-advance a product's image index every few seconds when it has more
@@ -47,10 +47,13 @@ export default function Products() {
     "Fortified flour, Unic biscuits, wafers, and chips, made in Adama, Ethiopia and distributed nationwide."
   );
   const { t } = useI18n();
+  const cms = useCms();
+  const heroImg = usePageImage(cms.products?.hero?.image, 1800) ?? IMAGES.proRange;
+  const ctaImg = usePageImage(cms.products?.cta?.image, 1800) ?? IMAGES.facBiscuitWarehouse;
   return (
     <>
       <PageHero
-        image={IMAGES.proRange}
+        image={heroImg}
         alt="The Unic range"
         crumb={t("nav.products", "Products")}
         title={t("prod.hero.title", "One name, a whole")}
@@ -62,7 +65,7 @@ export default function Products() {
       <MobileCategoryBrowser />
       <FAQ />
       <CTABanner
-        image={IMAGES.facBiscuitWarehouse}
+        image={ctaImg}
         alt="Pallets of finished Unic biscuits stacked ready to ship"
         title={t("prod.cta.title", "Want to stock")}
         titleAccent={t("prod.cta.accent", "Fikir?")}
@@ -78,7 +81,8 @@ export default function Products() {
 function CategoryScroller() {
   const { t } = useI18n();
   const { sectionRef, trackRef } = useHorizontalScroll<HTMLElement, HTMLDivElement>();
-  const wanted = useCategoryParam();
+  const categories = useCategories();
+  const wanted = useCategoryParam(categories);
 
   // The track slides horizontally as the page scrolls vertically, so we cannot
   // scrollIntoView here. Instead convert the target card's offset into the
@@ -92,7 +96,7 @@ function CategoryScroller() {
       const track = trackRef.current;
       if (!section || !track) return;
       if (!window.matchMedia("(min-width: 1024px)").matches) return;
-      const card = track.querySelector<HTMLElement>(`[data-cat="${VISIBLE_CATEGORIES[wanted].id}"]`);
+      const card = track.querySelector<HTMLElement>(`[data-cat="${categories[wanted].id}"]`);
       const distance = Math.max(0, track.scrollWidth - window.innerWidth);
       if (!card || distance === 0) return;
       const progress = Math.min(1, Math.max(0, card.offsetLeft / distance));
@@ -100,7 +104,7 @@ function CategoryScroller() {
       window.scrollTo({ top, behavior: "auto" });
     });
     return () => cancelAnimationFrame(id);
-  }, [wanted, sectionRef, trackRef]);
+  }, [wanted, categories, sectionRef, trackRef]);
 
   return (
     <section ref={sectionRef} aria-label={t("prod.browse.aria", "Browse products by category")} className="relative hidden bg-ink lg:block">
@@ -124,7 +128,7 @@ function CategoryScroller() {
             </div>
           </div>
 
-          {VISIBLE_CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <CategoryCard key={c.id} cat={c} />
           ))}
           {/* Trailing spacer so the last card comes to rest centred. A real element
@@ -142,10 +146,11 @@ function CategoryScroller() {
    image, thumbnails, variety picker, details, and CTA — all full width. */
 function MobileCategoryBrowser() {
   const { t } = useI18n();
-  const wanted = useCategoryParam();
+  const categories = useCategories();
+  const wanted = useCategoryParam(categories);
   const [catIdx, setCatIdx] = useState(wanted >= 0 ? wanted : 0);
-  const cat = VISIBLE_CATEGORIES[catIdx];
-  const products = useMemo(() => getProductsByCategory(cat.id), [cat.id]);
+  const cat = categories[Math.min(catIdx, Math.max(0, categories.length - 1))];
+  const products = useProductsByCategory(cat?.id as Category);
   const [sel, setSel] = useState(0);
   const [img, setImg] = useState(0);
   const [lightbox, setLightbox] = useState(false);
@@ -182,7 +187,7 @@ function MobileCategoryBrowser() {
           aria-label={t("prod.browse.aria", "Browse products by category")}
           className="mt-8 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {VISIBLE_CATEGORIES.map((c, i) => (
+          {categories.map((c, i) => (
             <button
               key={c.id}
               role="tab"
@@ -279,14 +284,14 @@ function MobileCategoryBrowser() {
 }
 
 /* ---------------- One category card ---------------- */
-function CategoryCard({ cat }: { cat: (typeof CATEGORIES)[number] }) {
+function CategoryCard({ cat }: { cat: Cat }) {
   const { t } = useI18n();
-  const products = useMemo(() => getProductsByCategory(cat.id), [cat.id]);
+  const products = useProductsByCategory(cat.id);
   const [sel, setSel] = useState(0);
   const [img, setImg] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 
-  const product = products[sel];
+  const product = products[Math.min(sel, Math.max(0, products.length - 1))];
   const images = useMemo(() => getProductImages(product), [product]);
   const catLabel = t(`cat.${cat.id}.label`, cat.label);
   useAutoRotate(images.length, product.slug, setImg);
@@ -509,6 +514,7 @@ function Row({ k, v }: { k: string; v: string }) {
 /* ---------------- FAQ ---------------- */
 function FAQ() {
   const { t } = useI18n();
+  const faqs = useFaqs();
   return (
     <section className="bg-parchment">
       <div className="mx-auto grid max-w-[1400px] gap-12 px-5 py-20 md:px-10 md:py-28 lg:grid-cols-12">
@@ -528,7 +534,7 @@ function FAQ() {
         </div>
         <div className="lg:col-span-8 lg:col-start-5">
           <dl className="divide-y divide-linen border-y border-linen">
-            {FAQS.map((f, i) => (
+            {faqs.map((f, i) => (
               <Reveal key={f.q} delay={0.04 * Math.min(i, 3)}>
                 <div className="grid gap-3 py-8 md:grid-cols-12 md:gap-8">
                   <dt className="font-display text-xl font-semibold text-ink md:col-span-5">{t(`faq.${i}.q`, f.q)}</dt>

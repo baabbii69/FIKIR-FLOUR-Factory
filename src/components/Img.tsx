@@ -7,6 +7,9 @@ import type { ImgHTMLAttributes } from "react";
  */
 export function toWebp(src?: string): string | null {
   if (!src) return null;
+  // Sanity CDN urls already negotiate format via `auto=format`; rewriting the
+  // extension there would point at a file that does not exist.
+  if (/^https?:\/\//i.test(src)) return null;
   return /\.(jpe?g|png)$/i.test(src) ? src.replace(/\.(jpe?g|png)$/i, ".webp") : null;
 }
 

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone, EnvelopeSimple } from "@phosphor-icons/react";
-import { CONTACT } from "../data/site";
+import { useSettings } from "../content";
 import { useI18n } from "../i18n/I18nProvider";
 
 const COMPANY_LINKS = [
@@ -24,6 +24,7 @@ const PRODUCT_LINKS = [
 
 export default function Footer() {
   const { t } = useI18n();
+  const settings = useSettings();
   return (
     <footer className="bg-ink text-cream/70">
       <div className="mx-auto max-w-[1400px] px-5 py-16 md:px-10 md:py-20">
@@ -92,7 +93,7 @@ export default function Footer() {
               <li className="flex gap-3">
                 <MapPin size={18} className="mt-0.5 shrink-0 text-gold" />
                 <span>
-                  {CONTACT.addressLines.map((line) => (
+                  {settings.addressLines.map((line) => (
                     <span key={line} className="block">
                       {line}
                     </span>
@@ -102,7 +103,7 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <Phone size={18} className="mt-0.5 shrink-0 text-gold" />
                 <span className="flex flex-col gap-1">
-                  {CONTACT.phones.map((p) => (
+                  {settings.phones.map((p) => (
                     <a key={p} href={`tel:${p.replace(/\s/g, "")}`} className="hover:text-cream">
                       {p}
                     </a>
@@ -111,8 +112,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <EnvelopeSimple size={18} className="shrink-0 text-gold" />
-                <a href={`mailto:${CONTACT.email}`} className="hover:text-cream">
-                  {CONTACT.email}
+                <a href={`mailto:${settings.email}`} className="hover:text-cream">
+                  {settings.email}
                 </a>
               </li>
             </ul>

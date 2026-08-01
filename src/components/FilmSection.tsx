@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } fr
 import { Play, X, SpeakerSimpleSlash } from "@phosphor-icons/react";
 import Img from "./Img";
 import { LOW_POWER } from "../lib/perf";
-import { FEATURE_VIDEO, FILM_LOOP } from "../data/site";
+import { useFilm } from "../content";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 
@@ -22,8 +22,10 @@ const EASE = [0.16, 1, 0.3, 1] as const;
  */
 export default function FilmSection() {
   const { t } = useI18n();
+  const film = useFilm();
   const reduce = useReducedMotion();
   const ambient = !reduce && !LOW_POWER;
+  const poster = "/media/factory-aerial.jpg";
   const wrap = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
 
@@ -49,8 +51,8 @@ export default function FilmSection() {
         >
           {ambient ? (
             <video
-              src={FILM_LOOP.src}
-              poster={FILM_LOOP.poster}
+              src={film.loopUrl}
+              poster={poster}
               autoPlay
               muted
               loop
@@ -62,7 +64,7 @@ export default function FilmSection() {
             />
           ) : (
             <Img
-              src={FILM_LOOP.poster}
+              src={poster}
               alt=""
               aria-hidden
               className="h-full w-full object-cover"
@@ -156,7 +158,7 @@ export default function FilmSection() {
               </button>
 
               <div className="mt-5 flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50 lg:justify-end">
-                <span className="tabular-nums">{FILM_LOOP.fullDuration}</span>
+                <span className="tabular-nums">{film.duration}</span>
                 <span aria-hidden className="h-3 w-px bg-cream/25" />
                 <span className="inline-flex items-center gap-1.5">
                   <SpeakerSimpleSlash size={13} />
@@ -168,14 +170,24 @@ export default function FilmSection() {
         </div>
       </section>
 
-      <FilmPlayer open={open} onClose={() => setOpen(false)} />
+      <FilmPlayer open={open} onClose={() => setOpen(false)} src={film.fullUrl} poster={poster} />
     </>
   );
 }
 
 /* ---------------- Fullscreen player ---------------- */
 
-function FilmPlayer({ open, onClose }: { open: boolean; onClose: () => void }) {
+function FilmPlayer({
+  open,
+  onClose,
+  src,
+  poster,
+}: {
+  open: boolean;
+  onClose: () => void;
+  src: string;
+  poster: string;
+}) {
   const { t } = useI18n();
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -193,7 +205,8 @@ function FilmPlayer({ open, onClose }: { open: boolean; onClose: () => void }) {
     };
   }, [open, onClose]);
 
-  if (!FEATURE_VIDEO || FEATURE_VIDEO.type !== "file") return null;
+  // No film configured in the CMS: render nothing rather than an empty player.
+  if (!src) return null;
 
   return createPortal(
     <AnimatePresence>
@@ -226,8 +239,8 @@ function FilmPlayer({ open, onClose }: { open: boolean; onClose: () => void }) {
           <div className="flex flex-1 items-center justify-center px-4 pb-6 md:px-8">
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <video
-              src={FEATURE_VIDEO.src}
-              poster={FEATURE_VIDEO.poster}
+              src={src}
+              poster={poster}
               controls
               autoPlay
               playsInline

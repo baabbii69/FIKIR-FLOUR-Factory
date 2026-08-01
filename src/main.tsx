@@ -26,6 +26,7 @@ import "./lib/perf";
 
 import App from "./App";
 import { I18nProvider } from "./i18n/I18nProvider";
+import { CmsProvider } from "./lib/cms/CmsProvider";
 
 // After a redeploy, hashed lazy chunks referenced by an already-open tab no
 // longer exist; Vite fires this event instead of leaving a blank page.
@@ -36,10 +37,13 @@ window.addEventListener("vite:preloadError", (event) => {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <I18nProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </I18nProvider>
+    {/* CMS wraps i18n: t() layers CMS copy over the built-in dictionaries. */}
+    <CmsProvider>
+      <I18nProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </I18nProvider>
+    </CmsProvider>
   </StrictMode>,
 );

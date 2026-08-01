@@ -7,8 +7,18 @@ import Btn from "../components/Btn";
 import Img from "../components/Img";
 import CertRotator from "../components/CertRotator";
 import { usePageMeta } from "../lib/usePageMeta";
-import { VALUES, WHY_US, CERTIFICATE, COMPANY, MILESTONES, AWARDS, STAFF_TRAINING, IMAGES } from "../data/site";
+import { IMAGES } from "../data/site";
 import type { AwardGroup } from "../data/site";
+import {
+  useCompanyValues,
+  useWhyUs,
+  useMilestones,
+  useAwards,
+  useCertificate,
+  useSettings,
+  usePageImage,
+} from "../content";
+import { useCms } from "../lib/cms/CmsProvider";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 
@@ -30,11 +40,16 @@ export default function About() {
     "Fikir Food Processing: a trusted Ethiopian food manufacturer in Adama for over 15 years, built on quality, honesty, and trust."
   );
   const { t } = useI18n();
+  const cms = useCms();
+  const cert = useCertificate();
+  const heroImg = usePageImage(cms.about?.hero?.image, 1800) ?? IMAGES.wheatFarming;
+  const plantImg = usePageImage(cms.about?.plantImage, 1200) ?? IMAGES.factoryAerial;
+  const ctaImg = usePageImage(cms.about?.cta?.image, 1800) ?? IMAGES.proRange;
 
   return (
     <>
       <PageHero
-        image={IMAGES.wheatFarming}
+        image={heroImg}
         alt="Combine harvesters bringing in the wheat harvest"
         crumb={t("nav.about", "About Us")}
         title={t("about.hero.title", "Built on quality,")}
@@ -78,7 +93,7 @@ export default function About() {
             <Reveal className="relative z-0 lg:pl-8">
               <figure>
                 <Img
-                  src={IMAGES.factoryAerial}
+                  src={plantImg}
                   alt="The Fikir Food Processing plant, silos and warehouses seen from the air"
                   loading="lazy"
                   className="aspect-[4/3] w-full object-cover"
@@ -143,7 +158,7 @@ export default function About() {
               <h2 className="display-2 mt-5 text-4xl md:text-5xl">
                 <Accent text={t("about.cert.title", "The National Fortified Food mark, *earned.*")} />
               </h2>
-              <p className="mt-6 max-w-[54ch] text-base leading-relaxed">{t("cert.note", CERTIFICATE.note)}</p>
+              <p className="mt-6 max-w-[54ch] text-base leading-relaxed">{t("cert.note", cert?.note ?? "")}</p>
             </Reveal>
             <Reveal delay={0.12}>
               <Img
@@ -159,14 +174,14 @@ export default function About() {
               <div className="border border-linen bg-cream p-8 md:p-10">
                 <SealCheck size={40} weight="duotone" className="text-gold-deep" />
                 <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.2em] text-clay/70">
-                  {t("cert.authority", CERTIFICATE.authority)}
+                  {t("cert.authority", cert?.authority ?? "")}
                 </p>
-                <h3 className="mt-2 font-display text-3xl font-semibold text-ink">{t("cert.title", CERTIFICATE.title)}</h3>
+                <h3 className="mt-2 font-display text-3xl font-semibold text-ink">{t("cert.title", cert?.title ?? "")}</h3>
                 <dl className="mt-6 space-y-3 border-t border-linen pt-6 text-sm">
                   {[
-                    [t("cert.lblProduct", "Product"), t("cert.product", CERTIFICATE.product)],
-                    [t("cert.lblStandard", "Standard"), CERTIFICATE.standard],
-                    [t("cert.lblLicenseNo", "License no."), CERTIFICATE.license],
+                    [t("cert.lblProduct", "Product"), t("cert.product", cert?.product ?? "")],
+                    [t("cert.lblStandard", "Standard"), cert?.standard ?? ""],
+                    [t("cert.lblLicenseNo", "License no."), cert?.license ?? ""],
                   ].map(([k, v]) => (
                     <div key={k} className="flex justify-between gap-6">
                       <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-clay/70">{k}</dt>
@@ -181,7 +196,7 @@ export default function About() {
       </section>
 
       <CTABanner
-        image={IMAGES.proRange}
+        image={ctaImg}
         alt="The full range of Unic biscuits and wafers held in both hands"
         title={t("about.cta.title", "Grow with")}
         titleAccent={t("about.cta.accent", "Fikir.")}
@@ -199,6 +214,10 @@ export default function About() {
 
 function Founder() {
   const { t } = useI18n();
+  const cms = useCms();
+  const settings = useSettings();
+  const milestones = useMilestones();
+  const portrait = usePageImage(cms.about?.founder?.portrait, 900) ?? IMAGES.ceo;
   const reduce = useReducedMotion();
 
   return (
@@ -215,8 +234,8 @@ function Founder() {
           >
             <div className="group relative overflow-hidden">
               <Img
-                src={IMAGES.ceo}
-                alt={`${COMPANY.ceo}, founder and Chief Executive Officer of Fikir Food Processing`}
+                src={portrait}
+                alt={`${settings.ceo}, founder and Chief Executive Officer of Fikir Food Processing`}
                 loading="lazy"
                 /* The source is 16:9 interview framing with him at ~61% of the
                    width, so a centred crop pushes him off to the right. Square
@@ -229,7 +248,7 @@ function Founder() {
             <figcaption className="mt-4 flex items-baseline gap-3">
               <span className="h-px w-8 shrink-0 bg-gold" aria-hidden />
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-clay/70">
-                {COMPANY.ceo} · {t("about.ceoRole", "Chief Executive Officer")}
+                {settings.ceo} · {t("about.ceoRole", "Chief Executive Officer")}
               </span>
             </figcaption>
           </motion.figure>
@@ -261,7 +280,7 @@ function Founder() {
             {/* Growth arc */}
             <Reveal delay={0.16}>
               <ol className="mt-12 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-linen pt-8 lg:grid-cols-4">
-                {MILESTONES.map((m, i) => (
+                {milestones.map((m, i) => (
                   <li key={m.year} className="group relative">
                     <span
                       aria-hidden
@@ -294,6 +313,7 @@ const AWARD_GROUPS: { id: AwardGroup; label: string; en: string }[] = [
 
 function Recognition() {
   const { t } = useI18n();
+  const awards = useAwards();
   const reduce = useReducedMotion();
 
   return (
@@ -330,7 +350,7 @@ function Recognition() {
           {/* Grouped list */}
           <div className="lg:col-span-7">
             {AWARD_GROUPS.map((g, gi) => {
-              const items = AWARDS.filter((a) => a.group === g.id);
+              const items = awards.filter((a) => a.group === g.id);
               if (items.length === 0) return null;
               return (
                 <div key={g.id} className={gi > 0 ? "mt-12" : ""}>
@@ -341,7 +361,7 @@ function Recognition() {
                   </Reveal>
                   <ul className="mt-5 border-t border-cream/15">
                     {items.map((a, i) => {
-                      const idx = AWARDS.indexOf(a);
+                      const idx = awards.indexOf(a);
                       return (
                         <Reveal key={a.issuer + a.year} delay={0.05 * Math.min(i, 3)}>
                           <li className="grid gap-2 border-b border-cream/10 py-6 md:grid-cols-12 md:gap-6">
@@ -367,7 +387,7 @@ function Recognition() {
 
             <Reveal delay={0.1}>
               <p className="mt-10 max-w-[60ch] text-sm leading-relaxed text-cream/45">
-                {t("about.awards.training", STAFF_TRAINING)}
+                {t("about.awards.training", "")}
               </p>
             </Reveal>
           </div>
@@ -381,6 +401,7 @@ function Recognition() {
 
 function Values() {
   const { t } = useI18n();
+  const values = useCompanyValues();
   const reduce = useReducedMotion();
 
   return (
@@ -393,7 +414,7 @@ function Values() {
         </Reveal>
 
         <div className="mt-14 grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
-          {VALUES.map((v, i) => {
+          {values.map((v, i) => {
             const Icon = VALUE_ICONS[v.icon as keyof typeof VALUE_ICONS];
             const d = i * 0.09;
             return (
@@ -450,6 +471,10 @@ function Values() {
 
 function People() {
   const { t } = useI18n();
+  const cms = useCms();
+  const settings = useSettings();
+  const teamImg = usePageImage(cms.about?.people?.teamImage, 1600) ?? IMAGES.teamGroup;
+  const meetingImg = usePageImage(cms.about?.people?.meetingImage, 1400) ?? IMAGES.ceoMeeting;
   const reduce = useReducedMotion();
 
   return (
@@ -498,7 +523,7 @@ function People() {
           transition={{ duration: 0.9, ease: EASE }}
         >
           <Img
-            src={IMAGES.teamGroup}
+            src={teamImg}
             alt="The Fikir Food Processing workforce assembled outside the Adama plant"
             loading="lazy"
             className="aspect-[16/9] w-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
@@ -519,7 +544,7 @@ function People() {
             transition={{ duration: 0.9, delay: 0.08, ease: EASE }}
           >
             <Img
-              src={IMAGES.ceoMeeting}
+              src={meetingImg}
               alt="The management committee meeting with the CEO at the Adama head office"
               loading="lazy"
               className="aspect-[16/10] w-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
@@ -544,7 +569,7 @@ function People() {
               )}
             </p>
             <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50">
-              {COMPANY.ceo} · {t("about.ceoRole", "Chief Executive Officer")}
+              {settings.ceo} · {t("about.ceoRole", "Chief Executive Officer")}
             </p>
           </motion.div>
         </div>
@@ -557,6 +582,7 @@ function People() {
 
 function WhyUs() {
   const { t } = useI18n();
+  const whyUs = useWhyUs();
   const reduce = useReducedMotion();
 
   return (
@@ -576,7 +602,7 @@ function WhyUs() {
 
           <div className="lg:col-span-8 lg:col-start-5">
             <div className="grid gap-px border border-linen bg-linen sm:grid-cols-2">
-              {WHY_US.map((w, i) => (
+              {whyUs.map((w, i) => (
                 <motion.div
                   key={w.title}
                   className="group relative isolate flex h-full min-h-[210px] flex-col justify-between overflow-hidden bg-cream p-7"

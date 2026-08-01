@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ChatCircleDots, X, PaperPlaneRight, CircleNotch } from "@phosphor-icons/react";
 import { answer, isLeadIntent } from "../lib/chatBrain";
 import { submitLead } from "../lib/leads";
-import { CONTACT } from "../data/site";
+import { useSettings } from "../content";
 import { useI18n } from "../i18n/I18nProvider";
 
 type Msg = { id: number; from: "bot" | "user"; text: string; chips?: string[] };
@@ -14,6 +14,7 @@ type LeadStep = null | "name" | "contact" | "interest" | "sending";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function ChatWidget() {
+  const settings = useSettings();
   const { t } = useI18n();
   const greeting = (): Msg => ({
     id: 0,
@@ -92,9 +93,9 @@ export default function ChatWidget() {
     } catch {
       pushBot(
         t("chat.lead.error1", "Sorry, I couldn't send that just now. You can reach us directly at ") +
-          CONTACT.phone +
+          settings.phones[0] +
           t("chat.lead.error2", " or ") +
-          CONTACT.email +
+          settings.email +
           t("chat.lead.error3", "."),
         [t("chat.chip.tryAgain", "Try again"), t("chat.chip.products", "Our products")],
       );

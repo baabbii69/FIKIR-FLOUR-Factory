@@ -9,7 +9,7 @@ import Img from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
 import { IMAGES } from "../data/site";
 import type { GalleryGroup } from "../data/site";
-import { getGalleryItems } from "../content";
+import { useGalleryItems } from "../content";
 import { useI18n } from "../i18n/I18nProvider";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -28,7 +28,7 @@ export default function Gallery() {
     "A look around Fikir Food Processing — our plant in Adama, the production lines, the range, and the people behind it."
   );
   const { t } = useI18n();
-  const all = getGalleryItems();
+  const all = useGalleryItems();
   const [filter, setFilter] = useState<GalleryGroup | "all">("all");
   const [lightbox, setLightbox] = useState<number | null>(null);
 

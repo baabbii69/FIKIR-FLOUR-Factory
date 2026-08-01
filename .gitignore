@@ -22,3 +22,6 @@ marquee-picks/
 # Seed artifacts (local caches, not content)
 scripts/.asset-cache.json
 scripts/.translation-gaps.json
+
+# Generated at build time from Sanity; not hand-edited.
+# Committed so a clean checkout can build without CMS access.

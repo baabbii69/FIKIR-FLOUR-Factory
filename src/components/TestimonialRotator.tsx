@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowRight, Quotes } from "@phosphor-icons/react";
-import { TESTIMONIALS } from "../data/site";
+import { useTestimonials } from "../content";
 
 /** Auto-advancing single-quote rotator. Pauses on hover / reduced motion. */
 export default function TestimonialRotator() {
@@ -9,7 +9,8 @@ export default function TestimonialRotator() {
   const [dir, setDir] = useState(1);
   const paused = useRef(false);
   const reduce = useReducedMotion();
-  const n = TESTIMONIALS.length;
+  const items = useTestimonials();
+  const n = items.length;
 
   const go = useCallback(
     (d: number) => {
@@ -27,7 +28,7 @@ export default function TestimonialRotator() {
     return () => window.clearInterval(id);
   }, [go, reduce]);
 
-  const t = TESTIMONIALS[i];
+  const t = items[Math.min(i, Math.max(0, n - 1))];
 
   return (
     <div

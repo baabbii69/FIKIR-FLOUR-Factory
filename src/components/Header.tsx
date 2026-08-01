@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { List, X } from "@phosphor-icons/react";
-import { NAV, CONTACT } from "../data/site";
+import { NAV } from "../data/site";
+import { useSettings } from "../content";
 import { LOW_POWER } from "../lib/perf";
 import { useI18n } from "../i18n/I18nProvider";
 import LangSwitcher from "../i18n/LangSwitcher";
@@ -46,6 +47,7 @@ function Wordmark({ solid }: { solid: boolean }) {
 }
 
 export default function Header() {
+  const settings = useSettings();
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -181,9 +183,9 @@ export default function Header() {
               transition={{ delay: 0.45, duration: 0.5 }}
             >
               <p className="min-w-0 break-words font-mono text-[11px] uppercase tracking-[0.18em] text-cream/50">
-                {CONTACT.phone}
+                {settings.phones[0]}
                 <span className="mx-3 text-gold">·</span>
-                {CONTACT.email}
+                {settings.email}
               </p>
               <div className="shrink-0">
                 <LangSwitcher tone="transparent" />

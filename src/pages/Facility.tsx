@@ -5,8 +5,9 @@ import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import Img from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
-import { QUALITY_STEPS, IMAGES, FEATURE_VIDEO } from "../data/site";
-import { getGalleryTeaser } from "../content";
+import { IMAGES } from "../data/site";
+import { useGalleryTeaser, useQualitySteps, useFilm, usePageImage } from "../content";
+import { useCms } from "../lib/cms/CmsProvider";
 import VideoBlock from "../components/VideoBlock";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
@@ -14,7 +15,7 @@ import { Accent } from "../i18n/Accent";
 /** Teaser bento: a few featured shots that lead into the full /gallery page. */
 function Gallery() {
   const { t } = useI18n();
-  const shots = getGalleryTeaser(5);
+  const shots = useGalleryTeaser(5);
   const [feature, ...rest] = shots;
   if (!feature) return null;
 
@@ -87,11 +88,16 @@ export default function Facility() {
     "Inside the Fikir Food Processing plant in Adama: modern machinery, laboratory-tested quality, and nationwide distribution by our own fleet."
   );
   const { t } = useI18n();
+  const cms = useCms();
+  const steps = useQualitySteps();
+  const film = useFilm();
+  const heroImg = usePageImage(cms.facility?.hero?.image, 1800) ?? IMAGES.silos;
+  const ctaImg = usePageImage(cms.facility?.cta?.image, 1800) ?? IMAGES.factoryAerial;
 
   return (
     <>
       <PageHero
-        image={IMAGES.silos}
+        image={heroImg}
         alt="Grain storage silos at the Fikir plant in Adama"
         crumb={t("nav.facility", "Facility")}
         title={t("fac.hero.title", "Made in Adama,")}
@@ -122,8 +128,11 @@ export default function Facility() {
           </div>
           <div className="lg:col-span-6 lg:col-start-7">
             <Reveal delay={0.12}>
-              {FEATURE_VIDEO ? (
-                <VideoBlock source={{ ...FEATURE_VIDEO, poster: FEATURE_VIDEO.poster ?? IMAGES.facMill1 }} aspect="16/9" />
+              {film.fullUrl ? (
+                <VideoBlock
+                  source={{ type: "file", src: film.fullUrl, poster: IMAGES.factoryAerial, title: "Inside Fikir Food Processing" }}
+                  aspect="16/9"
+                />
               ) : (
                 <Img
                   src={IMAGES.facMill2}
@@ -150,7 +159,7 @@ export default function Facility() {
             </h2>
           </Reveal>
           <div className="mt-14 grid gap-px border border-cream/10 bg-cream/10 sm:grid-cols-2 lg:grid-cols-4">
-            {QUALITY_STEPS.map((s, i) => (
+            {steps.map((s, i) => (
               <Reveal key={s.step} delay={0.05 * i} className="h-full">
                 <div className="flex h-full min-h-[260px] flex-col justify-between bg-ink p-8">
                   <span className="font-display text-5xl font-semibold text-gold/60">{s.step}</span>
@@ -230,7 +239,7 @@ export default function Facility() {
       </section>
 
       <CTABanner
-        image={IMAGES.factoryAerial}
+        image={ctaImg}
         alt="Aerial view of the Fikir Food Processing plant in Adama"
         title={t("fac.cta.title", "Let's put Fikir on")}
         titleAccent={t("fac.cta.accent", "your shelf.")}

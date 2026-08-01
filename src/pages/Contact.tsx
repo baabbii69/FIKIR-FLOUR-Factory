@@ -13,7 +13,9 @@ import PageHero from "../components/PageHero";
 import Reveal from "../components/Reveal";
 import { usePageMeta } from "../lib/usePageMeta";
 import { submitLead } from "../lib/leads";
-import { CONTACT, IMAGES } from "../data/site";
+import { IMAGES } from "../data/site";
+import { useSettings, usePageImage } from "../content";
+import { useCms } from "../lib/cms/CmsProvider";
 import { useI18n } from "../i18n/I18nProvider";
 
 export default function Contact() {
@@ -22,11 +24,17 @@ export default function Contact() {
     "Become a distributor, place a wholesale order, or reach the Fikir Food Processing team in Adama, Ethiopia."
   );
   const { t } = useI18n();
+  const cms = useCms();
+  const settings = useSettings();
+  const heroImg = usePageImage(cms.contact?.hero?.image, 1800) ?? IMAGES.facReception;
+  const mapUrl =
+    cms.contact?.mapEmbedUrl ??
+    "https://www.openstreetmap.org/export/embed.html?bbox=39.2189%2C8.4914%2C39.3189%2C8.5914&layer=mapnik&marker=8.5414%2C39.2689";
 
   return (
     <>
       <PageHero
-        image={IMAGES.facReception}
+        image={heroImg}
         alt="The reception area at the Fikir Food Processing head office in Adama"
         crumb={t("nav.contact", "Contact")}
         title={t("con.hero.title", "Let's")}
@@ -48,7 +56,7 @@ export default function Contact() {
             <div className="mt-12 space-y-8">
               <Reveal delay={0.06}>
                 <ContactRow icon={<MapPin size={22} weight="duotone" />} label={t("con.label.visit", "Visit")}>
-                  {CONTACT.addressLines.map((l) => (
+                  {settings.addressLines.map((l) => (
                     <span key={l} className="block">
                       {l}
                     </span>
@@ -57,7 +65,7 @@ export default function Contact() {
               </Reveal>
               <Reveal delay={0.1}>
                 <ContactRow icon={<Phone size={22} weight="duotone" />} label={t("con.label.call", "Call")}>
-                  {CONTACT.phones.map((p) => (
+                  {settings.phones.map((p) => (
                     <a key={p} href={`tel:${p.replace(/\s/g, "")}`} className="block transition-colors hover:text-gold">
                       {p}
                     </a>
@@ -67,16 +75,16 @@ export default function Contact() {
               <Reveal delay={0.14}>
                 <ContactRow icon={<EnvelopeSimple size={22} weight="duotone" />} label={t("con.label.write", "Write")}>
                   <a
-                    href={`mailto:${CONTACT.email}`}
+                    href={`mailto:${settings.email}`}
                     className="block transition-colors hover:text-gold"
                   >
-                    {CONTACT.email}
+                    {settings.email}
                   </a>
                 </ContactRow>
               </Reveal>
               <Reveal delay={0.18}>
                 <ContactRow icon={<Clock size={22} weight="duotone" />} label={t("con.label.hours", "Hours")}>
-                  {CONTACT.hours.map((h, i) => (
+                  {settings.hours.map((h, i) => (
                     <span key={h.days} className="flex justify-between gap-6">
                       <span>{t(`con.hours.${i}.days`, h.days)}</span>
                       <span className="font-mono text-sm tabular-nums text-cream/60">
@@ -111,7 +119,7 @@ export default function Contact() {
         <div className="relative h-[420px] w-full">
           <iframe
             title="FIKIR FOOD PROCESSING location in Adama, Ethiopia"
-            src="https://www.openstreetmap.org/export/embed.html?bbox=39.2189%2C8.4914%2C39.3189%2C8.5914&layer=mapnik&marker=8.5414%2C39.2689"
+            src={mapUrl}
             className="h-full w-full border-0 grayscale-[35%]"
             loading="lazy"
           />
@@ -160,6 +168,7 @@ type Errors = Partial<Record<"firstName" | "lastName" | "email" | "message" | "c
 
 function QuoteForm() {
   const { t } = useI18n();
+  const settings = useSettings();
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errors, setErrors] = useState<Errors>({});
   const reduce = useReducedMotion();
@@ -213,7 +222,7 @@ function QuoteForm() {
         <h2 className="display-2 mt-6 text-3xl md:text-4xl">{t("con.form.sentTitle", "Message received.")}</h2>
         <p className="mt-4 max-w-[52ch] text-base leading-relaxed">
           {t("con.form.sentBody1", "Thank you. A member of our sales team will reply within one business day. If your enquiry is urgent, call us on ")}
-          {CONTACT.phone}
+          {settings.phones[0]}
           {t("con.form.sentBody2", ".")}
         </p>
       </motion.div>
@@ -281,9 +290,9 @@ function QuoteForm() {
         {status === "error" && (
           <p className="mt-4 text-sm text-[#9a2b1e]">
             {t("con.form.errorMsg1", "Something went wrong sending your enquiry. Please email ")}
-            {CONTACT.email}
+            {settings.email}
             {t("con.form.errorMsg2", " or call ")}
-            {CONTACT.phone}
+            {settings.phones[0]}
             {t("con.form.errorMsg3", " and we'll help right away.")}
           </p>
         )}

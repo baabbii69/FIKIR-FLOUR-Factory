@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "build": "npm run snapshot && tsc -b && vite build",
+    "preview": "vite preview",
+    "snapshot": "tsx scripts/snapshot.ts",
+    "seed": "tsx scripts/seed.ts",
+    "cms:audit": "tsx scripts/audit.ts && tsx scripts/checkKeys.ts"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.2.5",

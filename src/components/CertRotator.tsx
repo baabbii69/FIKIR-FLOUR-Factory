@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import Img from "./Img";
-import { CERT_SHOTS } from "../data/site";
+import { useCertShots } from "../content";
 import { useI18n } from "../i18n/I18nProvider";
 
 /**
@@ -19,7 +19,8 @@ export default function CertRotator() {
   const [dir, setDir] = useState(1);
   const paused = useRef(false);
   const reduce = useReducedMotion();
-  const n = CERT_SHOTS.length;
+  const shots = useCertShots();
+  const n = shots.length;
 
   const go = useCallback(
     (d: number) => {
@@ -37,7 +38,7 @@ export default function CertRotator() {
     return () => window.clearInterval(id);
   }, [go, reduce]);
 
-  const shot = CERT_SHOTS[i];
+  const shot = shots[Math.min(i, Math.max(0, n - 1))];
 
   return (
     <div

@@ -18,6 +18,11 @@
     <link rel="icon" type="image/png" sizes="256x256" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     <meta name="theme-color" content="#1C1308" />
+    <!-- Images and video stream from Sanity's CDN. Warming the connection
+         here pays the DNS + TLS cost before the first image is requested,
+         which matters most on a slow mobile connection. -->
+    <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
+    <link rel="preconnect" href="https://ntiaycof.apicdn.sanity.io" crossorigin />
   </head>
   <body>
     <div id="root"></div>

@@ -6,8 +6,19 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, SealCheck } from "@phosphor-icons/react";
 import { usePageMeta } from "../lib/usePageMeta";
 import { useHorizontalScroll } from "../lib/useHorizontalScroll";
-import { STATS, CERTIFICATE, PRODUCTS, PROCESS, IMAGES, COMPANY } from "../data/site";
-import { getCategories } from "../content";
+// IMAGES still supplies the decorative lifestyle shots that are not modelled
+// as editable fields in the CMS. Everything an editor is meant to change —
+// hero, process, product, gallery and CTA imagery — comes from Sanity.
+import { IMAGES } from "../data/site";
+import {
+  useCategories,
+  useProducts,
+  useProcess,
+  useSettings,
+  useCertificate,
+  usePageImage,
+} from "../content";
+import { useCms } from "../lib/cms/CmsProvider";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 import Btn from "../components/Btn";
@@ -26,6 +37,9 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 function Hero() {
   const reduce = useReducedMotion();
   const { t } = useI18n();
+  const cms = useCms();
+  const settings = useSettings();
+  const heroSrc = usePageImage(cms.home?.heroImage, 2000) ?? IMAGES.hero;
   const item = (delay: number) => ({
     initial: reduce ? false : { opacity: 0, y: 32 },
     animate: { opacity: 1, y: 0 },
@@ -35,7 +49,7 @@ function Hero() {
     <section className="relative flex min-h-[100dvh] items-center overflow-hidden bg-ink">
       <div className="absolute inset-0">
         <Img
-          src={IMAGES.hero}
+          src={heroSrc}
           alt="The Fikir Food Processing plant, fleet, and products at sunset"
           className="kenburns h-full w-full object-cover"
           fetchPriority="high"
@@ -46,7 +60,7 @@ function Hero() {
       <FlourDust />
       <div className="relative mx-auto w-full max-w-[1400px] px-5 pt-24 md:px-10">
         <motion.span className="eyebrow" {...item(0.1)}>
-          {t("home.hero.eyebrow", `Adama, Ethiopia · ${COMPANY.name}`)}
+          {t("home.hero.eyebrow", `Adama, Ethiopia · ${settings.name}`)}
         </motion.span>
         <motion.h1 className="display-1 mt-6 max-w-4xl text-5xl !text-cream sm:text-6xl lg:text-8xl" {...item(0.22)}>
           <Accent text={t("home.hero.title", "We produce quality, *we deliver trust.*")} tone="dark" />
@@ -127,6 +141,7 @@ function splitWords(s: string) {
 
 function WhoWeAre() {
   const { t, lang } = useI18n();
+  const { stats } = useSettings();
   const words = splitWords(t("home.who.body", WHO_EN));
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -172,7 +187,7 @@ function WhoWeAre() {
           </Link>
         </Reveal>
         <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-linen pt-12 md:mt-20 lg:grid-cols-4">
-          {STATS.map((s, i) => (
+          {stats.map((s, i) => (
             <Reveal key={s.label} delay={i * 0.07}>
               <Stat {...s} label={t(`stats.${i}`, s.label)} />
             </Reveal>
@@ -186,6 +201,7 @@ function WhoWeAre() {
 /* ---------------- How Fikir is made (sticky horizontal scroll) ---------------- */
 function ProcessJourney() {
   const { t } = useI18n();
+  const process = useProcess();
   const { sectionRef, trackRef } = useHorizontalScroll<HTMLElement, HTMLDivElement>();
 
   return (
@@ -213,7 +229,7 @@ function ProcessJourney() {
           </div>
 
           {/* Step panels */}
-          {PROCESS.map((s, i) => (
+          {process.map((s, i) => (
             <article
               key={s.n}
               className="relative flex h-[62vh] w-[82vw] shrink-0 snap-center flex-col justify-end overflow-hidden sm:h-[70vh] sm:w-[58vw] lg:h-screen lg:w-[40vw]"
@@ -277,7 +293,9 @@ function PackMarquee() {
 const FEATURED = ["high-energy", "wafer-chocolate", "abounded", "special", "wafer-vanilla", "crackers"];
 function RangeIndex() {
   const { t } = useI18n();
-  const items = FEATURED.map((s) => PRODUCTS.find((p) => p.slug === s)!).filter(Boolean);
+  const allProducts = useProducts();
+  const categories = useCategories();
+  const items = FEATURED.map((s) => allProducts.find((p) => p.slug === s)!).filter(Boolean);
   const [active, setActive] = useState<number | null>(null);
   const reduce = useReducedMotion();
   const wrap = useRef<HTMLDivElement>(null);
@@ -351,7 +369,7 @@ function RangeIndex() {
 
         {/* Category cards */}
         <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {getCategories().map((c, i) => (
+          {categories.map((c, i) => (
             <Reveal key={c.id} delay={0.05 * i} className="h-full">
               <Link to={`/products?cat=${c.id}`} className="group relative block h-full min-h-[240px] overflow-hidden bg-ink">
                 <Img
@@ -383,6 +401,7 @@ const CAT_IMAGES: Record<string, string> = {
 /* ---------------- Quality ---------------- */
 function Quality() {
   const { t } = useI18n();
+  const cert = useCertificate();
   return (
     <section className="bg-ink">
       <div className="mx-auto grid max-w-[1400px] items-center gap-14 px-5 py-24 md:px-10 md:py-32 lg:grid-cols-2 lg:gap-20">
@@ -406,13 +425,13 @@ function Quality() {
         <Reveal delay={0.12}>
           <div className="border border-gold/30 bg-ink-soft/40 p-8 md:p-10">
             <SealCheck size={40} weight="duotone" className="text-gold" />
-            <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50">{t("cert.authority", CERTIFICATE.authority)}</p>
-            <h3 className="mt-2 font-display text-3xl font-semibold text-cream">{t("cert.title", CERTIFICATE.title)}</h3>
+            <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50">{t("cert.authority", cert?.authority ?? "")}</p>
+            <h3 className="mt-2 font-display text-3xl font-semibold text-cream">{t("cert.title", cert?.title ?? "")}</h3>
             <dl className="mt-6 space-y-3 border-t border-cream/10 pt-6 text-sm">
               {[
-                [t("cert.lblProduct", "Product"), t("cert.product", CERTIFICATE.product)],
-                [t("cert.lblStandard", "Standard"), CERTIFICATE.standard],
-                [t("cert.lblLicense", "License"), CERTIFICATE.license],
+                [t("cert.lblProduct", "Product"), t("cert.product", cert?.product ?? "")],
+                [t("cert.lblStandard", "Standard"), cert?.standard ?? ""],
+                [t("cert.lblLicense", "License"), cert?.license ?? ""],
               ].map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-6">
                   <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-cream/50">{k}</dt>
@@ -489,6 +508,8 @@ function Lifestyle() {
 
 export default function Home() {
   const { t } = useI18n();
+  const cms = useCms();
+  const ctaImg = usePageImage(cms.home?.cta?.image, 1800) ?? IMAGES.distribution1;
   usePageMeta(
     "FIKIR FOOD PROCESSING | Flour, Biscuits, Wafers & Chips, Ethiopia",
     "Fikir Food Processing makes fortified flour, Unic biscuits, wafers, and chips in Adama, Ethiopia. Over 15 years, 1,026 employees, delivered nationwide."
@@ -506,7 +527,7 @@ export default function Home() {
       <Trusted />
       <Lifestyle />
       <CTABanner
-        image={IMAGES.distribution1}
+        image={ctaImg}
         alt="The Fikir delivery fleet on the road out of Adama"
         title={t("home.cta.titleLead", "Stock Fikir, or")}
         titleAccent={t("home.cta.titleAccent", "just say hello.")}
