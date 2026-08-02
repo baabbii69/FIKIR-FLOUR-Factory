@@ -1,0 +1,29 @@
+# ---- Sanity Studio on Plesk / Apache ----
+# Only needed if the Studio is hosted on your own domain (e.g.
+# cms.fikirfoods.et) instead of the free *.sanity.studio address.
+#
+# The Studio is a single-page app: /desk/products is resolved in the browser,
+# not on disk. Without this rule, refreshing any inner page returns 404.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Serve real files (JS, CSS, favicon) as-is.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else goes to the Studio entry point.
+  RewriteRule ^ /index.html [L]
+</IfModule>
+
+# The Studio holds the login session. Never let a proxy cache the shell.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-store"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
+</IfModule>

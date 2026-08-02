@@ -646,35 +646,18 @@ export type GalleryItem = {
 };
 
 /* --------------------------------------------------------------------------
- * Video — a single place to switch on a feature video when footage arrives.
- * Set FEATURE_VIDEO to a source and it appears on the Facility page; leave it
- * null and nothing renders. `poster` is a still shown before play (use a real
- * frame or any facility image). Self-hosted files go in /public/media.
+ * Video source shape, used by VideoBlock.
+ *
+ * The film itself is no longer configured here: both URLs live on the Home page
+ * document in Sanity, so the client can swap in a YouTube or Vimeo link without
+ * a developer. That also keeps ~70 MB of video out of every Plesk upload.
  * ------------------------------------------------------------------------ */
 export type VideoSource =
   | { type: "youtube"; id: string; poster?: string; title?: string }
   | { type: "vimeo"; id: string; poster?: string; title?: string }
   | { type: "file"; src: string; poster?: string; title?: string };
 
-/* The company film. Encoded for web from the original 494 MB master and shipped
- * MUTED on purpose: the original narration is being replaced with a music bed.
- * Drop a licensed track in and re-mux to restore audio. */
-export const FEATURE_VIDEO: VideoSource | null = {
-  type: "file",
-  src: `${M}/company-film-muted.mp4`,
-  poster: `${M}/factory-aerial.jpg`,
-  title: "Inside Fikir Food Processing",
-};
 
-/* A 24-second silent montage cut from the film, used as the ambient background
- * of the homepage film section. Deliberately tiny (~2.7 MB) because it
- * autoplays for every visitor — the full 70 MB film only loads on click. */
-export const FILM_LOOP = {
-  src: `${M}/company-loop.mp4`,
-  poster: `${M}/factory-aerial.jpg`,
-  /** Runtime of the full film, shown as a badge. */
-  fullDuration: "7:56",
-};
 
 /* How Fikir is made — the pinned horizontal journey on the homepage. */
 export type ProcessStep = { n: string; title: string; text: string; img: string };
