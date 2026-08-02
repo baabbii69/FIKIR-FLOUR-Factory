@@ -1,8 +1,81 @@
 # Deploying to Plesk — step by step
 
-For **fikirfoods.et** on Plesk (ethiotelecom). Written to be followed without
-prior Plesk experience. Every command runs on your own machine; Plesk itself is
-all clicking.
+For **fikirfoods.et** on Plesk Obsidian (ethiotelecom), panel at
+`https://lin4.ethiotelecom.et:8443`. Written to be followed without prior
+Plesk experience.
+
+## Your setup, from the panel
+
+| | |
+|---|---|
+| Domain | `fikirfoods.et` — Active |
+| Web root | `httpdocs` |
+| Server IP | 213.55.96.152 |
+| System user | `fikirfoo` |
+| SSL | **Domain not secured** — fixed in step 3.7 |
+| Disk used | 0.6 MB (empty, nothing to back up) |
+
+---
+
+## ⛔ Two things only you can do
+
+I hit both and they are permission-blocked for anyone but the project owner.
+Do these first; the rest of the deploy depends on them.
+
+### 1. Publish the Studio
+
+```bash
+cd studio
+npx sanity login      # opens a browser — sign in with the Fikir account
+npx sanity deploy
+```
+
+I tried this with the API token and got, verbatim:
+
+```
+✗ Forbidden - User is missing required grant sanity.project.deployStudio
+```
+
+Deploying needs the *Deploy Studio* grant, which the seeding token (Editor)
+does not carry. Your own login has it. The hostname `fikirfoods` is already
+pinned in `sanity.cli.ts`, and it is free — the deploy got as far as
+"Creating https://fikirfoods.sanity.studio" before the permission check
+stopped it. It will not prompt you.
+
+Result: **https://fikirfoods.sanity.studio**
+
+### 2. Allow the live domain to read content — do not skip this
+
+Go to **https://www.sanity.io/manage/project/ntiaycof → API → CORS origins**
+and add:
+
+| Origin | Allow credentials |
+|---|---|
+| `https://fikirfoods.et` | **off** |
+| `https://www.fikirfoods.et` | **off** |
+
+Credentials stay **off**: the site only reads public content and never logs in.
+
+**Why this is not optional.** I tested it:
+
+```
+BLOCKED  https://fikirfoods.et       (HTTP 403)
+BLOCKED  https://www.fikirfoods.et   (HTTP 403)
+allowed  http://localhost:5173
+```
+
+Without these entries the site still *loads* — the snapshot baked into the
+bundle covers it — but the live refresh gets a 403 and dies silently. The
+client would edit content, press Publish, and **see nothing change**, with no
+error anywhere. That is the single worst failure mode for this project.
+
+Check it any time with:
+
+```bash
+npm run check:cors
+```
+
+You want all three lines to say `allowed`.
 
 ---
 
@@ -37,35 +110,17 @@ own routes and break it.
 
 ---
 
-## Part 1 — Publish the Studio (5 minutes, do this first)
+## Part 1 — Studio
 
-```bash
-cd studio
-npx sanity login      # opens a browser; sign in with the Fikir account
-npx sanity deploy
-```
+Covered above under "Two things only you can do". Once `npx sanity deploy`
+succeeds, send the client **https://fikirfoods.sanity.studio**.
 
-The hostname is already set to `fikirfoods` in `sanity.cli.ts`, so it will not
-prompt. When it finishes you get:
-
-> **https://fikirfoods.sanity.studio**
-
-That is the client's dashboard. Send them that link.
-
-If it says the hostname is taken, edit `studioHost` in `studio/sanity.cli.ts`
-to something else (`fikir-foods`, `fikir-cms`) and run `npx sanity deploy` again.
-
-> **Why `sanity login` and not the API token?** Deploying a Studio needs the
-> "Deploy Studio" permission. The token we used for seeding is an *Editor*
-> token, which can read and write content but not deploy. `sanity login` uses
-> your own account, which has it.
-
-### Confirm it works
-1. Open the URL, log in.
-2. Go to **Pages → About page**, change **Caption for that photo** to anything.
+### Confirm it works end to end
+1. Open the Studio and log in.
+2. **Pages → About page →** change **Caption for that photo**.
 3. Click **Publish**.
-4. Reload the live site — the caption changes. (Until you have deployed the
-   site, test on `npm run dev` instead.)
+4. Reload the live site — the caption changes. (Before the site is deployed,
+   test against `npm run dev` instead.)
 
 ---
 
@@ -101,11 +156,11 @@ snapshot is baked at build time, so an old build ships old content.
 ## Part 3 — Upload the site to Plesk
 
 ### 3.1 Log in
-Go to your Plesk panel (from ethiotelecom) and sign in.
+`https://lin4.ethiotelecom.et:8443`
 
 ### 3.2 Open the File Manager
-On the left sidebar click **Files** (or **Websites & Domains →
-fikirfoods.et → File Manager**).
+Left sidebar → **Files**. (Or from **Websites & Domains**, expand
+`fikirfoods.et` and click the **Files** tile.)
 
 ### 3.3 Go to the web root
 Open the folder named **`httpdocs`**. This is what visitors see at
@@ -278,6 +333,7 @@ re-upload. The previous `dist` is safe to keep as a backup before overwriting.
 | Local development | `npm run dev` |
 | Build for upload | `npm run deploy:build` |
 | Check CMS health | `npm run cms:audit` |
+| Check CORS is open | `npm run check:cors` |
 | Verify wiring only | `npm run verify` |
 | Publish the Studio | `cd studio && npx sanity deploy` |
 | Re-seed content | `npm run seed` (needs the write token) |
