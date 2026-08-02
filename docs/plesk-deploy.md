@@ -17,65 +17,40 @@ Plesk experience.
 
 ---
 
-## ⛔ Two things only you can do
+## ✅ Already done
 
-I hit both and they are permission-blocked for anyone but the project owner.
-Do these first; the rest of the deploy depends on them.
+Both of these are complete — recorded here so the state is not ambiguous.
 
-### 1. Publish the Studio
+### Studio published
+**https://fikirfoods.sanity.studio** — live. Send this to the client.
+
+It needed a *Deploy Studio* token; the seeding token is Editor-only and was
+refused with `missing required grant sanity.project.deployStudio`. The deploy
+also failed once mid-upload with `ECONNRESET` — that was the connection, not a
+permission problem. Re-running it simply worked.
+
+Redeploy any time (after schema or Studio changes) with:
 
 ```bash
 cd studio
-npx sanity login      # opens a browser — sign in with the Fikir account
-npx sanity deploy
+SANITY_AUTH_TOKEN="$SANITY_DEPLOY_TOKEN" npx sanity deploy --yes
 ```
 
-I tried this with the API token and got, verbatim:
+`studioHost` and `appId` are pinned in `sanity.cli.ts`, so it never prompts.
+
+### CORS origins added
+Verified against the live API:
 
 ```
-✗ Forbidden - User is missing required grant sanity.project.deployStudio
-```
-
-Deploying needs the *Deploy Studio* grant, which the seeding token (Editor)
-does not carry. Your own login has it. The hostname `fikirfoods` is already
-pinned in `sanity.cli.ts`, and it is free — the deploy got as far as
-"Creating https://fikirfoods.sanity.studio" before the permission check
-stopped it. It will not prompt you.
-
-Result: **https://fikirfoods.sanity.studio**
-
-### 2. Allow the live domain to read content — do not skip this
-
-Go to **https://www.sanity.io/manage/project/ntiaycof → API → CORS origins**
-and add:
-
-| Origin | Allow credentials |
-|---|---|
-| `https://fikirfoods.et` | **off** |
-| `https://www.fikirfoods.et` | **off** |
-
-Credentials stay **off**: the site only reads public content and never logs in.
-
-**Why this is not optional.** I tested it:
-
-```
-BLOCKED  https://fikirfoods.et       (HTTP 403)
-BLOCKED  https://www.fikirfoods.et   (HTTP 403)
+allowed  https://fikirfoods.et
+allowed  https://www.fikirfoods.et
 allowed  http://localhost:5173
 ```
 
-Without these entries the site still *loads* — the snapshot baked into the
-bundle covers it — but the live refresh gets a 403 and dies silently. The
-client would edit content, press Publish, and **see nothing change**, with no
-error anywhere. That is the single worst failure mode for this project.
-
-Check it any time with:
-
-```bash
-npm run check:cors
-```
-
-You want all three lines to say `allowed`.
+This mattered more than it looks. Without it the site would still load — the
+snapshot baked into the bundle covers first paint — but the runtime refresh
+would 403 and fail silently. The client would publish an edit and see nothing
+change, with no error anywhere. Re-check any time with `npm run check:cors`.
 
 ---
 
@@ -112,8 +87,8 @@ own routes and break it.
 
 ## Part 1 — Studio
 
-Covered above under "Two things only you can do". Once `npx sanity deploy`
-succeeds, send the client **https://fikirfoods.sanity.studio**.
+Done — see "Already done" above. The client's dashboard is
+**https://fikirfoods.sanity.studio**.
 
 ### Confirm it works end to end
 1. Open the Studio and log in.
@@ -254,8 +229,8 @@ Issue a Let's Encrypt certificate for `cms.fikirfoods.et`, exactly as in 3.7.
 
 At **https://www.sanity.io/manage/project/ntiaycof**
 
-### 5.1 CORS origins
-Under **API → CORS origins**, make sure these exist:
+### 5.1 CORS origins — done, listed for reference
+Under **API → CORS origins**:
 
 | Origin | Credentials | Why |
 |---|---|---|

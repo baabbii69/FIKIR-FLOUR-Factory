@@ -25,5 +25,9 @@ export default defineCliConfig({
    * "fikirfoods" is already taken on sanity.studio.
    */
   studioHost: "fikirfoods",
-  deployment: { autoUpdates: false },
+  deployment: {
+    autoUpdates: false,
+    // Pinned so redeploys never prompt for an application id.
+    appId: "kslltlo0c1941pbwct4oi92m",
+  },
 });
