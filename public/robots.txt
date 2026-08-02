@@ -1,0 +1,5 @@
+# Fikir Food Processing — https://fikirfoods.et
+User-agent: *
+Allow: /
+
+Sitemap: https://fikirfoods.et/sitemap.xml

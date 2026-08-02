@@ -25,3 +25,6 @@ scripts/.translation-gaps.json
 
 # Generated at build time from Sanity; not hand-edited.
 # Committed so a clean checkout can build without CMS access.
+
+# Build artifact for manual upload
+fikirfoods-site.zip

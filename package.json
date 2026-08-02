@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run snapshot && tsc -b && vite build",
+    "build": "npm run snapshot && npm run sitemap && tsc -b && vite build",
     "preview": "vite preview",
     "snapshot": "tsx scripts/snapshot.ts",
     "seed": "tsx scripts/seed.ts",
     "cms:audit": "tsx scripts/audit.ts && tsx scripts/checkKeys.ts",
     "deploy:build": "npm run build && tsx scripts/pruneMedia.ts --apply && tsx scripts/verifyWiring.ts",
     "verify": "tsx scripts/verifyWiring.ts",
-    "check:cors": "tsx scripts/checkCors.ts"
+    "check:cors": "tsx scripts/checkCors.ts",
+    "sitemap": "tsx scripts/sitemap.ts"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.2.5",
