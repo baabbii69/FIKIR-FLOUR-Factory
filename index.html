@@ -82,6 +82,10 @@
          which matters most on a slow mobile connection. -->
     <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
     <link rel="preconnect" href="https://ntiaycof.apicdn.sanity.io" crossorigin />
+    <!-- The very first pixels the visitor sees are this mark on the boot
+         splash. Without a preload the browser only discovers it after parsing
+         and executing the bundle, so the splash shows an empty ring first. -->
+    <link rel="preload" as="image" href="/logo-mark.png" fetchpriority="high" />
   </head>
   <body>
     <div id="root"></div>
