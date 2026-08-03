@@ -1,21 +1,27 @@
 import { getTurnstileToken } from "./turnstile";
 
 /**
- * Lead delivery for a **static** deploy.
+ * Lead delivery, for two deploys at once.
  *
- * The site is served by Apache on Plesk with an SPA catch-all, so there is no
- * serverless runtime and no /api/lead. That detail broke the previous version
- * badly enough to lose every enquiry: it POSTed to /api/lead regardless, the
- * rewrite rule answered with index.html and **HTTP 200**, the JSON parse failed,
- * and the status was neither 404 nor 5xx — so the "endpoint missing" branch
- * never matched and it threw before reaching the Web3Forms fallback. Every
- * submission showed "Something went wrong", on the form and in the chat widget.
+ * The same bundle runs in two places, and they have different capabilities:
  *
- * So the protected endpoint is now strictly opt-in via VITE_LEAD_ENDPOINT. With
- * it unset (the Plesk build) mail goes straight to Web3Forms — one request, no
- * dead round-trip. If it is set and anything at all goes wrong, we fall back to
- * email rather than throw: a lead reaching the inbox unfiltered beats a lead
- * that is never sent.
+ *   Vercel  — /api/lead exists. It sends to Telegram. This is the primary.
+ *   Plesk   — static Apache. No runtime at all; the SPA catch-all answers
+ *             /api/lead with index.html and HTTP 200.
+ *
+ * That second case is what silently ate every enquiry before: a 200 with an
+ * HTML body is not an error by any obvious test, so the old code neither
+ * succeeded nor recognised failure — it threw before reaching the email
+ * fallback, and both the contact form and the chat widget reported "Something
+ * went wrong" every single time.
+ *
+ * The fix is to check the **content type**. JSON means a real backend answered.
+ * HTML means there is no backend here, whatever the status code says. That one
+ * test lets an identical build use Telegram on Vercel and fall through to email
+ * on Plesk, with no per-host configuration to forget.
+ *
+ * Any failure of the protected path falls back rather than throws: a lead
+ * arriving unfiltered beats a lead that is never sent.
  *
  * Web3Forms documents this key as browser-side and it is domain-restricted to
  * the deployed site; the API rejects non-browser origins outright. It is
@@ -23,8 +29,12 @@ import { getTurnstileToken } from "./turnstile";
  */
 const WEB3FORMS_KEY = "cd8116ba-fd37-4b61-a33e-6da5fc0f4259";
 
-/** Set only where a real backend exists. Unset on the static Plesk build. */
-const LEAD_ENDPOINT = import.meta.env.VITE_LEAD_ENDPOINT?.trim();
+/**
+ * Same-origin by default, which is correct on Vercel and harmlessly detected
+ * as absent on Plesk. Override only to point a static host at a lead API
+ * hosted elsewhere.
+ */
+const LEAD_ENDPOINT = import.meta.env.VITE_LEAD_ENDPOINT?.trim() || "/api/lead";
 
 type Fields = Record<string, string>;
 type LeadResponse = { success?: boolean; error?: string };
