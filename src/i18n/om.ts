@@ -583,6 +583,7 @@ export const OM: Record<string, string> = {
   "home.process.title": "Midhaan irraa hamma *maaddii keessanitti.*",
   "home.process.body": "Tarkaanfii jaha, sadarkaa tokko — warshaa Adaamaa keessatti, midhaan jalqabaa irraa hamma konkolaataa balbala keessaniitti.",
   "home.process.scrollHint": "Sakatta'uuf gad dhiibi",
+  "home.process.swipeHint": "Tarkaanfiilee jaha hunda ilaaluuf haxaa'i",
   "prod.browse.eyebrow": "Tarree keenya",
   "prod.browse.title": "Sararoota keenya, *sadarkaa tokko.*",
   "prod.browse.body": "Daakuu, biskuutii fi waafarii — dhi'ootti ilaaluuf gosa filadhu.",

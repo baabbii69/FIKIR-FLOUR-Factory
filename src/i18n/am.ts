@@ -585,6 +585,7 @@ export const AM: Record<string, string> = {
   "home.process.title": "ከእህል እስከ *ማዕድዎ።*",
   "home.process.body": "ስድስት ደረጃዎች፣ አንድ መስፈርት — በአዳማ ፋብሪካ ውስጥ፣ ከመጀመሪያው እህል እስከ በርዎ ድረስ ከሚደርሰው መኪና።",
   "home.process.scrollHint": "ለማሰስ ይሸብልሉ",
+  "home.process.swipeHint": "ስድስቱንም ደረጃዎች ለማየት ያንሸራትቱ",
   "prod.browse.eyebrow": "ስብስባችን",
   "prod.browse.title": "የእኛ ስብስቦች፣ *አንድ ደረጃ።*",
   "prod.browse.body": "ዱቄት፣ ብስኩት እና ዌፈር — በቅርበት ለማየት ዓይነት ይምረጡ።",

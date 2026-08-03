@@ -202,13 +202,35 @@ function WhoWeAre() {
 function ProcessJourney() {
   const { t } = useI18n();
   const process = useProcess();
+  const reduce = useReducedMotion();
   const { sectionRef, trackRef } = useHorizontalScroll<HTMLElement, HTMLDivElement>();
+  const barRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * On phones the track is a native overflow-x carousel with the scrollbar
+   * hidden, so nothing told the reader there were five more panels to the
+   * right — the section looked like it simply ended. The bar below tracks the
+   * scroll position and makes the remaining width obvious.
+   *
+   * It writes to the DOM through a ref instead of React state: this fires on
+   * every scroll frame, and re-rendering six panels each time would judder on
+   * exactly the low-end phones the site is tuned for. Desktop drives the track
+   * with GSAP and hides the bar, so the handler is harmless there.
+   */
+  const onTrackScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const max = el.scrollWidth - el.clientWidth;
+    const bar = barRef.current;
+    if (!bar || max <= 0) return;
+    bar.style.transform = `scaleX(${Math.min(1, Math.max(0.08, el.scrollLeft / max))})`;
+  };
 
   return (
     <section ref={sectionRef} aria-label={t("home.process.eyebrow", "How Fikir is made")} className="relative bg-ink text-cream">
       <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden">
         <div
           ref={trackRef}
+          onScroll={onTrackScroll}
           className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 py-16 md:gap-6 md:px-10 lg:h-screen lg:snap-none lg:items-stretch lg:overflow-visible lg:py-0 lg:pr-[6vw] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {/* Intro panel */}
@@ -222,9 +244,24 @@ function ProcessJourney() {
             <p className="mt-6 max-w-[42ch] text-[15px] leading-relaxed text-cream/70">
               {t("home.process.body", "Six steps, one standard — inside the Adama plant, from the first grain to the truck at your door.")}
             </p>
+            {/* Desktop: the section pins and scrolls horizontally. */}
             <div className="mt-10 hidden items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50 lg:flex">
               {t("home.process.scrollHint", "Scroll to explore")}
               <ArrowRight size={14} weight="bold" className="text-gold" />
+            </div>
+
+            {/* Phones and tablets: a swipe carousel, so say so. The arrow drifts
+                to imply the direction — a static one reads as decoration. */}
+            <div className="mt-10 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50 lg:hidden">
+              {t("home.process.swipeHint", "Swipe to see all six steps")}
+              <motion.span
+                aria-hidden
+                className="text-gold"
+                animate={reduce ? undefined : { x: [0, 6, 0] }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <ArrowRight size={14} weight="bold" />
+              </motion.span>
             </div>
           </div>
 
@@ -248,6 +285,16 @@ function ProcessJourney() {
               </div>
             </article>
           ))}
+        </div>
+
+        {/* Scroll position for the phone carousel. Hidden once the desktop
+            pinned version takes over. */}
+        <div aria-hidden className="mx-5 -mt-6 mb-14 h-px bg-cream/15 md:mx-10 lg:hidden">
+          <div
+            ref={barRef}
+            className="h-px origin-left bg-gold"
+            style={{ transform: "scaleX(0.08)", willChange: "transform" }}
+          />
         </div>
       </div>
     </section>
