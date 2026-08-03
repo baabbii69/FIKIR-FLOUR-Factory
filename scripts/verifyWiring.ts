@@ -83,6 +83,41 @@ check("stats", (s?.stats?.length ?? 0) === 4);
 check("certificates", (s?.certificates?.length ?? 0) === 2);
 check("ceo", s?.ceo === "Ato Fikru Garedew", s?.ceo);
 
+/**
+ * Section 9 exists because pruneMedia once deleted all 20 marquee packs from a
+ * live deploy: the code builds their src as `/media/${p}.png`, so the filename
+ * never appears literally and the pruner could not see them. Nothing in the
+ * bundle catches that — the site builds, typechecks and ships with broken
+ * images. This compares what survived the prune against what the source
+ * actually names, so over-pruning fails the build instead of the browser.
+ */
+if (fs.existsSync("dist/media")) {
+  console.log("\n9. Local media survived the prune");
+  const srcText = fs
+    .readdirSync("src", { recursive: true, encoding: "utf8" })
+    .filter((f) => /\.(ts|tsx)$/.test(f))
+    .map((f) => fs.readFileSync(`src/${f}`, "utf8"))
+    .join("\n");
+
+  // Recursive: media/products/ holds the pack shots.
+  const names = (dir: string) =>
+    fs.readdirSync(dir, { recursive: true, encoding: "utf8" }).map((f) => f.replace(/^.*[\\/]/, ""));
+
+  const shipped = new Set(names("dist/media"));
+  const missing = names("public/media")
+    .filter((name) => {
+      if (shipped.has(name)) return false;
+      const stem = name.replace(/\.[a-z0-9]+$/i, "");
+      return srcText.includes(stem);
+    });
+
+  check(
+    `${shipped.size} files shipped, none referenced by src are missing`,
+    missing.length === 0,
+    missing.slice(0, 8).join(", ")
+  );
+}
+
 console.log(
   failures === 0
     ? "\nAll checks passed — the site is wired to Sanity.\n"

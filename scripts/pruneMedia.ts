@@ -22,8 +22,15 @@ const apply = process.argv.includes("--apply");
  *
  * Matching whole `/media/...` paths does NOT work: the IMAGES map is emitted as
  * template literals (`${U}/still-milk.jpg`), so the full path never appears as
- * a literal. Matching on the *filename* catches both forms, and erring toward
- * keeping a file is the safe direction.
+ * a literal.
+ *
+ * Matching the filename is not enough either. The pack marquee builds its src
+ * as `/media/${p}.png` from a list of *stems* — "mq-crackers.png" appears
+ * nowhere, only "mq-crackers". A filename-only match silently deleted all 20
+ * marquee packs from a live deploy. So we match on the stem too.
+ *
+ * Both tests err toward keeping a file, which is the safe direction: an extra
+ * file costs upload time, a missing one is a broken image in production.
  */
 function referenced(): string {
   const parts: string[] = [];
@@ -59,10 +66,10 @@ const drop: string[] = [];
 
 for (const f of files) {
   const name = path.basename(f);
-  // A .webp sibling is served implicitly by <picture>, so keep it whenever its
-  // base image is referenced.
-  const siblings = [name, name.replace(/\.webp$/, ".jpg"), name.replace(/\.webp$/, ".png")];
-  (siblings.some((n) => refs.includes(n)) ? keep : drop).push(f);
+  const stem = name.replace(/\.[a-z0-9]+$/i, "");
+  // The stem test also covers .webp siblings, which <picture> serves implicitly
+  // and which therefore never appear by name in the bundle.
+  (refs.includes(name) || refs.includes(stem) ? keep : drop).push(f);
 }
 
 const mb = (list: string[]) =>
