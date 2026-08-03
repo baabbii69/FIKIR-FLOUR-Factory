@@ -108,7 +108,28 @@ async function sendViaWeb3Forms(fields: Fields): Promise<void> {
   }
 }
 
+/**
+ * Delivers to Telegram and email together, rather than treating email as a
+ * rescue for a failed Telegram send.
+ *
+ * The earlier version returned the moment Telegram succeeded, so once Telegram
+ * started working the inbox went quiet — which reads as a broken form even
+ * though nothing was lost. A Telegram group is an alert: easy to miss, easy to
+ * scroll past, and gone if someone leaves. Email is the durable, searchable
+ * copy. A business wants both, and they are different jobs.
+ *
+ * Sent in parallel so the visitor waits for the slower of the two rather than
+ * the sum, and it only fails if *both* channels fail — one dead channel must
+ * never lose a lead that the other delivered.
+ */
 export async function submitLead(fields: Fields): Promise<void> {
-  if ((await sendViaProtectedEndpoint(fields)) === "sent") return;
-  await sendViaWeb3Forms(fields);
+  const [telegram, email] = await Promise.allSettled([
+    sendViaProtectedEndpoint(fields),
+    sendViaWeb3Forms(fields),
+  ]);
+
+  const telegramSent = telegram.status === "fulfilled" && telegram.value === "sent";
+  const emailSent = email.status === "fulfilled";
+
+  if (!telegramSent && !emailSent) throw new LeadSubmissionError("all_channels_failed");
 }
