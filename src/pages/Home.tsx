@@ -17,7 +17,9 @@ import {
   useSettings,
   useCertificate,
   usePageImage,
+  useFilm,
 } from "../content";
+import { LOW_POWER } from "../lib/perf";
 import { useCms } from "../lib/cms/CmsProvider";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
@@ -39,7 +41,24 @@ function Hero() {
   const { t } = useI18n();
   const cms = useCms();
   const settings = useSettings();
+  const film = useFilm();
   const heroSrc = usePageImage(cms.home?.heroImage, 2000) ?? IMAGES.hero;
+
+  /**
+   * The same silent 24s loop the film section uses, as a moving hero backdrop.
+   *
+   * The still stays underneath and keeps `fetchPriority="high"` — it is the
+   * largest element on first paint, so it remains what the browser races to
+   * show. The video sits on top at opacity 0 and only fades in once it is
+   * actually playing, which means a slow connection degrades to exactly the
+   * hero we have today rather than to a black rectangle.
+   *
+   * Skipped entirely on reduced-motion and software renderers, matching the
+   * film section: no device decodes video it did not ask for.
+   */
+  const ambient = !reduce && !LOW_POWER && !!film.loopUrl;
+  const [videoReady, setVideoReady] = useState(false);
+
   const item = (delay: number) => ({
     initial: reduce ? false : { opacity: 0, y: 32 },
     animate: { opacity: 1, y: 0 },
@@ -51,9 +70,24 @@ function Hero() {
         <Img
           src={heroSrc}
           alt="The Fikir Food Processing plant, fleet, and products at sunset"
-          className="kenburns h-full w-full object-cover"
+          className={`h-full w-full object-cover ${videoReady ? "" : "kenburns"}`}
           fetchPriority="high"
         />
+        {ambient && (
+          <video
+            src={film.loopUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-hidden
+            tabIndex={-1}
+            onPlaying={() => setVideoReady(true)}
+            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-1000"
+            style={{ opacity: videoReady ? 1 : 0 }}
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/60 to-ink/25" />
         <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-ink to-transparent" />
       </div>
