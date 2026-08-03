@@ -119,9 +119,18 @@ export default function Header() {
             <div className="hidden lg:block">
               <LangSwitcher tone={solid ? "solid" : "transparent"} />
             </div>
-            <Btn to="/contact" className="hidden !px-6 !py-3 lg:inline-flex">
-              {t("header.quote", "Request a Quote")}
-            </Btn>
+            {/*
+              Wrapped rather than given `hidden lg:inline-flex` directly. Btn's
+              own base class sets `inline-flex`, and Tailwind emits `.inline-flex`
+              after `.hidden` in the stylesheet — equal specificity, so the later
+              rule won and the button rendered on phones, overlapping the logo.
+              Hiding the wrapper keeps the decision out of that fight.
+            */}
+            <div className="hidden lg:block">
+              <Btn to="/contact" className="!px-6 !py-3">
+                {t("header.quote", "Request a Quote")}
+              </Btn>
+            </div>
             <button
               onClick={() => setOpen(true)}
               aria-label="Open menu"
