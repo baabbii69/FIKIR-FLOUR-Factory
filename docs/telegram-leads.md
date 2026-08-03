@@ -21,7 +21,23 @@ still arrive at `fikirfoods8@gmail.com` — the fallback is automatic.
 
 ---
 
-## Part 1 — Create the bot (5 minutes)
+## Part 1 — The bot token (5 minutes)
+
+> **A bot for this project already exists.** Its token was found in plaintext
+> inside `.claude/settings.local.json`, saved into a shell-command allowlist by
+> an earlier session. That file is gitignored and the token was never committed
+> — confirmed against every commit in the repository — so nothing leaked to
+> GitHub. But a token sitting in a settings file should be treated as spent.
+> **Revoke it rather than reuse it**, which also saves creating a second bot:
+>
+> 1. Open **@BotFather** → `/revoke` → pick the existing bot
+> 2. It issues a fresh token and the old one stops working immediately
+> 3. Use the new token in Part 3, and delete the stale `Bash(curl ...telegram...)`
+>    entries from `.claude/settings.local.json`
+>
+> Then skip to Part 2.
+
+Creating one from scratch instead:
 
 1. Open Telegram and search for **@BotFather**
 2. Send `/newbot`
