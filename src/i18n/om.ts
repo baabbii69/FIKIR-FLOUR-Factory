@@ -315,6 +315,7 @@ export const OM: Record<string, string> = {
   "film.title": "Warshaa paakeejii duuba jiru, *daqiiqaa saddeetiin.*",
   "film.body": "Midhaan yeroo galu, daakuun yeroo naanna'u, bukoon yeroo bukamu, tuutni hundi yeroo qoratamu, konkolaattonni keenyas utuu lafti hin bari'in yeroo ba'an. Kun Adaamaa keessatti guyyaa idilee ti.",
   "film.ring": "Fiilmii ilaali · Fiilmii ilaali · ",
+  "film.ringShort": "Fiilmii ilaali",
   "film.silent": "Sagalee hin qabu",
   "film.close": "Cufi",
   "film.aria": "Fiilmii dhaabbata Fikir",

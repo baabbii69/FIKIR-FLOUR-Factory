@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, SealCheck } from "@phosphor-icons/react";
+import { ArrowRight, SealCheck, Play, SpeakerSimpleSlash } from "@phosphor-icons/react";
 import { usePageMeta } from "../lib/usePageMeta";
 import { useHorizontalScroll } from "../lib/useHorizontalScroll";
 // IMAGES still supplies the decorative lifestyle shots that are not modelled
@@ -29,7 +29,7 @@ import Reveal from "../components/Reveal";
 import Stat from "../components/Stat";
 import FlourDust from "../components/FlourDust";
 import TestimonialRotator from "../components/TestimonialRotator";
-import FilmSection from "../components/FilmSection";
+import FilmPlayer from "../components/FilmPlayer";
 import CTABanner from "../components/CTABanner";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -58,6 +58,7 @@ function Hero() {
    */
   const ambient = !reduce && !LOW_POWER && !!film.loopUrl;
   const [videoReady, setVideoReady] = useState(false);
+  const [filmOpen, setFilmOpen] = useState(false);
 
   const item = (delay: number) => ({
     initial: reduce ? false : { opacity: 0, y: 32 },
@@ -88,32 +89,127 @@ function Hero() {
             style={{ opacity: videoReady ? 1 : 0 }}
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/60 to-ink/25" />
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-ink to-transparent" />
+        {/*
+          Moving footage is far busier behind text than the still ever was, and
+          the loop has bright frames — the mill, the sky — that swallowed the
+          cream type. These are the film section's gradients, which were tuned
+          against this exact footage: a bottom-up wash for the headline block,
+          a left-side wash so the copy column keeps contrast whatever is on
+          screen, and the existing bottom fade into the marquee.
+        */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/25" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/45 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-ink to-transparent" />
       </div>
       <FlourDust />
       <div className="relative mx-auto w-full max-w-[1400px] px-5 pt-24 md:px-10">
-        <motion.span className="eyebrow" {...item(0.1)}>
-          {t("home.hero.eyebrow", `Adama, Ethiopia · ${settings.name}`)}
-        </motion.span>
-        <motion.h1 className="display-1 mt-6 max-w-4xl text-5xl !text-cream sm:text-6xl lg:text-8xl" {...item(0.22)}>
-          <Accent text={t("home.hero.title", "We produce quality, *we deliver trust.*")} tone="dark" />
-        </motion.h1>
-        <motion.p className="mt-7 max-w-xl text-lg leading-relaxed text-cream/85" {...item(0.36)}>
-          {t(
-            "home.hero.sub",
-            "For over 15 years we've made fortified flour, Unic biscuits, wafers, and chips in Adama, delivered fresh across Ethiopia by our own fleet."
+        <div className="grid items-end gap-10 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <motion.span className="eyebrow" {...item(0.1)}>
+              {t("home.hero.eyebrow", `Adama, Ethiopia · ${settings.name}`)}
+            </motion.span>
+            <motion.h1 className="display-1 mt-6 max-w-4xl text-5xl !text-cream sm:text-6xl lg:text-8xl" {...item(0.22)}>
+              <Accent text={t("home.hero.title", "We produce quality, *we deliver trust.*")} tone="dark" />
+            </motion.h1>
+            <motion.p className="mt-7 max-w-xl text-lg leading-relaxed text-cream/85" {...item(0.36)}>
+              {t(
+                "home.hero.sub",
+                "For over 15 years we've made fortified flour, Unic biscuits, wafers, and chips in Adama, delivered fresh across Ethiopia by our own fleet."
+              )}
+            </motion.p>
+            <motion.div className="mt-10 flex flex-col gap-4 sm:flex-row" {...item(0.48)}>
+              <Btn to="/products" arrow>
+                {t("cta.exploreProducts", "Explore products")}
+              </Btn>
+              <Btn to="/about" variant="outline-cream">
+                {t("cta.ourStory", "Our story")}
+              </Btn>
+            </motion.div>
+
+            {/*
+              Phones get a compact bar rather than the dial. Measured on a
+              390x844 screen the headline, paragraph and stacked buttons
+              already reach ~600px of a ~750px usable hero; a 160px dial plus
+              its margin pushes the whole block off screen. This costs one row.
+            */}
+            {film.fullUrl && (
+              <motion.button
+                type="button"
+                onClick={() => setFilmOpen(true)}
+                className="group mt-8 flex items-center gap-3.5 lg:hidden"
+                {...item(0.58)}
+              >
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gold text-ink transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-active:scale-95">
+                  <Play size={20} weight="fill" className="ml-0.5" />
+                </span>
+                <span className="text-left font-mono text-[10px] uppercase leading-relaxed tracking-[0.2em] text-cream/70">
+                  {t("film.ringShort", "Watch the film")}
+                  <span className="mt-0.5 flex items-center gap-2 text-cream/45">
+                    <span className="tabular-nums">{film.duration}</span>
+                    <span aria-hidden className="h-2.5 w-px bg-cream/25" />
+                    <SpeakerSimpleSlash size={12} />
+                    {t("film.silent", "Silent")}
+                  </span>
+                </span>
+              </motion.button>
+            )}
+          </div>
+
+          {/* Watch dial — desktop only, where there is room for it to breathe. */}
+          {film.fullUrl && (
+            <div className="hidden lg:col-span-4 lg:col-start-9 lg:block lg:justify-self-end">
+              <motion.div {...item(0.58)}>
+                <button
+                  type="button"
+                  onClick={() => setFilmOpen(true)}
+                  aria-label={t("film.ringShort", "Watch the film")}
+                  className="group relative inline-flex h-40 w-40 items-center justify-center md:h-48 md:w-48"
+                >
+                  {/* Rotating caption ring */}
+                  <svg viewBox="0 0 100 100" aria-hidden className="ring-spin absolute inset-0 h-full w-full">
+                    <defs>
+                      <path
+                        id="hero-film-ring"
+                        fill="none"
+                        d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"
+                      />
+                    </defs>
+                    <text className="fill-cream/70 font-mono uppercase" fontSize="7.4" letterSpacing="2.6">
+                      {/* xlinkHref kept alongside href for older Safari, which
+                          ignores the SVG2 `href` form on <textPath>. */}
+                      <textPath href="#hero-film-ring" xlinkHref="#hero-film-ring" startOffset="0">
+                        {t("film.ring", "Watch the film · Watch the film · ")}
+                      </textPath>
+                    </text>
+                  </svg>
+
+                  <span className="absolute inset-6 rounded-full border border-cream/25 transition-colors duration-500 group-hover:border-gold/60" />
+
+                  <span className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gold text-ink transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110 md:h-20 md:w-20">
+                    <Play size={26} weight="fill" className="ml-1" />
+                  </span>
+                </button>
+
+                <div className="mt-5 flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.2em] text-cream/50 lg:justify-end">
+                  <span className="tabular-nums">{film.duration}</span>
+                  <span aria-hidden className="h-3 w-px bg-cream/25" />
+                  <span className="inline-flex items-center gap-1.5">
+                    <SpeakerSimpleSlash size={13} />
+                    {t("film.silent", "Silent")}
+                  </span>
+                </div>
+              </motion.div>
+            </div>
           )}
-        </motion.p>
-        <motion.div className="mt-10 flex flex-col gap-4 sm:flex-row" {...item(0.48)}>
-          <Btn to="/products" arrow>
-            {t("cta.exploreProducts", "Explore products")}
-          </Btn>
-          <Btn to="/about" variant="outline-cream">
-            {t("cta.ourStory", "Our story")}
-          </Btn>
-        </motion.div>
+        </div>
       </div>
+
+      <FilmPlayer
+        open={filmOpen}
+        onClose={() => setFilmOpen(false)}
+        src={film.fullUrl}
+        poster={heroSrc}
+      />
     </section>
   );
 }
@@ -604,7 +700,6 @@ export default function Home() {
       <PackMarquee />
       <RangeIndex />
       <Quality />
-      <FilmSection />
       <Trusted />
       <Lifestyle />
       <CTABanner

@@ -320,6 +320,7 @@ export const AM: Record<string, string> = {
   "film.title": "በጥቅሉ ጀርባ ያለው ፋብሪካ፣ *በስምንት ደቂቃ።*",
   "film.body": "እህል ሲገባ፣ ወፍጮዎች ሲሽከረከሩ፣ ሊጥ ሲቦካ፣ እያንዳንዱ ምርት ሲፈተን፣ መኪኖቻችንም ጎህ ሳይቀድ ሲወጡ። ይህ በአዳማ የተለመደ ቀን ነው።",
   "film.ring": "ፊልሙን ይመልከቱ · ፊልሙን ይመልከቱ · ",
+  "film.ringShort": "ፊልሙን ይመልከቱ",
   "film.silent": "ድምፅ የለውም",
   "film.close": "ዝጋ",
   "film.aria": "የFikir የኩባንያ ፊልም",
