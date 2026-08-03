@@ -30,11 +30,20 @@ import { getTurnstileToken } from "./turnstile";
 const WEB3FORMS_KEY = "cd8116ba-fd37-4b61-a33e-6da5fc0f4259";
 
 /**
- * Same-origin by default, which is correct on Vercel and harmlessly detected
- * as absent on Plesk. Override only to point a static host at a lead API
- * hosted elsewhere.
+ * An absolute URL, deliberately, so one build works on both hosts:
+ *
+ *   On Vercel  this is the site's own origin — same-origin, no CORS involved.
+ *   On Plesk   it is cross-origin, which the function allows because
+ *              fikirfoods.et is listed in its ALLOWED_ORIGINS.
+ *
+ * A relative "/api/lead" would only work on Vercel; the Plesk build would hit
+ * its own SPA catch-all and never reach Telegram. Keeping the URL absolute
+ * removes the need for a per-host env var that someone must remember to set —
+ * and the endpoint is public knowledge anyway, since it ships in the bundle.
  */
-const LEAD_ENDPOINT = import.meta.env.VITE_LEAD_ENDPOINT?.trim() || "/api/lead";
+const LEAD_ENDPOINT =
+  import.meta.env.VITE_LEAD_ENDPOINT?.trim() ||
+  "https://fikir-flour-factory.vercel.app/api/lead";
 
 type Fields = Record<string, string>;
 type LeadResponse = { success?: boolean; error?: string };
