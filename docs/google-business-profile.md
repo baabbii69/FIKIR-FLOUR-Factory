@@ -11,9 +11,41 @@ Google Maps and in the panel on the right of the results page.
 
 ---
 
-## ⚠️ Decide the address before you start
+## 🚨 A profile already exists. Claim it — do not create one.
 
-Two different addresses are in circulation:
+Google has listed **Fikir Food Processing** for some time, built from public
+data and customer contributions. It already carries:
+
+- **4.3 stars from 6 reviews**
+- the correct map pin near the Railway Station area
+- photos, phone `091 149 1815`, and opening hours
+
+It is **unclaimed** — the panel shows *"Own this business?"*.
+
+**Claiming keeps all of it.** Reviews attach to the listing, not to whoever
+manages it, so nothing is lost by taking ownership. What changes is that you
+can edit it and Google stops accepting strangers' edits.
+
+**Creating a second profile is the mistake to avoid.** Duplicates get merged
+badly or suppressed outright, and the new one starts at zero reviews while the
+old one keeps ranking. Six genuine reviews are worth more than anything in
+this document.
+
+### How to claim
+
+1. Search **Fikir Food Processing** on Google
+2. Click **Own this business?** in the panel
+3. Sign in with the company account (`fikirfoods8@gmail.com`)
+4. Choose a verification method — postcard, phone or video call of the premises
+5. Verification takes a few days; the listing stays live throughout
+
+Everything below is what to fix **after** the claim goes through.
+
+---
+
+## ⚠️ The address
+
+Three versions are in circulation:
 
 | Source | Address |
 |---|---|
@@ -21,10 +53,13 @@ Two different addresses are in circulation:
 | [Refugee Investment Network listing](https://refugeeinvestments.org/opportunities/fikir-food-processing/) | Adama, Kebele 03, Sodere Road, behind Bekelcha Transport |
 | Trade registration | ORO/ADM/**K03**/1/0000278/2006 (Kebele 03) |
 
-**Confirm which is the physical factory gate before entering anything.**
-Verification is usually a postcard to that address, and the map pin decides
-whether a driver actually finds the plant. If the office and factory differ,
-use the one that receives post and add the other later as a second location.
+The existing Google listing shows only "Adama" with a pin near the Railway
+Station area, which agrees with the website.
+
+**Leave the pin where it is.** It is already correct enough that customers find
+you, and moving a pin on a claimed listing can trigger re-verification. Fill in
+the full street address after the claim is verified, matching the website
+exactly.
 
 ---
 
