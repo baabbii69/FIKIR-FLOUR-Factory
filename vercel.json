@@ -1,3 +1,7 @@
 {
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "echo 'api/lead.js has no dependencies - skipping install'",
+  "buildCommand": "mkdir -p .vercel-static && printf '%s' '<!doctype html><meta charset=\"utf-8\"><meta name=\"robots\" content=\"noindex,nofollow\"><title>Fikir lead API</title><p>Lead endpoint for fikirfoods.et.</p>' > .vercel-static/index.html",
+  "outputDirectory": ".vercel-static"
 }

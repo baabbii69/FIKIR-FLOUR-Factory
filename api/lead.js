@@ -85,6 +85,26 @@ function originIsAllowed(req) {
   }
 }
 
+/**
+ * The site is served from Plesk and this function from Vercel, so every
+ * submission is cross-origin. Without these headers — and without answering
+ * the preflight that a JSON content-type forces — the browser blocks the
+ * request before the handler ever runs.
+ *
+ * The origin is echoed back only after passing the same allowlist the POST
+ * uses, so this widens nothing: ALLOWED_ORIGINS still decides.
+ */
+function corsHeaders(req) {
+  if (!originIsAllowed(req)) return null;
+  return {
+    "Access-Control-Allow-Origin": new URL(req.headers.origin).origin,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, cf-turnstile-response",
+    "Access-Control-Max-Age": "86400",
+    Vary: "Origin",
+  };
+}
+
 function turnstileHostnameMatches(req, hostname) {
   if (typeof hostname !== "string" || !hostname) return false;
   return [...requestOrigins(req)].some((origin) => {
@@ -211,11 +231,20 @@ async function alertOperations(event, detail) {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    reply(res, 405, { success: false, error: "method_not_allowed" }, { Allow: "POST" });
+  // Set before anything can return, so even rejections carry the headers the
+  // browser needs in order to surface the real status instead of a CORS error.
+  const cors = corsHeaders(req);
+  if (cors) for (const [name, value] of Object.entries(cors)) res.setHeader(name, value);
+
+  if (req.method === "OPTIONS") {
+    res.status(cors ? 204 : 403).end();
     return;
   }
-  if (!originIsAllowed(req)) {
+  if (req.method !== "POST") {
+    reply(res, 405, { success: false, error: "method_not_allowed" }, { Allow: "POST, OPTIONS" });
+    return;
+  }
+  if (!cors) {
     reply(res, 403, { success: false, error: "origin_not_allowed" });
     return;
   }
