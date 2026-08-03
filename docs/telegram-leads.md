@@ -1,160 +1,134 @@
-# Telegram lead notifications — setup
+# How leads reach you
 
-The website is a **static** build on Plesk, so it cannot run code. Telegram
-needs a bot token, and a token in a static site is public — anyone reading the
-page source could post as your bot. So the token has to live somewhere
-server-side.
+Two deployments exist, and they have different capabilities:
 
-This guide puts **only the lead function** on Vercel's free tier. The website
-stays exactly where it is on Plesk. Nothing about the site moves.
+| | |
+|---|---|
+| **fikirfoods.et** | Plesk / Apache. Static files only — cannot run code. |
+| **fikir-flour-factory.vercel.app** | Vercel. Serves the site *and* runs `api/lead.js`. |
+
+Both send leads to the same place.
 
 ```
-visitor → fikirfoods.et (Plesk)
-             │
-             └── POST → lead API (Vercel) → Telegram  ← token lives here
-                            │
-                            └── if it fails → Web3Forms email
+visitor submits the contact form or the chat widget
+        │
+        ▼
+  POST https://fikir-flour-factory.vercel.app/api/lead
+        │
+        ├── success ──► Telegram message to the sales group
+        │
+        └── unreachable ──► Web3Forms ──► fikirfoods8@gmail.com
 ```
 
-Email keeps working throughout. If the Vercel function is ever down, leads
-still arrive at `fikirfoods8@gmail.com` — the fallback is automatic.
+The email path is a fallback, not a parallel copy. A Telegram message arriving
+means the primary path worked; an email arriving instead means the function was
+unreachable and the lead was rescued.
 
 ---
 
-## Part 1 — The bot token (5 minutes)
+## Why the endpoint is an absolute URL
 
-> **A bot for this project already exists.** Its token was found in plaintext
-> inside `.claude/settings.local.json`, saved into a shell-command allowlist by
-> an earlier session. That file is gitignored and the token was never committed
-> — confirmed against every commit in the repository — so nothing leaked to
-> GitHub. But a token sitting in a settings file should be treated as spent.
-> **Revoke it rather than reuse it**, which also saves creating a second bot:
->
-> 1. Open **@BotFather** → `/revoke` → pick the existing bot
-> 2. It issues a fresh token and the old one stops working immediately
-> 3. Use the new token in Part 3, and delete the stale `Bash(curl ...telegram...)`
->    entries from `.claude/settings.local.json`
->
-> Then skip to Part 2.
+`src/lib/leads.ts` posts to the full `https://fikir-flour-factory.vercel.app/api/lead`
+rather than a relative `/api/lead`.
 
-Creating one from scratch instead:
+A relative path only works on Vercel. From Plesk it resolves to *that* server,
+where the SPA catch-all answers with `index.html` and **HTTP 200** — not a 404.
+That is what silently ate every enquiry before this was fixed: a 200 with an
+HTML body is not an error by any obvious test, so the code neither succeeded
+nor recognised failure.
 
-1. Open Telegram and search for **@BotFather**
-2. Send `/newbot`
-3. Give it a name, e.g. `Fikir Leads`
-4. Give it a username ending in `bot`, e.g. `fikir_leads_bot`
-5. BotFather replies with a token like `8123456789:AAH...`
+Two things make the absolute URL safe:
 
-**Keep that token private.** It is the password to the bot. Do not paste it
-into chat, email, or a commit — you will type it straight into Vercel later.
+1. **The content-type check.** JSON means a real backend answered; HTML means
+   there is no backend here, whatever the status code claims.
+2. **CORS.** The function echoes back the request origin, but only after it
+   passes the `ALLOWED_ORIGINS` allowlist.
 
-## Part 2 — Get the chat ID
+The URL is not a secret — it ships in the browser bundle either way.
 
-Where should the alerts land?
+---
 
-**To a group (recommended — the whole sales team sees leads):**
-1. Create a Telegram group, e.g. "Fikir Website Leads"
-2. Add your bot to it as a member
-3. Send any message in the group
-4. Open this in a browser, replacing `<TOKEN>`:
-   `https://api.telegram.org/bot<TOKEN>/getUpdates`
-5. Find `"chat":{"id":-1001234567890` — the ID **including the minus sign**
+## The configuration that makes it work
 
-**To yourself only:**
-1. Message your bot directly, say `hello`
-2. Open the same `getUpdates` URL
-3. The `"chat":{"id":123456789}` is yours (no minus sign)
+All of it lives in **Vercel → project → Settings → Environment Variables**.
+Nothing is stored in this repository.
 
-## Part 3 — Deploy the function
-
-1. Go to **https://vercel.com** and sign in with GitHub
-2. **Add New → Project**
-3. Import **FIKIR-FLOUR-Factory**
-4. Do not change the build settings — `vercel.json` already configures this
-   as API-only, so it will not publish a second copy of the website
-5. Expand **Environment Variables** and add:
-
-| Name | Value |
+| Variable | Purpose |
 |---|---|
-| `TELEGRAM_BOT_TOKEN` | the token from Part 1 |
-| `TELEGRAM_CHAT_ID` | the ID from Part 2 (keep any minus sign) |
+| `TELEGRAM_BOT_TOKEN` | the bot that posts to the group |
+| `TELEGRAM_CHAT_ID` | which group receives leads |
 | `ALLOWED_ORIGINS` | `https://fikirfoods.et,https://www.fikirfoods.et` |
 
-6. **Deploy**
-7. Copy the deployment URL, e.g. `https://fikir-flour-factory.vercel.app`
+**`ALLOWED_ORIGINS` is not optional.** Without it the function only trusts its
+own Vercel domain, and every submission from `fikirfoods.et` is rejected with
+`origin_not_allowed` — leads then quietly fall through to email instead.
 
-> `ALLOWED_ORIGINS` is not optional. The function rejects any request whose
-> Origin is not on that list, and since the site now sits on a different
-> domain than the API, `fikirfoods.et` must be named explicitly.
-
-## Part 4 — Point the site at it
-
-Send the developer the deployment URL. It goes into `.env.local` as:
-
-```
-VITE_LEAD_ENDPOINT=https://<your-deployment>.vercel.app/api/lead
-```
-
-Then rebuild and re-upload:
-
-```bash
-npm run deploy:build
-```
-
-Until this step is done the site keeps sending leads to email only — which
-works fine. Nothing is broken in the meantime.
-
-## Part 5 — Test
-
-Submit the contact form on the live site. You should get:
-
-- a **Telegram message** in the group, and
-- **nothing** in the Gmail inbox
-
-That second part is the point: email is the fallback, so a Telegram message
-arriving means the primary path worked. If the email arrives instead, the
-function was unreachable — check Part 4 and the Vercel logs.
+> Environment variables only apply to deployments made **after** they are saved.
+> Changing one without redeploying changes nothing.
 
 ---
 
-## Optional: spam protection
+## Verifying it end to end
 
-The function supports Cloudflare Turnstile, an invisible captcha. Without it,
-the built-in defences are a honeypot field and a rate limit of 5 submissions
-per IP per 10 minutes — enough for a site this size.
+Preflight, which proves the origin is allowed without sending a message:
 
-To enable it:
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" -X OPTIONS \
+  -H "Origin: https://fikirfoods.et" \
+  -H "Access-Control-Request-Method: POST" \
+  https://fikir-flour-factory.vercel.app/api/lead
+# 204 = allowed. 403 = ALLOWED_ORIGINS is missing or wrong.
+```
 
-1. **https://dash.cloudflare.com** → Turnstile → **Add site**
-2. Domain `fikirfoods.et`, widget type **Invisible**
-3. Add `TURNSTILE_SECRET_KEY` to the Vercel environment variables
-4. Give the developer the **site key** for `VITE_TURNSTILE_SITE_KEY`
+A real submission, which **does** post to the Telegram group:
 
-Both must be set together. A secret key on the server with no site key in the
-build makes every submission fail the captcha check — though the email
-fallback would still carry the lead through.
+```bash
+curl -s -X POST https://fikir-flour-factory.vercel.app/api/lead \
+  -H "Content-Type: application/json" \
+  -H "Origin: https://fikirfoods.et" \
+  -d '{"subject":"TEST - ignore","name":"Test","email":"t@fikirfoods.et",
+       "message":"Test.","source":"Contact page form"}'
+# {"success":true}
+```
+
+`source` must be exactly `Contact page form` or `Website chat widget` — the
+function rejects anything else as `invalid_source`.
+
+---
+
+## Built-in protection
+
+- **Honeypot** — a hidden `website` field that only bots fill in
+- **Rate limit** — 5 submissions per IP per 10 minutes, per warm instance
+- **Origin allowlist** — requests from other sites are refused outright
+- **Turnstile** (optional, not currently enabled) — set `TURNSTILE_SECRET_KEY`
+  on Vercel and `VITE_TURNSTILE_SITE_KEY` at build time. Both, or neither: a
+  secret with no site key fails every submission, though the email fallback
+  would still carry the lead through.
 
 ---
 
 ## Troubleshooting
 
-**Leads arrive by email, never Telegram**
-The function is unreachable or rejecting. Open Vercel → your project →
-**Logs** and submit the form again. `origin_not_allowed` means
-`ALLOWED_ORIGINS` is wrong or missing.
-
-**"telegram_not_configured" in the logs**
-`TELEGRAM_BOT_TOKEN` or `TELEGRAM_CHAT_ID` is empty. Environment variables
-only apply to deployments made *after* they are set — redeploy.
-
-**"telegram_rejected"**
-The chat ID is wrong, or the bot was never added to the group. For groups the
-ID starts with `-100`. Re-check with `getUpdates`.
+**Leads arrive by email instead of Telegram**
+The function was unreachable or refused. Run the preflight check above. A 403
+means `ALLOWED_ORIGINS` is wrong or a redeploy was skipped.
 
 **Nothing arrives at all**
-Then the email fallback failed too, which points at the browser rather than
-Telegram. Check the browser console on the live site for a CORS error.
+Then email failed too, which points at the browser rather than Telegram. Check
+the console on the live site for a CORS error.
 
-**Rotating the token**
-`/revoke` in BotFather, then update `TELEGRAM_BOT_TOKEN` in Vercel and
-redeploy. No website changes needed.
+**`telegram_not_configured` in the Vercel logs**
+`TELEGRAM_BOT_TOKEN` or `TELEGRAM_CHAT_ID` is empty for that deployment.
+
+**`telegram_rejected`**
+Wrong chat ID, or the bot was removed from the group. Group IDs start `-100`.
+
+**Rotating the bot token**
+`/revoke` in @BotFather, update the variable in Vercel, redeploy. No website
+change needed.
+
+> ⚠️ An older bot token is sitting in plaintext in `.claude/settings.local.json`,
+> saved by a tool's command allowlist. It is gitignored and was never committed
+> — verified against every commit — so nothing leaked. Revoke it anyway and
+> delete those entries.
