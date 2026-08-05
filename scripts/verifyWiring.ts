@@ -118,6 +118,41 @@ if (fs.existsSync("dist/media")) {
   );
 }
 
+/**
+ * Section 10 exists because Gallery shipped with its hero and CTA images
+ * hardcoded to local files. Every check above passed: the query fetched the
+ * fields, the snapshot contained them, the CDN served them. The page simply
+ * never read them, so an editor could change the photo in the Studio, see it
+ * save and publish, and watch nothing happen on the site — with no error
+ * anywhere to explain why.
+ *
+ * Resolving content is not the same as rendering it. This asserts the page
+ * component actually references the field.
+ */
+console.log("\n10. Page images are read from the CMS, not hardcoded");
+const PAGE_FILES: Record<string, string> = {
+  home: "Home", about: "About", products: "Products",
+  facility: "Facility", gallery: "Gallery", careers: "Careers", contact: "Contact",
+};
+
+for (const [key, file] of Object.entries(PAGE_FILES)) {
+  const section = (content as unknown as Record<string, Record<string, unknown>>)[key];
+  const path = `src/pages/${file}.tsx`;
+  if (!section || !fs.existsSync(path)) continue;
+  const src = fs.readFileSync(path, "utf8");
+
+  // `home` names it heroImage; the rest nest it under hero.image.
+  const hero = section.hero || section.heroImage;
+  if (hero) {
+    const ok = src.includes(`cms.${key}?.hero?.image`) || src.includes(`cms.${key}?.heroImage`);
+    check(`${file}: hero image`, ok, ok ? "" : "field exists in the CMS but the page never reads it");
+  }
+  if ((section.cta as Record<string, unknown> | undefined)?.image) {
+    const ok = src.includes(`cms.${key}?.cta?.image`);
+    check(`${file}: cta image`, ok, ok ? "" : "field exists in the CMS but the page never reads it");
+  }
+}
+
 console.log(
   failures === 0
     ? "\nAll checks passed — the site is wired to Sanity.\n"

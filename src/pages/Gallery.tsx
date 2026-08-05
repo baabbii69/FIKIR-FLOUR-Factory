@@ -9,7 +9,8 @@ import Img from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
 import { IMAGES } from "../data/site";
 import type { GalleryGroup } from "../data/site";
-import { useGalleryItems } from "../content";
+import { useGalleryItems, usePageImage } from "../content";
+import { useCms } from "../lib/cms/CmsProvider";
 import { useI18n } from "../i18n/I18nProvider";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -29,6 +30,11 @@ export default function Gallery() {
   );
   const { t } = useI18n();
   const all = useGalleryItems();
+  // Every other page resolves these from the CMS; Gallery was missed, so both
+  // Studio fields saved happily and were then discarded at render.
+  const cms = useCms();
+  const heroImg = usePageImage(cms.gallery?.hero?.image, 1800) ?? IMAGES.facProductionHall;
+  const ctaImg = usePageImage(cms.gallery?.cta?.image, 1800) ?? IMAGES.facTrucks;
   const [filter, setFilter] = useState<GalleryGroup | "all">("all");
   const [lightbox, setLightbox] = useState<number | null>(null);
 
@@ -42,7 +48,7 @@ export default function Gallery() {
   return (
     <>
       <PageHero
-        image={IMAGES.facProductionHall}
+        image={heroImg}
         alt="Inside the Fikir production hall"
         crumb={t("nav.gallery", "Gallery")}
         title={t("gal.hero.title", "A look")}
@@ -107,7 +113,7 @@ export default function Gallery() {
       </section>
 
       <CTABanner
-        image={IMAGES.facTrucks}
+        image={ctaImg}
         alt="Fikir delivery trucks at the plant"
         title={t("gal.cta.title", "Come see it")}
         titleAccent={t("gal.cta.accent", "in person.")}
