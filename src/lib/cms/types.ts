@@ -60,6 +60,9 @@ export type CmsGalleryItem = {
   image?: SanityImage;
 };
 
+/** "paused" still renders, with a note that the line is temporarily stopped. */
+export type CategoryStatus = "active" | "paused" | "hidden";
+
 export type SiteContent = {
   settings?: CmsSettings;
   home?: Record<string, unknown> & {
@@ -136,7 +139,7 @@ export type SiteContent = {
     seo?: CmsSeo;
   };
   contact?: { hero?: CmsHero; formHeading?: Loc; formIntro?: Loc; mapEmbedUrl?: string; seo?: CmsSeo };
-  categories?: { _id: string; key: string; hidden?: boolean; label?: Loc; note?: Loc }[];
+  categories?: { _id: string; key: string; status?: CategoryStatus; label?: Loc; note?: Loc }[];
   productList?: CmsProduct[];
   galleryItems?: CmsGalleryItem[];
   values?: { _id: string; icon: string; title?: Loc; text?: Loc }[];

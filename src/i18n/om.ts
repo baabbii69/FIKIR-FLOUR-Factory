@@ -589,6 +589,8 @@ export const OM: Record<string, string> = {
   "prod.browse.title": "Sararoota keenya, *sadarkaa tokko.*",
   "prod.browse.body": "Daakuu, biskuutii fi waafarii — dhi'ootti ilaaluuf gosa filadhu.",
   "prod.browse.aria": "Oomishaalee gosaan sakatta'i",
+  "prod.paused.badge": "Dhiyootti ni deebi'a",
+  "prod.paused.note": "Oomishni gosa kanaa yeroof dhaabbateera. Ni deebi'a — argama dhufu ilaalchisee nu dubbisaa.",
   "prod.detail.view": "Guutuu ilaali",
   "prod.acc.about": "Bal'ina",
   "prod.acc.specs": "Ibsa addaa",

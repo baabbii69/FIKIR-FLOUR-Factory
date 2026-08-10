@@ -6,6 +6,7 @@ import PageHero from "../components/PageHero";
 import CTABanner from "../components/CTABanner";
 import Reveal from "../components/Reveal";
 import Btn from "../components/Btn";
+import PausedTag from "../components/PausedTag";
 import Lightbox from "../components/Lightbox";
 import Img, { toWebp } from "../components/Img";
 import { usePageMeta } from "../lib/usePageMeta";
@@ -19,7 +20,7 @@ import { Accent } from "../i18n/Accent";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const isPackImg = (src: string) => src.endsWith(".png");
-type Cat = { id: Category; label: string; note: string };
+type Cat = { id: Category; label: string; note: string; paused?: boolean };
 
 /** Index of the category named by `?cat=`, or -1. Hidden categories never
  *  match, so a stale link to a paused range simply lands on the page. */
@@ -198,6 +199,14 @@ function MobileCategoryBrowser() {
               }`}
             >
               {t(`cat.${c.id}.label`, c.label)}
+              {c.paused && (
+                <span
+                  aria-hidden
+                  className={`ml-2 inline-block h-1.5 w-1.5 rounded-full align-middle ${
+                    i === catIdx ? "bg-ink/40" : "bg-gold"
+                  }`}
+                />
+              )}
             </button>
           ))}
         </div>
@@ -252,7 +261,15 @@ function MobileCategoryBrowser() {
           {/* Info */}
           <div className="border-t border-linen p-5">
             <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-gold-deep">{t(`cat.${cat.id}.note`, cat.note)}</span>
-            <h3 className="mt-2 font-display text-3xl font-semibold leading-none text-ink">{catLabel}</h3>
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+              <h3 className="font-display text-3xl font-semibold leading-none text-ink">{catLabel}</h3>
+              {cat.paused && <PausedTag />}
+            </div>
+            {cat.paused && (
+              <p className="mt-3 text-[13px] leading-relaxed text-clay">
+                {t("prod.paused.note", "Production of this range is paused for now. It will be back — talk to us about upcoming availability.")}
+              </p>
+            )}
 
             <div className="mt-4 space-y-2">
               {products.map((p, i) => (
@@ -328,7 +345,15 @@ function CategoryCard({ cat }: { cat: Cat }) {
         <div className="order-2 flex flex-col border-t border-linen p-6 md:p-8 lg:order-1 lg:h-full lg:min-h-0 lg:border-r lg:border-t-0">
           <div className="shrink-0">
             <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-gold-deep">{t(`cat.${cat.id}.note`, cat.note)}</span>
-            <h2 className="mt-2 font-display text-3xl font-semibold leading-none text-ink md:text-4xl">{catLabel}</h2>
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+              <h2 className="font-display text-3xl font-semibold leading-none text-ink md:text-4xl">{catLabel}</h2>
+              {cat.paused && <PausedTag />}
+            </div>
+            {cat.paused && (
+              <p className="mt-3 text-[13px] leading-relaxed text-clay">
+                {t("prod.paused.note", "Production of this range is paused for now. It will be back — talk to us about upcoming availability.")}
+              </p>
+            )}
           </div>
 
           {/* Variety selector — grows to fill, scrolls if long */}

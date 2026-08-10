@@ -51,14 +51,36 @@ const toGalleryItem = (g: CmsGalleryItem): GalleryItem => ({
 
 /* ----------------------------- Categories --------------------------- */
 
-/** Categories shown in the UI. Hidden ones (chips, currently) are filtered out. */
+/**
+ * Categories shown in the UI.
+ *
+ * Only "hidden" is filtered out. "paused" deliberately stays — a line that has
+ * stopped for a season is still worth showing, so customers learn it exists and
+ * that it is coming back. Deleting it instead throws away the page, its photos
+ * and whatever search ranking it has earned, all of which have to be rebuilt
+ * from nothing when production restarts.
+ */
 export function useCategories() {
   const cms = useCms();
   return useMemo(
     () =>
       (cms.categories ?? [])
-        .filter((c) => !c.hidden)
-        .map((c) => ({ id: c.key as Category, label: en(c.label), note: en(c.note) })),
+        .filter((c) => c.status !== "hidden")
+        .map((c) => ({
+          id: c.key as Category,
+          label: en(c.label),
+          note: en(c.note),
+          paused: c.status === "paused",
+        })),
+    [cms.categories]
+  );
+}
+
+/** Category keys whose line is paused, for badging products. */
+export function usePausedCategories(): Set<string> {
+  const cms = useCms();
+  return useMemo(
+    () => new Set((cms.categories ?? []).filter((c) => c.status === "paused").map((c) => c.key)),
     [cms.categories]
   );
 }
@@ -68,8 +90,15 @@ export function useCategories() {
 function useVisibleProducts() {
   const cms = useCms();
   return useMemo(() => {
-    const hidden = new Set((cms.categories ?? []).filter((c) => c.hidden).map((c) => c.key));
-    return (cms.productList ?? []).filter((p) => !hidden.has(p.category)).map(toProduct);
+    const hidden = new Set(
+      (cms.categories ?? []).filter((c) => c.status === "hidden").map((c) => c.key)
+    );
+    const paused = new Set(
+      (cms.categories ?? []).filter((c) => c.status === "paused").map((c) => c.key)
+    );
+    return (cms.productList ?? [])
+      .filter((p) => !hidden.has(p.category))
+      .map((p) => ({ ...toProduct(p), paused: paused.has(p.category) }));
   }, [cms.productList, cms.categories]);
 }
 

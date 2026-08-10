@@ -40,18 +40,30 @@ export const category = defineType({
     defineField({ name: "label", title: "Name", type: "localeString", validation: (R) => R.required() }),
     defineField({ name: "note", title: "Short description", type: "localeString" }),
     defineField({
-      name: "hidden",
-      title: "Hide from the website",
-      description: "Keeps the category and its products in the CMS but removes them from the site.",
-      type: "boolean",
-      initialValue: false,
+      name: "status",
+      title: "Availability",
+      description:
+        "Use 'Paused' when a product line stops for a while — it stays on the website with a note, " +
+        "so customers know it exists and will return. 'Hidden' removes it from the site completely.",
+      type: "string",
+      options: {
+        list: [
+          { title: "On sale", value: "active" },
+          { title: "Paused — temporarily unavailable", value: "paused" },
+          { title: "Hidden from the website", value: "hidden" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "active",
+      validation: (R) => R.required(),
     }),
     orderField,
   ],
   preview: {
-    select: { title: "label.en", subtitle: "key", hidden: "hidden" },
-    prepare: ({ title, subtitle, hidden }) => ({
-      title: hidden ? `${title} (hidden)` : title,
+    select: { title: "label.en", subtitle: "key", status: "status" },
+    prepare: ({ title, subtitle, status }) => ({
+      title:
+        status === "paused" ? `${title} (paused)` : status === "hidden" ? `${title} (hidden)` : title,
       subtitle,
     }),
   },

@@ -591,6 +591,8 @@ export const AM: Record<string, string> = {
   "prod.browse.title": "የእኛ ስብስቦች፣ *አንድ ደረጃ።*",
   "prod.browse.body": "ዱቄት፣ ብስኩት እና ዌፈር — በቅርበት ለማየት ዓይነት ይምረጡ።",
   "prod.browse.aria": "ምርቶችን በምድብ ያስሱ",
+  "prod.paused.badge": "በቅርቡ ይመለሳል",
+  "prod.paused.note": "የዚህ ምርት ምርት ለጊዜው ቆሟል። ተመልሶ ይመጣል — ስለሚቀጥለው አቅርቦት ያነጋግሩን።",
   "prod.detail.view": "ሙሉ ይመልከቱ",
   "prod.acc.about": "ዝርዝሮች",
   "prod.acc.specs": "ዝርዝር መግለጫ",

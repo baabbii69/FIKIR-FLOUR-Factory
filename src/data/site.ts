@@ -92,6 +92,8 @@ export type Product = {
   blurb: string;
   meta?: string; // pack sizes (flour) or descriptor (snacks)
   badge?: string;
+  /** Set when the product's category is paused. */
+  paused?: boolean;
   // Reserved for later (kept optional so the model is CMS-ready). The detail
   // page only renders these blocks when real data is present — we never invent
   // nutrition figures for a real product.
@@ -99,13 +101,14 @@ export type Product = {
   ingredients?: string;
 };
 
-// `hidden` keeps a category (and its products) in the data but out of the UI —
-// chips is paused for now and can be brought back by flipping this flag.
-export const CATEGORIES: { id: Category; label: string; note: string; hidden?: boolean }[] = [
+// `paused` keeps a line on the site with a "temporarily unavailable" note
+// rather than removing it — chips have stopped for now but are coming back.
+// These are only fallbacks; the CMS is the source of truth.
+export const CATEGORIES: { id: Category; label: string; note: string; paused?: boolean }[] = [
   { id: "flour", label: "Flour", note: "Fortified wheat & corn flour" },
   { id: "biscuits", label: "Biscuits", note: "Unic sweet & energy biscuits" },
   { id: "wafers", label: "Wafers", note: "Unic cream wafers" },
-  { id: "chips", label: "Chips", note: "Unic potato chips", hidden: true },
+  { id: "chips", label: "Chips", note: "Unic potato chips", paused: true },
 ];
 
 const M = "/media";

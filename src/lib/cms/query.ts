@@ -85,7 +85,7 @@ export const SITE_QUERY = /* groq */ `{
   },
 
   "categories": *[_type == "category"] | order(order asc){
-    _id, key, hidden, label${LOCALE}, note${LOCALE}
+    _id, key, status, label${LOCALE}, note${LOCALE}
   },
 
   "productList": *[_type == "product"] | order(order asc){

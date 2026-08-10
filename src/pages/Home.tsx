@@ -24,6 +24,7 @@ import { useCms } from "../lib/cms/CmsProvider";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
 import Btn from "../components/Btn";
+import PausedTag from "../components/PausedTag";
 import Img from "../components/Img";
 import Reveal from "../components/Reveal";
 import Stat from "../components/Stat";
@@ -557,7 +558,10 @@ function RangeIndex() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5">
-                  <h3 className="font-display text-xl font-semibold text-cream">{t(`cat.${c.id}.label`, c.label)}</h3>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <h3 className="font-display text-xl font-semibold text-cream">{t(`cat.${c.id}.label`, c.label)}</h3>
+                    {c.paused && <PausedTag tone="dark" />}
+                  </div>
                   <p className="mt-1 text-sm text-cream/70">{t(`cat.${c.id}.note`, c.note)}</p>
                 </div>
               </Link>

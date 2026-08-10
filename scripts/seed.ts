@@ -198,7 +198,7 @@ function buildCollections() {
         key: c.id,
         label: loc(`cat.${c.id}.label`, c.label),
         note: loc(`cat.${c.id}.note`, c.note),
-        hidden: !!c.hidden,
+        status: c.paused ? "paused" : "active",
         order: i,
       })
     )
