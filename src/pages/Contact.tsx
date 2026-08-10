@@ -20,20 +20,33 @@ import { useCms } from "../lib/cms/CmsProvider";
 import { useI18n } from "../i18n/I18nProvider";
 
 /**
- * The Adama plant. Only a fallback — the CMS field is the source of truth —
- * but it must still be the real site, because a stale default is worse than an
- * obviously missing one: nobody notices a map quietly pointing somewhere else.
+ * The Adama plant, from the client's own Google Maps pin and corroborated by
+ * GPS metadata in a video shot on site: the two agree to within 38 m, inside
+ * the phone's own +/-39 m accuracy. The previous coordinate was 1.3 km out and
+ * nobody noticed, because a map that is merely plausible looks exactly like a
+ * map that is right.
+ *
+ * Only a fallback — the CMS field wins — but it has to be the real site, since
+ * a stale default fails silently.
  */
-const PLANT = { lat: 8.518043, lon: 39.279311 };
+const PLANT = { lat: 8.512331, lon: 39.268718 };
 
-const FALLBACK_MAP =
-  "https://www.openstreetmap.org/export/embed.html" +
-  "?bbox=39.271311%2C8.515043%2C39.287311%2C8.521043&layer=mapnik" +
-  `&marker=${PLANT.lat}%2C${PLANT.lon}`;
+/**
+ * Google Maps rather than OpenStreetMap: the client found the location there,
+ * their Business Profile lives there, and it is the map Ethiopian visitors
+ * actually recognise. `output=embed` needs no API key.
+ */
+const FALLBACK_MAP = `https://www.google.com/maps?q=${PLANT.lat},${PLANT.lon}&z=17&output=embed`;
 
-/** Pull the pin out of an OpenStreetMap embed url and hand it to Google Maps. */
+/**
+ * Reads the pin out of whatever embed url the CMS holds so the button and the
+ * map cannot drift apart. Handles Google's `q=lat,lng` and OpenStreetMap's
+ * `marker=lat,lng`, so an older saved value still resolves correctly.
+ */
 function directionsFrom(embedUrl: string): string {
-  const m = /marker=([-\d.]+)(?:%2C|,)([-\d.]+)/i.exec(embedUrl);
+  const m =
+    /[?&]q=([-\d.]+),\s*([-\d.]+)/.exec(embedUrl) ??
+    /marker=([-\d.]+)(?:%2C|,)([-\d.]+)/i.exec(embedUrl);
   const lat = m ? m[1] : PLANT.lat;
   const lon = m ? m[2] : PLANT.lon;
   return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
@@ -143,7 +156,7 @@ export default function Contact() {
           <iframe
             title="FIKIR FOOD PROCESSING location in Adama, Ethiopia"
             src={mapUrl}
-            className="h-full w-full border-0 grayscale-[35%]"
+            className="h-full w-full border-0 grayscale-[20%]"
             loading="lazy"
           />
           <a
