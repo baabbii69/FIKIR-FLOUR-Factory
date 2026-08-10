@@ -8,6 +8,7 @@ import {
   Clock,
   CircleNotch,
   CheckCircle,
+  NavigationArrow,
 } from "@phosphor-icons/react";
 import PageHero from "../components/PageHero";
 import Reveal from "../components/Reveal";
@@ -18,6 +19,26 @@ import { useSettings, usePageImage } from "../content";
 import { useCms } from "../lib/cms/CmsProvider";
 import { useI18n } from "../i18n/I18nProvider";
 
+/**
+ * The Adama plant. Only a fallback — the CMS field is the source of truth —
+ * but it must still be the real site, because a stale default is worse than an
+ * obviously missing one: nobody notices a map quietly pointing somewhere else.
+ */
+const PLANT = { lat: 8.518043, lon: 39.279311 };
+
+const FALLBACK_MAP =
+  "https://www.openstreetmap.org/export/embed.html" +
+  "?bbox=39.271311%2C8.515043%2C39.287311%2C8.521043&layer=mapnik" +
+  `&marker=${PLANT.lat}%2C${PLANT.lon}`;
+
+/** Pull the pin out of an OpenStreetMap embed url and hand it to Google Maps. */
+function directionsFrom(embedUrl: string): string {
+  const m = /marker=([-\d.]+)(?:%2C|,)([-\d.]+)/i.exec(embedUrl);
+  const lat = m ? m[1] : PLANT.lat;
+  const lon = m ? m[2] : PLANT.lon;
+  return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
+}
+
 export default function Contact() {
   usePageMeta(
     "Contact | FIKIR FOOD PROCESSING",
@@ -27,9 +48,11 @@ export default function Contact() {
   const cms = useCms();
   const settings = useSettings();
   const heroImg = usePageImage(cms.contact?.hero?.image, 1800) ?? IMAGES.facReception;
-  const mapUrl =
-    cms.contact?.mapEmbedUrl ??
-    "https://www.openstreetmap.org/export/embed.html?bbox=39.2189%2C8.4914%2C39.3189%2C8.5914&layer=mapnik&marker=8.5414%2C39.2689";
+  const mapUrl = cms.contact?.mapEmbedUrl ?? FALLBACK_MAP;
+  // Derived from whatever pin the embed shows, so the map and the directions
+  // link can never point at two different places. An embedded map you cannot
+  // navigate from is decoration; a driver needs the handoff to their own app.
+  const directionsUrl = directionsFrom(mapUrl);
 
   return (
     <>
@@ -123,6 +146,15 @@ export default function Contact() {
             className="h-full w-full border-0 grayscale-[35%]"
             loading="lazy"
           />
+          <a
+            href={directionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute bottom-5 right-5 inline-flex items-center gap-2 bg-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.18em] text-cream shadow-lg transition-colors duration-300 hover:bg-green-deep"
+          >
+            <NavigationArrow size={14} weight="fill" />
+            {t("con.map.directions", "Get directions")}
+          </a>
         </div>
       </section>
     </>

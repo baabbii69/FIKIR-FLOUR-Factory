@@ -479,6 +479,7 @@ export const AM: Record<string, string> = {
   "con.hours.1.days": "ቅዳሜ",
   "con.hours.2.days": "እሁድ",
   "con.hours.closed": "ዝግ",
+  "con.map.directions": "አቅጣጫ ያግኙ",
   "con.form.title": "መልእክት ይላኩልን",
   "con.form.sub":
     "Fikir ምርቶችን ማከማቸት፣ አከፋፋይ መሆን ወይም ጥያቄ መጠየቅ ይፈልጋሉ? ስለ እርስዎ ትንሽ ይንገሩን፣ እንመልስልዎታለን።",

@@ -474,6 +474,7 @@ export const OM: Record<string, string> = {
   "con.hours.1.days": "Sanbata Duraa",
   "con.hours.2.days": "Dilbata",
   "con.hours.closed": "Cufaa",
+  "con.map.directions": "Karaa argadhu",
   "con.form.title": "Ergaa nuu ergaa",
   "con.form.sub":
     "Oomishaalee Fikir kuusuu, raabsaa ta'uu yookaan gaaffii gaafachuu barbaadduu? Waa'ee keessan xiqqoo nutti himaa, deebii isiniif kennina.",
