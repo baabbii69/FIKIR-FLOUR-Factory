@@ -82,6 +82,12 @@ export type SiteContent = {
       fullUrl?: string;
       duration?: string;
     };
+    unic?: {
+      eyebrow?: Loc;
+      heading?: Heading;
+      body?: Loc;
+      stats?: { _key: string; value?: string; label?: Loc }[];
+    };
     cta?: CmsCta;
     seo?: CmsSeo;
   };

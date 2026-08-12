@@ -35,6 +35,7 @@ export const SITE_QUERY = /* groq */ `{
     whoWeAreEyebrow${LOCALE}, whoWeAreBody${LOCALE},
     process[]{_key, step, title${LOCALE}, text${LOCALE}, image${IMAGE}},
     film{eyebrow${LOCALE}, heading${HEADING}, body${LOCALE}, loopUrl, fullUrl, duration},
+    unic{eyebrow${LOCALE}, heading${HEADING}, body${LOCALE}, stats[]{_key, value, label${LOCALE}}},
     cta${CTA}, seo${SEO}
   },
 

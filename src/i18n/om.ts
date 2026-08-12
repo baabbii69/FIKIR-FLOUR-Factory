@@ -70,6 +70,13 @@ export const OM: Record<string, string> = {
     "Oomishaa nyaataa Itoophiyaa seeraan galmaa'e kan Adaamaatti argamu, daakuu qamadii sadarkaa olaanaa, biskuutii gosa kudha lamaa ol, waafarii fi chiipsii dhiheessu, *maatii guutuu biyyaatti argamaniif.*",
 
   // Home — range
+  "home.unic.eyebrow": "Maqaa daldalaa keenya",
+  "home.unic.title": "Maqaa *paakeejii irra jiru.*",
+  "home.unic.body": "Unic maqaa biskuutii, waafarii fi chiipsii keenya irra jiruudha. Bara 2019 jalqabe; harʼa Itoophiyaanonni hedduun maqaa kanaan nu beeku — Adaamaatti, daakuu ofii keenyaan daaknerraa hojjetame.",
+  "home.unic.cta": "Oomishaalee Unic ilaali",
+  "home.unic.stat.0": "Oomishaalee Unic",
+  "home.unic.stat.1": "Bara maqaan jalqabe",
+  "home.unic.stat.2": "Sararoota",
   "home.range.eyebrow": "Waan oomishnu",
   "home.range.title": "Sararoota keenya, *sadarkaa tokko.*",
 

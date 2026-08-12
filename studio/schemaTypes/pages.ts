@@ -265,6 +265,38 @@ export const homePage = defineType({
         { name: "duration", title: "Length", description: "For example 7:56.", type: "string" },
       ],
     }),
+    defineField({
+      name: "unic",
+      title: "Unic brand section",
+      description:
+        "The block introducing UNIC as the consumer brand. The badge itself is part of the site design, not editable here.",
+      type: "object",
+      group: "sections",
+      fields: [
+        { name: "eyebrow", title: "Small label", type: "localeString" },
+        { name: "heading", title: "Heading", type: "localeHeading" },
+        { name: "body", title: "Paragraph", type: "localeText" },
+        {
+          name: "stats",
+          title: "Range counts",
+          description: "The three figures shown beside the badge. Keep them short.",
+          type: "array",
+          of: [
+            {
+              type: "object",
+              fields: [
+                { name: "value", title: "Number", type: "string" },
+                { name: "label", title: "What it counts", type: "localeString" },
+              ],
+              preview: {
+                select: { title: "value", subtitle: "label.en" },
+              },
+            },
+          ],
+          validation: (R) => R.max(3),
+        },
+      ],
+    }),
     defineField({ name: "cta", title: "Closing call to action", type: "ctaBlock", group: "sections" }),
     defineField({ name: "seo", title: "Search listing", type: "seo", group: "seo" }),
   ],

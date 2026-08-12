@@ -467,6 +467,96 @@ function PackMarquee() {
   );
 }
 
+/* ---------------- Unic brand ----------------
+   Sits between the pack marquee and the range index: the reader has just seen
+   the packs go past, so this is where the name on them gets explained, before
+   the four categories are laid out. Three of those four carry it.
+
+   The badge is red on white, so it is given an ink field rather than dropped
+   on parchment where it would fight the page. */
+function UnicBrand() {
+  const { t } = useI18n();
+  const cms = useCms();
+  const reduce = useReducedMotion();
+  const stats = cms.home?.unic?.stats ?? [];
+
+  return (
+    <section className="relative overflow-hidden bg-ink" aria-labelledby="unic-heading">
+      <div className="mx-auto grid max-w-[1400px] items-center gap-12 px-5 py-24 md:px-10 md:py-32 lg:grid-cols-12 lg:gap-16">
+        {/* Badge */}
+        <motion.div
+          className="lg:col-span-5"
+          initial={reduce ? false : { opacity: 0, scale: 0.94 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.9, ease: EASE }}
+        >
+          {/* Smaller on phones: at 420px the badge alone filled the first screen,
+                pushing the sentence that explains it below the fold. */}
+            <div className="relative mx-auto max-w-[240px] sm:max-w-[320px] lg:mx-0 lg:max-w-[420px]">
+            {/* Soft red bloom so the mark sits in the page rather than on it.
+                Skipped on software renderers, where a large blur is expensive. */}
+            {!LOW_POWER && (
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 -m-10 rounded-full opacity-40 blur-[80px]"
+                style={{ background: "radial-gradient(circle, rgba(234,38,42,0.45) 0%, transparent 68%)" }}
+              />
+            )}
+            <img
+              src="/unic-logo.png"
+              alt="The Unic brand mark: Unic, by Fikir Food Processing"
+              className="relative w-full"
+              loading="lazy"
+              width={706}
+              height={498}
+            />
+          </div>
+        </motion.div>
+
+        {/* Copy */}
+        <div className="lg:col-span-6 lg:col-start-7">
+          <Reveal>
+            <span className="eyebrow">{t("home.unic.eyebrow", "Our consumer brand")}</span>
+            <h2 id="unic-heading" className="display-2 mt-5 text-4xl !text-cream md:text-5xl">
+              <Accent text={t("home.unic.title", "The name on *the pack.*")} tone="dark" />
+            </h2>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <p className="mt-6 max-w-[52ch] text-base leading-relaxed text-cream/75">
+              {t(
+                "home.unic.body",
+                "Unic is the brand on our biscuits, wafers and chips. It launched in 2019 and is now what most Ethiopian shoppers know us by — made in Adama, from flour we mill ourselves."
+              )}
+            </p>
+          </Reveal>
+
+          {stats.length > 0 && (
+            <div className="mt-10 grid grid-cols-3 gap-4 border-t border-cream/15 pt-8">
+              {stats.map((s, i) => (
+                <Reveal key={s._key} delay={0.12 + i * 0.06}>
+                  <div className="font-display text-3xl font-semibold text-gold md:text-4xl">{s.value}</div>
+                  <div className="mt-1.5 font-mono text-[10px] uppercase leading-relaxed tracking-[0.16em] text-cream/50">
+                    {t(`home.unic.stat.${i}`, s.label?.en ?? "")}
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          )}
+
+          <Reveal delay={0.3}>
+            <div className="mt-10">
+              <Btn to="/products?cat=biscuits" arrow variant="outline-cream">
+                {t("home.unic.cta", "See the Unic range")}
+              </Btn>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ---------------- Interactive range (hover-preview) ---------------- */
 const FEATURED = ["high-energy", "wafer-chocolate", "abounded", "special", "wafer-vanilla", "crackers"];
 function RangeIndex() {
@@ -702,6 +792,7 @@ export default function Home() {
       <WhoWeAre />
       <ProcessJourney />
       <PackMarquee />
+      <UnicBrand />
       <RangeIndex />
       <Quality />
       <Trusted />
