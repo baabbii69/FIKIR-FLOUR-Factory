@@ -153,6 +153,45 @@ for (const [key, file] of Object.entries(PAGE_FILES)) {
   }
 }
 
+/**
+ * Section 11 guards the pre-render, because its failure mode is silent and
+ * expensive: the build still succeeds, the site still works for humans, and
+ * only crawlers see an empty body. That is exactly how every inner page sat
+ * unindexed for weeks with nothing appearing to be wrong.
+ *
+ * Reads the shipped HTML the way a crawler does — scripts stripped — so a page
+ * that renders only via JavaScript fails here rather than in Search Console a
+ * month from now.
+ */
+if (fs.existsSync("dist/index.html")) {
+  console.log("\n11. Every route ships pre-rendered HTML");
+  const sitemap = fs.readFileSync("public/sitemap.xml", "utf8");
+  const paths = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) =>
+    new URL(m[1]).pathname.replace(/\/$/, "")
+  );
+
+  for (const p of paths) {
+    const file = p === "" ? "dist/index.html" : `dist${p}/index.html`;
+    if (!fs.existsSync(file)) {
+      check(p || "/", false, "no pre-rendered HTML — run npm run prerender");
+      continue;
+    }
+    const body = /<body[^>]*>([\s\S]*)<\/body>/.exec(fs.readFileSync(file, "utf8"))?.[1] ?? "";
+    const words = body
+      .replace(/<script[\s\S]*?<\/script>/g, "")
+      .replace(/<[^>]+>/g, " ")
+      .split(/\s+/)
+      .filter(Boolean).length;
+    // 120 sits well below the thinnest real page (Gallery, ~224 words) and far
+    // above an empty shell, which scores 0.
+    check(
+      `${(p || "/").padEnd(10)} ${String(words).padStart(4)} words`,
+      words >= 120,
+      words >= 120 ? "" : "body is effectively empty to a crawler"
+    );
+  }
+}
+
 console.log(
   failures === 0
     ? "\nAll checks passed — the site is wired to Sanity.\n"
