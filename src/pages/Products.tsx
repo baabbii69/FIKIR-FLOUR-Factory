@@ -13,7 +13,7 @@ import { usePageMeta } from "../lib/usePageMeta";
 import { useHorizontalScroll } from "../lib/useHorizontalScroll";
 import { IMAGES } from "../data/site";
 import type { Product, Category } from "../data/site";
-import { useProductsByCategory, getProductImages, useCategories, useFaqs, usePageImage } from "../content";
+import { useProductsByCategory, useProducts, getProductImages, useCategories, useFaqs, usePageImage } from "../content";
 import { useCms } from "../lib/cms/CmsProvider";
 import { useI18n } from "../i18n/I18nProvider";
 import { Accent } from "../i18n/Accent";
@@ -60,6 +60,7 @@ export default function Products() {
         title={t("prod.hero.title", "One name, a whole")}
         titleAccent={t("prod.hero.accent", "shelf.")}
       />
+      <BrandSplit />
       {/* Desktop keeps the pinned horizontal scroller; mobile gets a natural
           vertical, tabbed layout (the carousel felt broken on small screens). */}
       <CategoryScroller />
@@ -75,6 +76,70 @@ export default function Products() {
         primaryTo="/contact"
       />
     </>
+  );
+}
+
+/* ---------------- Two brands, one company ----------------
+   Every product already carries a `brand` field that nothing rendered, so the
+   Unic range read as a naming convention rather than a brand. This states the
+   split once, before the categories: Fikir mills the flour, Unic is what goes
+   on the shelf. Counts come from the live product list rather than being
+   written down, so they cannot drift. */
+function BrandSplit() {
+  const { t } = useI18n();
+  const products = useProducts();
+  const count = (brand: string) => products.filter((p) => p.brand === brand).length;
+
+  const brands = [
+    {
+      key: "fikir",
+      mark: "/logo-full.png",
+      markClass: "h-16 w-auto",
+      name: "Fikir",
+      blurb: t("prod.brand.fikir", "The mill. Fortified wheat and corn flour, ground in Adama and sold in bulk to bakeries, wholesalers and households."),
+      n: count("Fikir"),
+    },
+    {
+      key: "unic",
+      mark: "/unic-logo.png",
+      markClass: "h-16 w-auto",
+      name: "Unic",
+      blurb: t("prod.brand.unic", "The shelf. Biscuits, wafers and chips made from that same flour — the name most Ethiopian shoppers know us by."),
+      n: count("Unic"),
+    },
+  ];
+
+  return (
+    <section className="bg-cream" aria-label={t("prod.brand.aria", "Our two brands")}>
+      <div className="mx-auto max-w-[1400px] px-5 py-16 md:px-10 md:py-20">
+        <Reveal>
+          <span className="eyebrow">{t("prod.brand.eyebrow", "Two brands, one company")}</span>
+        </Reveal>
+        <div className="mt-10 grid gap-10 md:grid-cols-2 md:gap-14">
+          {brands.map((b, i) => (
+            <Reveal key={b.key} delay={i * 0.08}>
+              <div className="flex h-full flex-col border-t border-linen pt-8">
+                {/* self-start matters: in a flex column the default
+                    align-items:stretch pulls the image to full width, which
+                    overrides w-auto and squashes the mark flat. */}
+                <img
+                  src={b.mark}
+                  alt=""
+                  aria-hidden
+                  className={`self-start ${b.markClass}`}
+                  loading="lazy"
+                />
+                <h2 className="mt-5 font-display text-2xl font-semibold text-ink md:text-3xl">{b.name}</h2>
+                <p className="mt-3 max-w-[46ch] flex-1 text-[15px] leading-relaxed text-clay">{b.blurb}</p>
+                <div className="mt-5 font-mono text-[10px] uppercase tracking-[0.18em] text-gold-deep">
+                  {b.n} {t("prod.brand.products", "products")}
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
