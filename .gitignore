@@ -26,6 +26,9 @@ scripts/.translation-gaps.json
 # Generated at build time from Sanity; not hand-edited.
 # Committed so a clean checkout can build without CMS access.
 
+# Exported for the printed profile; regenerate with npm run catalogue
+catalogue-images/
+
 # Build artifacts for manual upload
 fikirfoods-site.zip
 marquee-fix.zip

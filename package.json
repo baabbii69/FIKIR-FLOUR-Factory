@@ -14,7 +14,8 @@
     "verify": "tsx scripts/verifyWiring.ts",
     "check:cors": "tsx scripts/checkCors.ts",
     "sitemap": "tsx scripts/sitemap.ts",
-    "prerender": "tsx scripts/prerender.ts"
+    "prerender": "tsx scripts/prerender.ts",
+    "catalogue": "tsx scripts/catalogueImages.ts"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.2.5",
