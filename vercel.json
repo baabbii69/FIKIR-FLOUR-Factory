@@ -1,3 +1,16 @@
 {
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow",
+          "comment": "This deployment is a staging copy for client review; production is fikirfoods.et on Plesk. Without this the same pages exist on two domains and compete in search, which undoes the pre-rendering work. Vercel also cannot pre-render (no browser in its build container), so its pages are empty-bodied and would index worse than the real ones. REMOVE THIS if production ever moves to Vercel."
+        }
+      ]
+    }
+  ]
 }
