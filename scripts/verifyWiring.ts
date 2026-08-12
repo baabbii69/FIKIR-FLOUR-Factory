@@ -192,6 +192,28 @@ if (fs.existsSync("dist/index.html")) {
   }
 }
 
+/**
+ * Section 12 exists because <picture> commits to a source by matching `type`
+ * before it fetches anything. If the .webp sibling is absent the browser does
+ * not fall back to the <img> — it shows a broken image, on every browser that
+ * supports WebP. Adding a .jpg to public/media and forgetting its .webp is a
+ * one-line mistake that ships a visibly broken page, and it did.
+ */
+if (fs.existsSync("public/media")) {
+  console.log("\n12. Every raster in public/media has its WebP sibling");
+  const files = fs
+    .readdirSync("public/media", { recursive: true, encoding: "utf8" })
+    .filter((f) => /\.(jpe?g|png)$/i.test(f));
+  const missing = files.filter(
+    (f) => !fs.existsSync(`public/media/${f}`.replace(/\.(jpe?g|png)$/i, ".webp"))
+  );
+  check(
+    `${files.length} rasters, all paired`,
+    missing.length === 0,
+    missing.slice(0, 6).join(", ")
+  );
+}
+
 console.log(
   failures === 0
     ? "\nAll checks passed — the site is wired to Sanity.\n"

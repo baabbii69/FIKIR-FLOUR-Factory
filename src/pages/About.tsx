@@ -1,4 +1,5 @@
-import { SealCheck, Handshake, Smiley, Flask, Leaf, TrendUp, UsersThree } from "@phosphor-icons/react";
+import { useState } from "react";
+import { SealCheck, Handshake, Smiley, Flask, Leaf, TrendUp, UsersThree, MagnifyingGlassPlus } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "motion/react";
 import PageHero from "../components/PageHero";
 import CTABanner from "../components/CTABanner";
@@ -6,8 +7,9 @@ import Reveal from "../components/Reveal";
 import Btn from "../components/Btn";
 import Img from "../components/Img";
 import CertRotator from "../components/CertRotator";
+import Lightbox from "../components/Lightbox";
 import { usePageMeta } from "../lib/usePageMeta";
-import { IMAGES } from "../data/site";
+import { IMAGES, COVERAGE } from "../data/site";
 import type { AwardGroup } from "../data/site";
 import {
   useCompanyValues,
@@ -148,6 +150,7 @@ export default function About() {
       <Values />
       <People />
       <WhyUs />
+      <MarketCoverage />
 
       {/* Certificate */}
       <section className="bg-parchment">
@@ -579,6 +582,96 @@ function People() {
 }
 
 /* ---------------- Why us (animated) ---------------- */
+
+/* ---------------- Market coverage ----------------
+   The company profile carries this as a single designed graphic. Shipping it
+   as a picture alone would lock 25 city names inside an image: unreadable at
+   phone size, unsearchable, and invisible to Google — when "flour Jimma" or
+   "biscuits Hawassa" is exactly what those names would answer.
+
+   So the graphic stays as the visual, tappable to enlarge, and the coverage
+   list is rendered as real text beneath it. */
+function MarketCoverage() {
+  const { t } = useI18n();
+  const [zoom, setZoom] = useState(false);
+  const map = "/media/market-coverage-full.jpg";
+
+  return (
+    <section className="bg-ink" aria-labelledby="coverage-heading">
+      <div className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
+        <div className="max-w-2xl">
+          <Reveal>
+            <span className="eyebrow">{t("about.coverage.eyebrow", "Market coverage")}</span>
+            <h2 id="coverage-heading" className="display-2 mt-5 text-4xl !text-cream md:text-5xl">
+              <Accent text={t("about.coverage.title", "From Adama to *every corner.*")} tone="dark" />
+            </h2>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <p className="mt-6 text-base leading-relaxed text-cream/75">
+              {t(
+                "about.coverage.body",
+                "We deliver through wholesalers, distributors, supermarkets, kiosks and direct retail points, supported by our own vehicles, partner transporters and regional warehouses."
+              )}
+            </p>
+          </Reveal>
+        </div>
+
+        {/* The graphic */}
+        <Reveal delay={0.1}>
+          <button
+            type="button"
+            onClick={() => setZoom(true)}
+            className="group relative mt-12 block w-full overflow-hidden rounded-lg bg-cream"
+            aria-label={t("about.coverage.zoom", "Enlarge the coverage map")}
+          >
+            <Img
+              src={map}
+              alt="Fikir Food Processing distribution map: Adama to 23+ cities across Ethiopia"
+              className="w-full"
+              loading="lazy"
+            />
+            <span className="pointer-events-none absolute bottom-4 right-4 inline-flex items-center gap-2 bg-ink/85 px-3.5 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-cream opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:opacity-100">
+              <MagnifyingGlassPlus size={13} weight="bold" />
+              {t("about.coverage.zoom", "Enlarge")}
+            </span>
+          </button>
+        </Reveal>
+
+        {/* The same places, as text a phone and a crawler can both read */}
+        <div className="mt-14">
+          <Reveal>
+            <h3 className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold">
+              {t("about.coverage.listTitle", "Where you'll find us")}
+            </h3>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <ul className="mt-6 grid gap-x-8 gap-y-4 border-t border-cream/15 pt-8 sm:grid-cols-2 lg:grid-cols-3">
+              {COVERAGE.map((c) => (
+                <li key={c.city} className="border-b border-cream/10 pb-3">
+                  {/* Stacked, not a justify-between row: region names run to
+                      "Addis Ababa City Administration", which overflowed the
+                      column when held on one line beside the city. */}
+                  <div className="text-[15px] leading-snug text-cream/90">{c.city}</div>
+                  <div className="mt-1 font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] text-cream/40">
+                    {c.region}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
+      </div>
+
+      <Lightbox
+        images={[map]}
+        open={zoom}
+        initialIndex={0}
+        onClose={() => setZoom(false)}
+        caption={() => t("about.coverage.caption", "Market coverage and distribution network")}
+      />
+    </section>
+  );
+}
 
 function WhyUs() {
   const { t } = useI18n();

@@ -711,3 +711,41 @@ export const GALLERY: GalleryItem[] = [
   { src: IMAGES.lifeMarket, group: "people", caption: "On shelves nationwide" },
   { src: IMAGES.stillTea, group: "people", caption: "Better with a cup" },
 ];
+
+/* ---------------- Market coverage ----------------
+   Read from the coverage graphic in the company profile. Kept as data rather
+   than left inside the picture: text in an image cannot be read on a phone,
+   searched for, or indexed, and "flour Jimma" or "biscuits Hawassa" are exactly
+   the queries this list answers.
+
+   City and region names are proper nouns and stay as they are in every
+   language; only the surrounding labels are translated. */
+export type CoverageCity = { city: string; region: string };
+
+export const COVERAGE: CoverageCity[] = [
+  { city: "Addis Ababa", region: "Addis Ababa City Administration" },
+  { city: "Bishoftu (Debre Zeit)", region: "Oromia" },
+  { city: "Babile", region: "Oromia" },
+  { city: "Harar", region: "Harari" },
+  { city: "Dire Dawa", region: "Dire Dawa City Administration" },
+  { city: "Gololcha", region: "Oromia" },
+  { city: "Mechara", region: "Oromia" },
+  { city: "Hirna", region: "Oromia" },
+  { city: "Gelemso", region: "Oromia" },
+  { city: "Mekelle", region: "Tigray" },
+  { city: "Gashena", region: "Amhara" },
+  { city: "Debre Berhan", region: "Amhara" },
+  { city: "Dessie", region: "Amhara" },
+  { city: "Kemise", region: "Amhara" },
+  { city: "Masha", region: "Central Ethiopia" },
+  { city: "Assosa", region: "Benishangul-Gumuz" },
+  { city: "Gimbi", region: "Oromia" },
+  { city: "Nekemte", region: "Oromia" },
+  { city: "Jimma", region: "Oromia" },
+  { city: "Dembi Dollo", region: "Oromia" },
+  { city: "Gambella", region: "Gambella" },
+  { city: "Borena", region: "Oromia" },
+  { city: "Yabelo", region: "Oromia (Borena Zone)" },
+  { city: "Hawassa", region: "Sidama" },
+  { city: "Dilla", region: "South Ethiopia" },
+];

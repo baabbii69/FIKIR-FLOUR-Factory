@@ -17,7 +17,13 @@ export function toWebp(src?: string): string | null {
  * Drop-in replacement for <img> that serves WebP (≈50% smaller) with the
  * original as fallback. The <picture> wrapper is `display: contents`, so it
  * generates no box of its own — the inner <img> keeps its exact classes and
- * layout behaviour. If the .webp is missing the browser simply uses the <img>.
+ * layout behaviour.
+ *
+ * ⚠️ The .webp sibling is NOT optional. <picture> picks a source by matching
+ * `type` before any network request, and once it has chosen, a 404 is simply a
+ * broken image — it does not fall back to the <img>. Adding a .jpg to
+ * public/media without generating its .webp therefore ships an image that
+ * fails on every browser that supports WebP, which is all of them.
  */
 export default function Img({ src, ...rest }: ImgHTMLAttributes<HTMLImageElement>) {
   const webp = toWebp(typeof src === "string" ? src : undefined);
