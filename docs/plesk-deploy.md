@@ -319,3 +319,28 @@ re-upload. The previous `dist` is safe to keep as a backup before overwriting.
 | Studio | https://fikirfoods.sanity.studio |
 | Project console | https://www.sanity.io/manage/project/ntiaycof |
 | Web root on Plesk | `httpdocs` |
+
+---
+
+## The two deployments
+
+| | |
+|---|---|
+| **fikirfoods.et** (Plesk) | Production. Manual upload. Pre-rendered. |
+| **fikir-flour-factory.vercel.app** | Staging for client review, and the lead API. |
+
+`vercel.json` sets `X-Robots-Tag: noindex, nofollow` on the Vercel deployment.
+That is deliberate: the same pages on two domains compete for the same queries,
+and Vercel's build container has no browser, so it cannot pre-render — its
+pages ship the empty body that pre-rendering exists to remove. Left indexable
+it would both dilute and underperform the real site.
+
+The canonical tag alone is not enough there. On Vercel it resolves to the home
+page canonical on every route, because the per-route value is written by
+JavaScript a crawler may never run. `X-Robots-Tag` is decided by the server.
+
+**If production ever moves to Vercel, delete that headers block first.**
+
+> The reasoning lives here rather than in `vercel.json` because that file is
+> validated against Vercel's schema, which rejects any property it does not
+> recognise — including a `comment`. A build fails outright on it.
